@@ -1,6 +1,8 @@
 enum ViewMode {
   weekly(7),
-  monthly(31);
+  monthly(31),
+  sixMonth(26),
+  year(12);
 
   const ViewMode(this.dayCount);
 

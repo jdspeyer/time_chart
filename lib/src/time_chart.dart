@@ -10,6 +10,9 @@ class TimeChart extends StatelessWidget {
   const TimeChart({
     Key? key,
     this.chartType = ChartType.time,
+    this.yAxisLabel = 'hr',
+    this.toolTipLabel = '',
+    this.useToday = true,
     this.width,
     this.height = 280.0,
     this.barColor,
@@ -29,6 +32,26 @@ class TimeChart extends StatelessWidget {
   ///
   /// Default is the [ChartType.time].
   final ChartType chartType;
+
+  /// Optional label for the y-axis
+  ///
+  /// Default is hr
+  final String yAxisLabel;
+
+  /// Optional label for the tool tip
+  ///
+  /// Default is empty which will leave tooltip display as is.
+  final String toolTipLabel;
+
+  /// Optional boolean field whether to use the current date or the previous days date
+  ///
+  /// Defaults to true -- using todays date.
+  final bool useToday;
+
+  /// Optional label color modifier. Useful for changing themes.
+  ///
+  /// Default is gray
+  //final Color toolTipLabelColor;
 
   /// Total chart width.
   ///
@@ -118,6 +141,10 @@ class TimeChart extends StatelessWidget {
         child: Chart(
           key: ValueKey(viewMode),
           chartType: chartType,
+          yAxisLabel: yAxisLabel,
+          toolTipLabel: toolTipLabel,
+          useToday: useToday,
+          //toolTipLabelColor: toolTipLabelColor,
           width: actualWidth,
           height: height,
           barColor: barColor,

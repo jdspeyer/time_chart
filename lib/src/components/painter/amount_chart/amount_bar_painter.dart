@@ -82,8 +82,9 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     double amountSum = 0;
 
     for (int index = startIndex; index < length; index++) {
-      final int barPosition =
-          1 + dataList.first.end.differenceDateInDay(dataList[index].end);
+      final int barPosition = 1 + index;
+      print(dataList[index].end);
+      //1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
@@ -96,7 +97,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
               0) {
         final double normalizedTop =
             max(0, amountSum - bottomHour) / (topHour - bottomHour);
-
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
 

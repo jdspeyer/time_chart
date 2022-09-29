@@ -15,6 +15,8 @@ class TooltipOverlay extends StatelessWidget {
   const TooltipOverlay({
     Key? key,
     required this.chartType,
+    required this.yAxisLabel,
+    required this.toolTipLabel,
     this.timeRange,
     this.bottomHour,
     this.amountHour,
@@ -28,6 +30,8 @@ class TooltipOverlay extends StatelessWidget {
         super(key: key);
 
   final ChartType chartType;
+  final String yAxisLabel;
+  final String toolTipLabel;
   final int? bottomHour;
   final DateTimeRange? timeRange;
   final double? amountHour;
@@ -63,12 +67,14 @@ class TooltipOverlay extends StatelessWidget {
       case ChartType.time:
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange!),
+          toolTipLabel: toolTipLabel,
           start: start,
           end: end,
         );
         break;
       case ChartType.amount:
         child = _AmountTooltipOverlay(
+          toolTipLabel: toolTipLabel,
           durationHour: amountHour!,
           durationDate: amountDate!,
         );
@@ -100,6 +106,7 @@ class TooltipOverlay extends StatelessWidget {
 class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
     Key? key,
+    required this.toolTipLabel,
     required this.timeRange,
     required this.start,
     required this.end,
@@ -108,6 +115,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   final DateTimeRange timeRange;
   final String start;
   final String end;
+  final String toolTipLabel;
 
   DateTime get _sleepTime => timeRange.start;
 
@@ -192,10 +200,12 @@ class _AmountTooltipOverlay extends StatelessWidget {
     Key? key,
     required this.durationHour,
     required this.durationDate,
+    required this.toolTipLabel,
   }) : super(key: key);
 
   final double durationHour;
   final DateTime durationDate;
+  final String toolTipLabel;
 
   int _ceilMinutes() {
     double decimal = durationHour - durationHour.toInt();
@@ -210,8 +220,12 @@ class _AmountTooltipOverlay extends StatelessWidget {
   }
 
   String _getHour() {
-    final hour = durationHour.toInt() + _ceilMinutes();
-    return hour > 0 ? '$hour' : '';
+    if (toolTipLabel.isEmpty) {
+      final hour = durationHour.toInt() + _ceilMinutes();
+      return hour > 0 ? '$hour' : '';
+    } else {
+      return '${durationHour.floor()}';
+    }
   }
 
   Widget _buildContent(BuildContext context) {
@@ -251,17 +265,17 @@ class _AmountTooltipOverlay extends StatelessWidget {
                 ),
               if (hourString.isNotEmpty)
                 Text(
-                  '${translations.shortHour} ',
+                  toolTipLabel.isEmpty ? translations.shortHour : toolTipLabel,
                   style: subTitleStyle,
                   textScaleFactor: 1.0,
                 ),
-              if (minuteString.isNotEmpty)
+              if (minuteString.isNotEmpty && toolTipLabel.isEmpty)
                 Text(
                   _getMinute(),
                   style: headerStyle,
                   textScaleFactor: 1.0,
                 ),
-              if (minuteString.isNotEmpty)
+              if (minuteString.isNotEmpty && toolTipLabel.isEmpty)
                 Text(
                   translations.shortMinute,
                   style: subTitleStyle,

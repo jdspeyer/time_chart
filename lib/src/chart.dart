@@ -29,6 +29,9 @@ class Chart extends StatefulWidget {
   const Chart({
     Key? key,
     required this.chartType,
+    required this.yAxisLabel,
+    required this.toolTipLabel,
+    required this.useToday,
     required this.width,
     required this.height,
     required this.barColor,
@@ -44,6 +47,9 @@ class Chart extends StatefulWidget {
   }) : super(key: key);
 
   final ChartType chartType;
+  final String yAxisLabel;
+  final String toolTipLabel;
+  final bool useToday;
   final double width;
   final double height;
   final Color? barColor;
@@ -274,6 +280,8 @@ class ChartState extends State<Chart>
         child: TooltipOverlay(
           backgroundColor: widget.tooltipBackgroundColor,
           chartType: chartType,
+          yAxisLabel: widget.yAxisLabel,
+          toolTipLabel: widget.toolTipLabel,
           bottomHour: bottomHour,
           timeRange: range,
           amountHour: amount,
@@ -573,17 +581,18 @@ class ChartState extends State<Chart>
         );
       case ChartType.amount:
         return AmountYLabelPainter(
-          context: context,
-          viewMode: widget.viewMode,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-        );
+            context: context,
+            viewMode: widget.viewMode,
+            topHour: topHour!,
+            bottomHour: bottomHour!,
+            yAxisLabel: widget.yAxisLabel);
     }
   }
 
   CustomPainter _buildXLabelPainter(BuildContext context) {
-    final firstValueDateTime =
-        processedData.isEmpty ? DateTime.now() : processedData.first.end;
+    final firstValueDateTime = widget.useToday
+        ? DateTime.now()
+        : DateTime.now().subtract(Duration(days: 1));
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
