@@ -47,7 +47,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
 
       callback(_) => tooltipCallback(
             amount: offsetWithAmount.amount,
-            amountDate: offsetWithAmount.dateTime,
+            //amountDate: offsetWithAmount.dateTime,
             position: scrollController!.position,
             rect: rRect.outerRect,
             barWidth: barWidth,
@@ -76,34 +76,44 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     final int length = dataList.length;
     final int viewLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset;
-    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
-    final int startIndex = dataList.getLowerBound(startDateTime);
+    // final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    final int startIndex = 0;
+    // final int startIndex = dataList.getLowerBound(startDateTime);
 
     double amountSum = 0;
 
     for (int index = startIndex; index < length; index++) {
       final int barPosition = 1 + index;
-      print(dataList[index].end);
       //1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
-      amountSum += dataList[index].durationInHours;
+      amountSum += dataList[index];
 
       // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
-      if (index == length - 1 ||
-          dataList[index].end.differenceDateInDay(dataList[index + 1].end) >
-              0) {
+      if (index == length - 1) {
         final double normalizedTop =
             max(0, amountSum - bottomHour) / (topHour - bottomHour);
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
-
-        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
+        // TODO JDS
+        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index]));
 
         amountSum = 0;
       }
+      // if (index == length - 1 ||
+      //     dataList[index].end.differenceDateInDay(dataList[index + 1].end) >
+      //         0) {
+      //   final double normalizedTop =
+      //       max(0, amountSum - bottomHour) / (topHour - bottomHour);
+      //   final double dy = size.height - normalizedTop * size.height;
+      //   final double dx = size.width - intervalOfBars * barPosition;
+
+      //   coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
+
+      //   amountSum = 0;
+      // }
     }
 
     return coordinates;
@@ -114,7 +124,7 @@ class AmountBarItem {
   final double dx;
   final double dy;
   final double amount;
-  final DateTime dateTime;
+  final double dateTime;
 
   AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }

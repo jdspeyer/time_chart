@@ -86,7 +86,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
-    final maxBottom = size.height;
+    //final maxBottom = size.height;
 
     for (int index = 0; index < coordinates.length; index++) {
       final TimeBarItem offsetRange = coordinates[index];
@@ -98,21 +98,21 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
 
       Radius topRadius = barRadius;
       Radius bottomRadius = barRadius;
+      // TODO JDS
+      // if (top < 0.0) {
+      //   _drawOutRangedBar(touchyCanvas, paint, size,
+      //       Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+      //   top = 0.0;
+      //   topRadius = Radius.zero;
+      // } else if (bottom > maxBottom) {
+      //   _drawOutRangedBar(touchyCanvas, paint, size,
+      //       Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+      //   bottom = maxBottom;
+      //   bottomRadius = Radius.zero;
+      // }
 
-      if (top < 0.0) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
-        top = 0.0;
-        topRadius = Radius.zero;
-      } else if (bottom > maxBottom) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
-        bottom = maxBottom;
-        bottomRadius = Radius.zero;
-      }
-
-      _drawRRect(touchyCanvas, paint, offsetRange.data,
-          Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
+      // _drawRRect(touchyCanvas, paint, offsetRange.data,
+      //     Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
     }
   }
 
@@ -164,14 +164,15 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     final int viewLimitDay = viewMode.dayCount;
 
     final int dayFromScrollOffset = currentDayFromScrollOffset;
-    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
-    final int startIndex = dataList.getLowerBound(startDateTime);
+    //final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    final int startIndex = 0;
+    //final int startIndex = dataList.getLowerBound(startDateTime);
 
     for (int index = startIndex; index < length; index++) {
-      final wakeUpTimeDouble = dataList[index].end.toDouble();
-      final sleepAmountDouble = dataList[index].durationInHours;
-      final barPosition =
-          1 + dataList.first.end.differenceDateInDay(dataList[index].end);
+      final wakeUpTimeDouble = dataList[index].toDouble();
+      final sleepAmountDouble = dataList[index];
+      final barPosition = 1 + index;
+      //1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
@@ -208,7 +209,7 @@ class TimeBarItem {
   final double dx;
   final double topY;
   final double bottomY;
-  final DateTimeRange data;
+  final double data;
 
   TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

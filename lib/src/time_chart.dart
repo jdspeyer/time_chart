@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'chart.dart';
 import 'components/chart_type.dart';
@@ -76,7 +78,7 @@ class TimeChart extends StatelessWidget {
   /// ```dart
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
-  final List<DateTimeRange> data;
+  final List<double> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///

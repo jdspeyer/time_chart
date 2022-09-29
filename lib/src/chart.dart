@@ -53,7 +53,7 @@ class Chart extends StatefulWidget {
   final double width;
   final double height;
   final Color? barColor;
-  final List<DateTimeRange> data;
+  final List<double> data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -67,8 +67,7 @@ class Chart extends StatefulWidget {
   ChartState createState() => ChartState();
 }
 
-class ChartState extends State<Chart>
-    with TickerProviderStateMixin, TimeDataProcessor {
+class ChartState extends State<Chart> with TickerProviderStateMixin {
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
@@ -133,7 +132,7 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    processData(widget, _getFirstItemDate());
+    //processData(widget, _getFirstItemDate());
   }
 
   @override
@@ -141,7 +140,7 @@ class ChartState extends State<Chart>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.data != widget.data) {
-      processData(widget, _getFirstItemDate());
+      //processData(widget, _getFirstItemDate());
     }
   }
 
@@ -159,10 +158,13 @@ class ChartState extends State<Chart>
   }
 
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return widget.data.isEmpty
-        ? DateTime.now()
-        : widget.data.first.end.dateWithoutTime().add(addition);
+    return DateTime.now();
   }
+  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+  //   return widget.data.isEmpty
+  //       ? DateTime.now()
+  //       : widget.data.first.end.dateWithoutTime().add(addition);
+  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -282,7 +284,7 @@ class ChartState extends State<Chart>
           chartType: chartType,
           yAxisLabel: widget.yAxisLabel,
           toolTipLabel: widget.toolTipLabel,
-          bottomHour: bottomHour,
+          bottomHour: 0,
           timeRange: range,
           amountHour: amount,
           amountDate: amountDate,
@@ -339,32 +341,32 @@ class ChartState extends State<Chart>
   }
 
   void _timerCallback() {
-    final beforeIsFirstDataMovedNextDay = isFirstDataMovedNextDay;
-    final beforeTopHour = topHour;
-    final beforeBottomHour = bottomHour;
+    final beforeIsFirstDataMovedNextDay = false;
+    final beforeTopHour = widget.data.reduce(max).toInt();
+    final beforeBottomHour = 0;
 
     final blockIndex =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final needsToAdaptScrollPosition =
-        blockIndex > 0 && isFirstDataMovedNextDay;
+    final needsToAdaptScrollPosition = blockIndex > 0 && false;
     final scrollPositionDuration = Duration(
       days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
     );
 
-    processData(widget, _getFirstItemDate(addition: scrollPositionDuration));
+    //processData(widget, _getFirstItemDate(addition: scrollPositionDuration));
 
-    if (topHour == beforeTopHour && bottomHour == beforeBottomHour) return;
+    if (widget.data.reduce(max).toInt() == beforeTopHour &&
+        0 == beforeBottomHour) return;
 
-    if (beforeIsFirstDataMovedNextDay != isFirstDataMovedNextDay) {
+    if (beforeIsFirstDataMovedNextDay != false) {
       // 하루가 추가 혹은 삭제되는 경우 x축 방향으로 발생하는 차이를 해결할 값이다.
-      final add = isFirstDataMovedNextDay ? _blockWidth! : -_blockWidth!;
+      final add = false ? _blockWidth! : -_blockWidth!;
 
       _barController.jumpTo(_barController.position.pixels + add);
       _scrollPhysics!.addPanDownPixels(add);
-      _scrollPhysics!.setDayCount(dayCount!);
+      _scrollPhysics!.setDayCount(widget.data.length);
     }
 
-    _runHeightAnimation(beforeTopHour!, beforeBottomHour!);
+    _runHeightAnimation(widget.data.reduce(max).toInt(), beforeBottomHour!);
   }
 
   double get heightWithoutLabel => widget.height - kXLabelHeight;
@@ -372,16 +374,19 @@ class ChartState extends State<Chart>
   void _runHeightAnimation(int beforeTopHour, int beforeBottomHour) {
     final beforeDiff =
         hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
-    final currentDiff = hourDiffBetween(topHour, bottomHour).toDouble();
+    final currentDiff =
+        hourDiffBetween(widget.data.reduce(max).toInt(), 0).toDouble();
 
-    final candidateUpward = diffBetween(beforeTopHour, topHour!);
-    final candidateDownWard = -diffBetween(topHour!, beforeTopHour);
+    final candidateUpward =
+        diffBetween(beforeTopHour, widget.data.reduce(max).toInt());
+    final candidateDownWard =
+        -diffBetween(widget.data.reduce(max).toInt(), beforeTopHour);
 
     // (candidate)중에서 current top-bottom hour 범위에 들어오는 것을 선택한다.
-    final topDiff =
-        isDirUpward(beforeTopHour, beforeBottomHour, topHour!, bottomHour!)
-            ? candidateUpward
-            : candidateDownWard;
+    final topDiff = isDirUpward(
+            beforeTopHour, beforeBottomHour, widget.data.reduce(max).toInt(), 0)
+        ? candidateUpward
+        : candidateDownWard;
 
     setState(() {
       _animationBeginHeight =
@@ -395,7 +400,8 @@ class ChartState extends State<Chart>
   @override
   Widget build(BuildContext context) {
     final int viewModeLimitDay = widget.viewMode.dayCount;
-    final key = ValueKey((topHour ?? 0) + (bottomHour ?? 1) * 100);
+    final key =
+        ValueKey((widget.data.reduce(max).toInt() ?? 0) + (0 ?? 1) * 100);
 
     final double outerHeight = kTimeChartTopPadding + widget.height;
     final double yLabelWidth = _getRightMargin(context);
@@ -404,13 +410,13 @@ class ChartState extends State<Chart>
     _blockWidth ??= (totalWidth - yLabelWidth) / viewModeLimitDay;
 
     final innerSize = Size(
-      _blockWidth! * max(dayCount!, viewModeLimitDay),
+      _blockWidth! * max(widget.data.length, viewModeLimitDay),
       double.infinity,
     );
     _scrollPhysics ??= CustomScrollPhysics(
       blockWidth: _blockWidth!,
       viewMode: widget.viewMode,
-      scrollPhysicsState: ScrollPhysicsState(dayCount: dayCount!),
+      scrollPhysicsState: ScrollPhysicsState(dayCount: widget.data.length),
     );
     return GestureDetector(
       onPanDown: _handlePanDown,
@@ -574,8 +580,8 @@ class ChartState extends State<Chart>
         return TimeYLabelPainter(
           context: context,
           viewMode: widget.viewMode,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
+          topHour: widget.data.reduce(max).toInt(),
+          bottomHour: 0,
           chartHeight: widget.height,
           topPosition: topPosition,
         );
@@ -583,8 +589,8 @@ class ChartState extends State<Chart>
         return AmountYLabelPainter(
             context: context,
             viewMode: widget.viewMode,
-            topHour: topHour!,
-            bottomHour: bottomHour!,
+            topHour: widget.data.reduce(max).toInt(),
+            bottomHour: 0,
             yAxisLabel: widget.yAxisLabel);
     }
   }
@@ -601,8 +607,9 @@ class ChartState extends State<Chart>
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
-          dayCount: dayCount,
-          isFirstDataMovedNextDay: isFirstDataMovedNextDay,
+          dayCount: widget.data.length,
+          //TODO JDS
+          isFirstDataMovedNextDay: false,
         );
       case ChartType.amount:
         return AmountXLabelPainter(
@@ -611,7 +618,7 @@ class ChartState extends State<Chart>
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
-          dayCount: dayCount,
+          dayCount: widget.data.length,
         );
     }
   }
@@ -624,11 +631,11 @@ class ChartState extends State<Chart>
           repaint: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
-          dataList: processedData,
+          dataList: widget.data,
           barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-          dayCount: dayCount,
+          topHour: widget.data.reduce(max).toInt(),
+          bottomHour: 0,
+          dayCount: widget.data.length,
           viewMode: widget.viewMode,
         );
       case ChartType.amount:
@@ -636,14 +643,44 @@ class ChartState extends State<Chart>
           scrollController: _barController,
           repaint: _scrollOffsetNotifier,
           context: context,
-          dataList: processedData,
+          dataList: widget.data,
           barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
+          topHour: widget.data.reduce(max).toInt(),
+          bottomHour: 0,
           tooltipCallback: _tooltipCallback,
-          dayCount: dayCount,
+          dayCount: widget.data.length,
           viewMode: widget.viewMode,
         );
     }
   }
+  // CustomPainter _buildBarPainter(BuildContext context) {
+  //   switch (widget.chartType) {
+  //     case ChartType.time:
+  //       return TimeBarPainter(
+  //         scrollController: _barController,
+  //         repaint: _scrollOffsetNotifier,
+  //         context: context,
+  //         tooltipCallback: _tooltipCallback,
+  //         dataList: processedData,
+  //         barColor: widget.barColor,
+  //         topHour: widget.data.reduce(max).toInt(),
+  //         bottomHour: bottomHour!,
+  //         dayCount: dayCount,
+  //         viewMode: widget.viewMode,
+  //       );
+  //     case ChartType.amount:
+  //       return AmountBarPainter(
+  //         scrollController: _barController,
+  //         repaint: _scrollOffsetNotifier,
+  //         context: context,
+  //         dataList: processedData,
+  //         barColor: widget.barColor,
+  //         topHour: widget.data.reduce(max).toInt(),
+  //         bottomHour: bottomHour!,
+  //         tooltipCallback: _tooltipCallback,
+  //         dayCount: dayCount,
+  //         viewMode: widget.viewMode,
+  //       );
+  //   }
+  // }
 }

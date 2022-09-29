@@ -23,14 +23,13 @@ abstract class BarPainter<T> extends ChartEngine {
     required this.topHour,
     required this.bottomHour,
     this.barColor,
-  }) : super(
-          firstValueDateTime:
-              dataList.isEmpty ? DateTime.now() : dataList.first.end,
-        );
+  }) : super(firstValueDateTime: DateTime.now()
+            // dataList.isEmpty ? DateTime.now() : dataList.first.end,
+            );
 
   final TooltipCallback tooltipCallback;
   final Color? barColor;
-  final List<DateTimeRange> dataList;
+  final List<double> dataList;
   final int topHour;
   final int bottomHour;
 
@@ -48,12 +47,16 @@ abstract class BarPainter<T> extends ChartEngine {
   List<T> generateCoordinates(Size size);
 
   @protected
-  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
-    return dataList.first.end.add(Duration(
-      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
-    ));
+  double getBarRenderStartDateTime(List<double> dataList) {
+    return dataList[0];
   }
 
+  // @protected
+  // double getBarRenderStartDateTime(List<double> dataList) {
+  //   return dataList.first.end.add(Duration(
+  //     days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+  //   ));
+  // }
   @override
   @nonVirtual
   bool shouldRepaint(BarPainter oldDelegate) {

@@ -9,7 +9,26 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   // Data must be sorted.
-  final smallDataList = [8, 14, 27, 22, 10, 23, 21, 23, 21, 0, 9, 14];
+  final List<double> smallDataList = [
+    8.0,
+    14.0,
+    27.0,
+    22.0,
+    10.0,
+    23.0,
+    21.0,
+    23.0,
+    21.0,
+    0.0,
+    9.0,
+    14.0
+  ];
+
+  final testRange = DateTimeRange(
+    start: DateTime(2021, 2, 25, 0, 0),
+    end: DateTime(2021, 2, 25, 7, 0),
+  );
+
   //final smallDataList = [7, 14, 40, 30, 10, 27, 40, 37, 28, 0, 9, 14];
   // // Data must be sorted.
   // final smallDataList = [
@@ -33,23 +52,6 @@ class MyApp extends StatelessWidget {
 
   final List<DateTimeRange> emptyDataList = [];
 
-  List<DateTimeRange> getRandomSampleDataList() {
-    final List<DateTimeRange> list = [];
-    final random = Random();
-
-    for (int i = 0; i < smallDataList.length; ++i) {
-      // final int randomMinutes1 = random.nextInt(59);
-      // final int randomMinutes2 = random.nextInt(59);
-      final start = DateTime(2021, 2, 1 - i, 0, 0);
-      final end = DateTime(2021, 2, 1 - i, smallDataList[i], 0);
-
-      list.add(DateTimeRange(
-        start: start,
-        end: end,
-      ));
-    }
-    return list;
-  }
   // List<DateTimeRange> getRandomSampleDataList() {
   //   final List<DateTimeRange> list = [];
   //   final random = Random();
@@ -68,12 +70,10 @@ class MyApp extends StatelessWidget {
   //   return list;
   // }
 
-  late final List<DateTimeRange> bigDataList = getRandomSampleDataList();
-
   @override
   Widget build(BuildContext context) {
     const sizedBox = SizedBox(height: 16);
-
+    print(testRange.duration);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Time chart example app')),
@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
                 sizedBox,
                 const Text('Weekly amount chart'),
                 TimeChart(
-                  data: bigDataList,
+                  data: smallDataList,
                   yAxisLabel: '',
                   toolTipLabel: 'BPM',
                   useToday: false,
