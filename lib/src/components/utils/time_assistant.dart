@@ -81,6 +81,10 @@ extension DateTimeUtils on DateTime {
     return thisDate.difference(otherDate).inDays;
   }
 
+  int differenceDateInDayBar(DateTime other) {
+    return 1;
+  }
+
   DateTime dateWithoutTime() {
     return DateTime(year, month, day);
   }

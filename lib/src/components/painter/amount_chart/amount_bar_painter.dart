@@ -83,7 +83,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
 
     for (int index = startIndex; index < length; index++) {
       final int barPosition = 1 + index;
-      print(dataList[index].end);
       //1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
@@ -93,7 +92,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
 
       // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
       if (index == length - 1 ||
-          dataList[index].end.differenceDateInDay(dataList[index + 1].end) >
+          dataList[index].end.differenceDateInDayBar(dataList[index + 1].end) >
               0) {
         final double normalizedTop =
             max(0, amountSum - bottomHour) / (topHour - bottomHour);

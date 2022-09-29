@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   // Data must be sorted.
-  final smallDataList = [8, 14, 27, 22, 10, 23, 21, 23, 21, 0, 9, 14];
+  final smallDataList = [30, 14, 27, 22, 10, 25, 8, 23, 21, 0, 9, 14];
   //final smallDataList = [7, 14, 40, 30, 10, 27, 40, 37, 28, 0, 9, 14];
   // // Data must be sorted.
   // final smallDataList = [
@@ -82,7 +82,6 @@ class MyApp extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const Text('Weekly time chart'),
                 // TimeChart(
                 //   data: bigDataList,
                 //   viewMode: ViewMode.weekly,
