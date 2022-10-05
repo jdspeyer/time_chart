@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   // Data must be sorted.
   // JP -- Changed
-  final List<double> dataList = [10, 1.5, 17.0, 12, 10, 15, 8, 13, 11, 1, 25, 20];
+  final List<double> dataList = [15, 1.5, 17.0, 12, 10, 15, 8, 13, 11, 1, 25, 20];
 
   @override
   Widget build(BuildContext context) {

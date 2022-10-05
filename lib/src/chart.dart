@@ -197,6 +197,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   void _tooltipCallback({
     // JP -- Changed
     double? range,
+    // DateTimeRange? range,
     double? amount,
     // JP -- Changed
     double? amountDate,
@@ -232,14 +233,13 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         barWidth,
         // JP -- Changed
         range: null,
-        // range: range,
         amount: amount,
         // JP -- Changed
-        amountDate: DateTime.now(),
+        amountDate: DateTime.now().subtract(Duration(days: 1)),
         // amountDate: amountDate,
       ),
     );
-    print(range);
+
     Overlay.of(context)!.insert(_overlayEntry!);
     _tooltipHideTimer = Timer(widget.tooltipDuration, _removeEntry);
   }
