@@ -11,7 +11,7 @@ class TimeChart extends StatelessWidget {
     Key? key,
     this.chartType = ChartType.time,
     this.yAxisLabel = 'hr',
-    this.toolTipLabel = '',
+    this.toolTipLabel = 'hr',
     this.useToday = true,
     this.width,
     this.height = 280.0,
@@ -25,7 +25,8 @@ class TimeChart extends StatelessWidget {
     this.activeTooltip = true,
     this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
-  })  : assert(0 <= defaultPivotHour && defaultPivotHour < 24),
+  }) :
+        // assert(0 <= defaultPivotHour && defaultPivotHour < 24),
         super(key: key);
 
   /// The type of chart.
@@ -68,6 +69,7 @@ class TimeChart extends StatelessWidget {
   /// Default is the `Theme.of(context).colorScheme.secondary`.
   final Color? barColor;
 
+  /// JP -- Changed
   /// The list of [DateTimeRange].
   ///
   /// The first index is the latest data, The end data is the oldest data.
@@ -77,6 +79,16 @@ class TimeChart extends StatelessWidget {
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
   final List<DateTimeRange> data;
+
+  // /// The list of [double].
+  // ///
+  // /// The first index is the latest data, The end data is the oldest data.
+  // /// It must be sorted because of correctly painting the chart.
+  // ///
+  // /// ```dart
+  // /// assert(data[0].isAfter(data[1])); // true
+  // /// ```
+  // final List<double> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///

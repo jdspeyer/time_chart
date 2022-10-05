@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 
 typedef TooltipCallback = void Function({
+  // JP -- Changed
+  // double? range,
   DateTimeRange? range,
   double? amount,
+  // JP -- Changed
+  // double? amountDate,
   DateTime? amountDate,
   required ScrollPosition position,
   required Rect rect,
@@ -18,18 +22,22 @@ abstract class BarPainter<T> extends ChartEngine {
     required super.dayCount,
     required super.viewMode,
     required super.repaint,
-    required this.tooltipCallback,
+    // required this.tooltipCallback,
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
     this.barColor,
-  }) : super(
-          firstValueDateTime:
-              dataList.isEmpty ? DateTime.now() : dataList.first.end,
+  }) :
+        // JP -- Changed
+        // super(firstValueDateTime: DateTime.now());
+        super(
+          firstValueDateTime: dataList.isEmpty ? DateTime.now() : dataList.first.end,
         );
 
-  final TooltipCallback tooltipCallback;
+  // final TooltipCallback tooltipCallback;
   final Color? barColor;
+  // JP -- Changed
+  // final List<double> dataList;
   final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;

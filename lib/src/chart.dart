@@ -53,6 +53,8 @@ class Chart extends StatefulWidget {
   final double width;
   final double height;
   final Color? barColor;
+  // JP -- Changed
+  // final List<double> data;
   final List<DateTimeRange> data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
@@ -67,9 +69,8 @@ class Chart extends StatefulWidget {
   ChartState createState() => ChartState();
 }
 
-class ChartState extends State<Chart>
-    with TickerProviderStateMixin, TimeDataProcessor {
-  static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
+class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataProcessor {
+  static const Duration _tooltipFadeInDuration = Duration(milliseconds: 100);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
   CustomScrollPhysics? _scrollPhysics;
@@ -81,24 +82,24 @@ class ChartState extends State<Chart>
 
   Timer? _pivotHourUpdatingTimer;
 
-  /// 툴팁을 띄우기 위해 사용한다.
+  /// Used to display tooltips.
   OverlayEntry? _overlayEntry;
 
-  /// 툴팁이 떠있는 시간을 정한다.
+  /// Set how long the tooltip is floating.
   Timer? _tooltipHideTimer;
 
   Rect? _currentVisibleTooltipRect;
 
-  /// 툴팁의 fadeIn out 애니메이션을 다룬다.
+  /// Handles the fade in out animation of tooltips.
   late final AnimationController _tooltipController;
 
-  /// 바와 그 양 옆의 여백의 너비를 더한 값이다.
+  /// It is the sum of the width of the bar and the blank space on either side of it.
   double? _blockWidth;
 
-  /// 에니메이션 시작시 전체 그래프의 높이
+  /// The height of the entire graph at the start of the animation
   late double _animationBeginHeight = widget.height;
 
-  /// 에니메이션 시작시 올바른 위치에서 시작하기 위한 높이 값
+  /// Height value to start at the correct position when starting the animation
   double? _heightForAlignTop;
 
   final ValueNotifier<double> _scrollOffsetNotifier = ValueNotifier(0);
@@ -116,11 +117,11 @@ class ChartState extends State<Chart>
       duration: widget.timeChartSizeAnimationDuration,
       vsync: this,
     );
-    _tooltipController = AnimationController(
-      duration: _tooltipFadeInDuration,
-      reverseDuration: _tooltipFadeOutDuration,
-      vsync: this,
-    );
+    // _tooltipController = AnimationController(
+    //   duration: _tooltipFadeInDuration,
+    //   reverseDuration: _tooltipFadeOutDuration,
+    //   vsync: this,
+    // );
 
     _sizeAnimation = CurvedAnimation(
       parent: _sizeController,
@@ -153,24 +154,28 @@ class ChartState extends State<Chart>
     _sizeController.dispose();
     _tooltipController.dispose();
     _cancelTimer();
-    GestureBinding.instance.pointerRouter
-        .removeGlobalRoute(_handlePointerEvent);
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_handlePointerEvent);
     super.dispose();
   }
 
+  // JP -- Changed
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return widget.data.isEmpty
-        ? DateTime.now()
-        : widget.data.first.end.dateWithoutTime().add(addition);
+    return DateTime.now();
   }
+
+  // JP -- Changed
+  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+  //   return widget.data.isEmpty
+  //       ? DateTime.now()
+  //       : widget.data.first.end.dateWithoutTime().add(addition);
+  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final minDifference = _blockWidth!;
 
       _scrollControllerGroup.addOffsetChangedListener(() {
-        final difference =
-            (_scrollControllerGroup.offset - _previousScrollOffset).abs();
+        final difference = (_scrollControllerGroup.offset - _previousScrollOffset).abs();
 
         if (difference >= minDifference) {
           _scrollOffsetNotifier.value = _scrollControllerGroup.offset;
@@ -185,52 +190,64 @@ class ChartState extends State<Chart>
     if (event is PointerDownEvent) _removeEntry();
   }
 
-  /// 해당 바(bar)를 눌렀을 경우 툴팁을 띄운다.
+  /// A tooltip is displayed when the corresponding bar is clicked.
   ///
-  /// 위치는 x축 방향 left, y축 방향 top 만큼 떨어진 위치이다.
+  /// The position is the distance away from the left in the x-axis direction and the top in the y-axis direction.
   ///
-  /// 오버레이 엔트리를 이곳에서 관리하기 위해 콜백하여 이용한다.
-  void _tooltipCallback({
-    DateTimeRange? range,
-    double? amount,
-    DateTime? amountDate,
-    required Rect rect,
-    required ScrollPosition position,
-    required double barWidth,
-  }) {
-    assert(range != null || amount != null);
+  /// Use a callback to manage overlay entries here.
+  // void _tooltipCallback({
+  //   // JP -- Changed
+  //   // double? range,
+  //   DateTimeRange? range,
+  //   double? amount,
+  //   // JP -- Changed
+  //   // double? amountDate,
+  //   DateTime? amountDate,
+  //   required Rect rect,
+  //   required ScrollPosition position,
+  //   required double barWidth,
+  // }) {
+  //   // JP -- Changed
+  //   assert(amount != null);
+  //   // assert(range != null || amount != null);
 
-    if (!widget.activeTooltip) return;
+  //   if (!widget.activeTooltip) return;
 
-    // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
-    final viewRange = _blockWidth! * widget.viewMode.dayCount;
-    final actualPosition = position.maxScrollExtent - position.pixels;
-    if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
-      return;
-    }
+  //   // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
+  //   final viewRange = _blockWidth! * widget.viewMode.dayCount;
+  //   final actualPosition = position.maxScrollExtent - position.pixels;
+  //   if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
+  //     return;
+  //   }
 
-    // 현재 보이는 툴팁이 다시 호출되면 무시한다.
-    if ((_tooltipHideTimer?.isActive ?? false) &&
-        _currentVisibleTooltipRect == rect) return;
-    _currentVisibleTooltipRect = rect;
+  //   // 현재 보이는 툴팁이 다시 호출되면 무시한다.
+  //   if ((_tooltipHideTimer?.isActive ?? false) && _currentVisibleTooltipRect == rect) return;
+  //   _currentVisibleTooltipRect = rect;
 
-    HapticFeedback.vibrate();
-    _removeEntry();
+  //   HapticFeedback.vibrate();
+  //   _removeEntry();
 
-    _tooltipController.forward();
-    _overlayEntry = OverlayEntry(
-      builder: (_) => _buildOverlay(
-        rect,
-        position,
-        barWidth,
-        range: range,
-        amount: amount,
-        amountDate: amountDate,
-      ),
-    );
-    Overlay.of(context)!.insert(_overlayEntry!);
-    _tooltipHideTimer = Timer(widget.tooltipDuration, _removeEntry);
-  }
+  //   _tooltipController.forward();
+  //   _overlayEntry = OverlayEntry(
+  //     builder: (_) => _buildOverlay(
+  //       rect,
+  //       position,
+  //       barWidth,
+  //       // JP -- Changed
+  //       range: null,
+  //       // range: range,
+
+  //       amount: amount,
+
+  //       // JP -- Changed
+  //       amountDate: DateTime.now(),
+  //       // amountDate: amountDate,
+  //     ),
+  //   );
+  //   print(range);
+  //   Overlay.of(context)!.insert(_overlayEntry!);
+  //   _tooltipHideTimer = Timer(widget.tooltipDuration, _removeEntry);
+  // }
 
   double get _tooltipPadding => kTooltipArrowWidth + 2.0;
 
@@ -238,23 +255,24 @@ class ChartState extends State<Chart>
     Rect rect,
     ScrollPosition position,
     double barWidth, {
+    // // JP -- Changed
+    // double? range,
     DateTimeRange? range,
     double? amount,
+    // JP -- Changed
+    // double? amountDate,
     DateTime? amountDate,
   }) {
     final chartType = amount == null ? ChartType.time : ChartType.amount;
     // 현재 위젯의 위치를 얻는다.
     final widgetOffset = context.getRenderBoxOffset()!;
-    final tooltipSize =
-        chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
+    final tooltipSize = chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
     final candidateTop = rect.top +
         widgetOffset.dy -
         tooltipSize.height / 2 +
         kTimeChartTopPadding +
-        (chartType == ChartType.time
-            ? (rect.bottom - rect.top) / 2
-            : kTooltipArrowHeight / 2);
+        (chartType == ChartType.time ? (rect.bottom - rect.top) / 2 : kTooltipArrowHeight / 2);
 
     final scrollPixels = position.maxScrollExtent - position.pixels;
     final localLeft = rect.left + widgetOffset.dx - scrollPixels;
@@ -277,19 +295,19 @@ class ChartState extends State<Chart>
           parent: _tooltipController,
           curve: Curves.fastOutSlowIn,
         ),
-        child: TooltipOverlay(
-          backgroundColor: widget.tooltipBackgroundColor,
-          chartType: chartType,
-          yAxisLabel: widget.yAxisLabel,
-          toolTipLabel: widget.toolTipLabel,
-          bottomHour: bottomHour,
-          timeRange: range,
-          amountHour: amount,
-          amountDate: amountDate,
-          direction: direction,
-          start: widget.tooltipStart,
-          end: widget.tooltipEnd,
-        ),
+        // child: TooltipOverlay(
+        //   backgroundColor: widget.tooltipBackgroundColor,
+        //   chartType: chartType,
+        //   yAxisLabel: widget.yAxisLabel,
+        //   toolTipLabel: widget.toolTipLabel,
+        //   bottomHour: bottomHour,
+        //   timeRange: range,
+        //   amountHour: amount,
+        //   amountDate: amountDate,
+        //   direction: direction,
+        //   start: widget.tooltipStart,
+        //   end: widget.tooltipEnd,
+        // ),
       ),
     );
   }
@@ -311,10 +329,7 @@ class ChartState extends State<Chart>
     final TextPainter tp = TextPainter(
       text: TextSpan(
         text: translations.formatHourOnly(12),
-        style: Theme.of(context)
-            .textTheme
-            .bodyText2!
-            .copyWith(color: Colors.white38),
+        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white38),
       ),
       textDirection: TextDirection.ltr,
     );
@@ -332,8 +347,7 @@ class ChartState extends State<Chart>
     if (notification is ScrollStartNotification) {
       _cancelTimer();
     } else if (notification is ScrollEndNotification) {
-      _pivotHourUpdatingTimer =
-          Timer(const Duration(milliseconds: 800), _timerCallback);
+      _pivotHourUpdatingTimer = Timer(const Duration(milliseconds: 800), _timerCallback);
     }
     return true;
   }
@@ -343,10 +357,8 @@ class ChartState extends State<Chart>
     final beforeTopHour = topHour;
     final beforeBottomHour = bottomHour;
 
-    final blockIndex =
-        getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final needsToAdaptScrollPosition =
-        blockIndex > 0 && isFirstDataMovedNextDay;
+    final blockIndex = getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
+    final needsToAdaptScrollPosition = blockIndex > 0 && isFirstDataMovedNextDay;
     final scrollPositionDuration = Duration(
       days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
     );
@@ -370,24 +382,21 @@ class ChartState extends State<Chart>
   double get heightWithoutLabel => widget.height - kXLabelHeight;
 
   void _runHeightAnimation(int beforeTopHour, int beforeBottomHour) {
-    final beforeDiff =
-        hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
+    final beforeDiff = hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
     final currentDiff = hourDiffBetween(topHour, bottomHour).toDouble();
 
     final candidateUpward = diffBetween(beforeTopHour, topHour!);
     final candidateDownWard = -diffBetween(topHour!, beforeTopHour);
 
     // (candidate)중에서 current top-bottom hour 범위에 들어오는 것을 선택한다.
-    final topDiff =
-        isDirUpward(beforeTopHour, beforeBottomHour, topHour!, bottomHour!)
-            ? candidateUpward
-            : candidateDownWard;
+    final topDiff = isDirUpward(beforeTopHour, beforeBottomHour, topHour!, bottomHour!)
+        ? candidateUpward
+        : candidateDownWard;
 
     setState(() {
-      _animationBeginHeight =
-          (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
-      _heightForAlignTop = (_animationBeginHeight - widget.height) / 2 +
-          (topDiff / beforeDiff) * heightWithoutLabel;
+      _animationBeginHeight = (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
+      _heightForAlignTop =
+          (_animationBeginHeight - widget.height) / 2 + (topDiff / beforeDiff) * heightWithoutLabel;
     });
     _sizeController.reverse(from: 1.0);
   }
@@ -480,6 +489,8 @@ class ChartState extends State<Chart>
                   child: _buildHorizontalScrollView(
                     key: key,
                     controller: _barController,
+
+                    //  THIS IS WHAT BUILDS THE GRAPHS
                     child: CanvasTouchDetector(
                       gesturesToOverride: const [
                         GestureType.onTapUp,
@@ -531,8 +542,7 @@ class ChartState extends State<Chart>
     double bottomPadding = 0.0,
     Function(BuildContext, double)? builder,
   }) {
-    assert(
-        (child != null && builder == null) || child == null && builder != null);
+    assert((child != null && builder == null) || child == null && builder != null);
 
     final heightAnimation = Tween<double>(
       begin: widget.height,
@@ -590,9 +600,8 @@ class ChartState extends State<Chart>
   }
 
   CustomPainter _buildXLabelPainter(BuildContext context) {
-    final firstValueDateTime = widget.useToday
-        ? DateTime.now()
-        : DateTime.now().subtract(Duration(days: 1));
+    final firstValueDateTime =
+        widget.useToday ? DateTime.now() : DateTime.now().subtract(Duration(days: 1));
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
@@ -617,33 +626,46 @@ class ChartState extends State<Chart>
   }
 
   CustomPainter _buildBarPainter(BuildContext context) {
-    switch (widget.chartType) {
-      case ChartType.time:
-        return TimeBarPainter(
-          scrollController: _barController,
-          repaint: _scrollOffsetNotifier,
-          context: context,
-          tooltipCallback: _tooltipCallback,
-          dataList: processedData,
-          barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-          dayCount: dayCount,
-          viewMode: widget.viewMode,
-        );
-      case ChartType.amount:
-        return AmountBarPainter(
-          scrollController: _barController,
-          repaint: _scrollOffsetNotifier,
-          context: context,
-          dataList: processedData,
-          barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-          tooltipCallback: _tooltipCallback,
-          dayCount: dayCount,
-          viewMode: widget.viewMode,
-        );
-    }
+    return AmountBarPainter(
+      scrollController: _barController,
+      repaint: _scrollOffsetNotifier,
+      context: context,
+      dataList: processedData,
+      barColor: widget.barColor,
+      topHour: topHour!,
+      bottomHour: bottomHour!,
+      // tooltipCallback: _tooltipCallback,
+      dayCount: dayCount,
+      viewMode: widget.viewMode,
+    );
+
+    // switch (widget.chartType) {
+    //   case ChartType.time:
+    //     return TimeBarPainter(
+    //       scrollController: _barController,
+    //       repaint: _scrollOffsetNotifier,
+    //       context: context,
+    //       tooltipCallback: _tooltipCallback,
+    //       dataList: processedData,
+    //       barColor: widget.barColor,
+    //       topHour: topHour!,
+    //       bottomHour: bottomHour!,
+    //       dayCount: dayCount,
+    //       viewMode: widget.viewMode,
+    //     );
+    //   case ChartType.amount:
+    //     return AmountBarPainter(
+    //       scrollController: _barController,
+    //       repaint: _scrollOffsetNotifier,
+    //       context: context,
+    //       dataList: processedData,
+    //       barColor: widget.barColor,
+    //       topHour: topHour!,
+    //       bottomHour: bottomHour!,
+    //       tooltipCallback: _tooltipCallback,
+    //       dayCount: dayCount,
+    //       viewMode: widget.viewMode,
+    //     );
+    // }
   }
 }

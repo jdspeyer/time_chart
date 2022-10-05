@@ -8,7 +8,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   TimeBarPainter({
     required super.scrollController,
     required super.repaint,
-    required super.tooltipCallback,
+    // required super.tooltipCallback,
     required super.context,
     required super.dataList,
     required super.topHour,
@@ -21,17 +21,19 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   void _drawRRect(
     TouchyCanvas canvas,
     Paint paint,
+    // JP -- Changed
+    // double data,
     DateTimeRange data,
     Rect rect,
     Radius topRadius, [
     Radius bottomRadius = Radius.zero,
   ]) {
-    callback(_) => tooltipCallback(
-          range: data,
-          position: scrollController!.position,
-          rect: rect,
-          barWidth: barWidth,
-        );
+    // callback(_) => tooltipCallback(
+    //       range: data,
+    //       position: scrollController!.position,
+    //       rect: rect,
+    //       barWidth: barWidth,
+    //     );
 
     canvas.drawRRect(
       RRect.fromRectAndCorners(
@@ -42,9 +44,9 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
         bottomRight: bottomRadius,
       ),
       paint,
-      onTapUp: callback,
-      onLongPressStart: callback,
-      onLongPressMoveUpdate: callback,
+      // onTapUp: callback,
+      // onLongPressStart: callback,
+      // onLongPressMoveUpdate: callback,
     );
   }
 
@@ -53,6 +55,8 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     Paint paint,
     Size size,
     Rect rect,
+    // JP -- Changed
+    // double data,
     DateTimeRange data,
   ) {
     if (topHour != bottomHour && (bottomHour - topHour).abs() != 24) return;
@@ -80,8 +84,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   @override
   void drawBar(Canvas canvas, Size size, List<TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
-        scrollController: scrollController,
-        scrollDirection: AxisDirection.left);
+        scrollController: scrollController, scrollDirection: AxisDirection.left);
     final paint = Paint()
       ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
@@ -100,19 +103,19 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       Radius bottomRadius = barRadius;
 
       if (top < 0.0) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+        _drawOutRangedBar(
+            touchyCanvas, paint, size, Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         top = 0.0;
         topRadius = Radius.zero;
       } else if (bottom > maxBottom) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+        _drawOutRangedBar(
+            touchyCanvas, paint, size, Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         bottom = maxBottom;
         bottomRadius = Radius.zero;
       }
 
-      _drawRRect(touchyCanvas, paint, offsetRange.data,
-          Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
+      _drawRRect(touchyCanvas, paint, offsetRange.data, Rect.fromLTRB(left, top, right, bottom),
+          topRadius, bottomRadius);
     }
   }
 
@@ -141,10 +144,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       wakeUp = _convertUsing(topHour, wakeUp);
       top += 24;
     }
-    if ((bottom < sleepTime &&
-        sleepTime < top &&
-        bottom < wakeUp &&
-        wakeUp < top)) return true;
+    if ((bottom < sleepTime && sleepTime < top && bottom < wakeUp && wakeUp < top)) return true;
 
     return false;
   }
@@ -164,23 +164,28 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     final int viewLimitDay = viewMode.dayCount;
 
     final int dayFromScrollOffset = currentDayFromScrollOffset;
+    // JP -- Changed
+    // final double startDateTime = 0;
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
-    final int startIndex = dataList.getLowerBound(startDateTime);
+    final int startIndex = 0;
 
     for (int index = startIndex; index < length; index++) {
+      // JP -- Changed
+      // final wakeUpTimeDouble = dataList[index].toDouble();
       final wakeUpTimeDouble = dataList[index].end.toDouble();
+      // JP -- Changed
+      // final sleepAmountDouble = dataList[index];
       final sleepAmountDouble = dataList[index].durationInHours;
-      final barPosition =
-          1 + dataList.first.end.differenceDateInDay(dataList[index].end);
+      // JP -- Changed
+      // final barPosition = 1 + index;
+      final barPosition = 1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
-      if (barPosition - dayFromScrollOffset >
-          viewLimitDay + ChartEngine.toleranceDay * 2) break;
+      if (barPosition - dayFromScrollOffset > viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
       // 큰 시간 값과 현재 시간의 차를 구한다.
       double normalizedBottom =
-          (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) /
-              pivotHeight;
+          (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) / pivotHeight;
       // [normalizedBottom] 에서 [gap]칸 만큼 위로 올린다.
       double normalizedTop = normalizedBottom + sleepAmountDouble / pivotHeight;
 
@@ -195,8 +200,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
 
       // 그릴 필요가 없는 경우 넘어간다
       if (top == bottom ||
-          _outRangedPivotHour(
-              wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
+          _outRangedPivotHour(wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
       coordinates.add(TimeBarItem(right, top, bottom, dataList[index]));
     }
@@ -208,6 +212,8 @@ class TimeBarItem {
   final double dx;
   final double topY;
   final double bottomY;
+  // JP -- Changed
+  // final double data;
   final DateTimeRange data;
 
   TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
