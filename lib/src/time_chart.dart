@@ -52,7 +52,7 @@ class TimeChart extends StatelessWidget {
   /// Optional label color modifier. Useful for changing themes.
   ///
   /// Default is gray
-  //final Color toolTipLabelColor;
+  // final Color toolTipLabelColor;
 
   /// Total chart width.
   ///
@@ -156,7 +156,7 @@ class TimeChart extends StatelessWidget {
           yAxisLabel: yAxisLabel,
           toolTipLabel: toolTipLabel,
           useToday: useToday,
-          //toolTipLabelColor: toolTipLabelColor,
+          // toolTipLabelColor: toolTipLabelColor,
           width: actualWidth,
           height: height,
           barColor: barColor,

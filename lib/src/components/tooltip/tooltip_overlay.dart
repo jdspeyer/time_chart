@@ -52,11 +52,8 @@ class TooltipOverlay extends StatelessWidget {
     const oneBeforeDay = Duration(days: -1);
     final endTime = timeRange.end;
 
-    return (endTime.hour == bottomHour && endTime.minute > 0) ||
-            bottomHour! < endTime.hour
-        ? DateTimeRange(
-            start: timeRange.start.add(oneBeforeDay),
-            end: endTime.add(oneBeforeDay))
+    return (endTime.hour == bottomHour && endTime.minute > 0) || bottomHour! < endTime.hour
+        ? DateTimeRange(start: timeRange.start.add(oneBeforeDay), end: endTime.add(oneBeforeDay))
         : timeRange;
   }
 
@@ -143,8 +140,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
     final bodyText2 = textTheme.bodyText2!;
-    final bodyTextStyle = bodyText2.copyWith(
-        height: 1.4, color: bodyText2.color!.withOpacity(0.7));
+    final bodyTextStyle = bodyText2.copyWith(height: 1.4, color: bodyText2.color!.withOpacity(0.7));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -171,8 +167,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
           ],
         ),
         Text(
-          translations.compactDateTimeRange(
-              DateTimeRange(start: _sleepTime, end: _wakeUp)),
+          translations.compactDateTimeRange(DateTimeRange(start: _sleepTime, end: _wakeUp)),
           style: bodyTextStyle,
           textScaleFactor: 1.0,
         ),

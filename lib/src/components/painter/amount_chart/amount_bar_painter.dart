@@ -10,7 +10,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
   AmountBarPainter({
     required super.scrollController,
     required super.repaint,
-    // required super.tooltipCallback,
+    super.tooltipCallback,
     required super.context,
     required super.dataList,
     required super.topHour,
@@ -43,20 +43,20 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
         topRight: barRadius,
       );
 
-      // callback(_) => tooltipCallback(
-      //       amount: offsetWithAmount.amount,
-      //       amountDate: offsetWithAmount.dateTime,
-      //       position: scrollController!.position,
-      //       rect: rRect.outerRect,
-      //       barWidth: barWidth,
-      //     );
+      callback(_) => tooltipCallback!(
+            amount: offsetWithAmount.amount,
+            amountDate: offsetWithAmount.dateTime,
+            position: scrollController!.position,
+            rect: rRect.outerRect,
+            barWidth: barWidth,
+          );
 
       touchyCanvas.drawRRect(
         rRect,
         paint,
-        // onTapUp: callback,
-        // onLongPressStart: callback,
-        // onLongPressMoveUpdate: callback,
+        onTapUp: callback,
+        onLongPressStart: callback,
+        onLongPressMoveUpdate: callback,
       );
     }
     // if(bottomHour > 0) {
