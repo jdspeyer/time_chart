@@ -69,18 +69,8 @@ class TimeChart extends StatelessWidget {
   /// Default is the `Theme.of(context).colorScheme.secondary`.
   final Color? barColor;
 
-  /// JP -- Changed
-  /// The list of [DateTimeRange].
-  ///
-  /// The first index is the latest data, The end data is the oldest data.
-  /// It must be sorted because of correctly painting the chart.
-  ///
-  /// ```dart
-  /// assert(data[0].isAfter(data[1])); // true
-  /// ```
-  final List<DateTimeRange> data;
-
-  // /// The list of [double].
+  // // /// JP -- Changed
+  // /// The list of [DateTimeRange].
   // ///
   // /// The first index is the latest data, The end data is the oldest data.
   // /// It must be sorted because of correctly painting the chart.
@@ -88,7 +78,17 @@ class TimeChart extends StatelessWidget {
   // /// ```dart
   // /// assert(data[0].isAfter(data[1])); // true
   // /// ```
-  // final List<double> data;
+  // final List<DateTimeRange> data;
+
+  /// The list of [double].
+  ///
+  /// The first index is the latest data, The end data is the oldest data.
+  /// It must be sorted because of correctly painting the chart.
+  ///
+  /// ```dart
+  /// assert(data[0].isAfter(data[1])); // true
+  /// ```
+  final List<double> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///

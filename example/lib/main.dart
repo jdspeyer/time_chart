@@ -10,33 +10,32 @@ class MyApp extends StatelessWidget {
 
   // Data must be sorted.
   // JP -- Changed
-  // final List<double> smallDataList = [30, 1.0, 17.0, 12, 10, 15, 8, 13, 11, 1, 9, 14];
+  final List<double> smallDataList = [10, 1.0, 17.0, 12, 10, 15, 8, 13, 11, 1, 9, 14];
 
-  // // JP -- Changed
-  final smallDataList = [15, 1, 20, 12, 10, 15, 8, 13, 11, 1, 9, 14];
+  // // // JP -- Changed
+  // final smallDataList = [15, 1, 20, 12, 10, 15, 8, 13, 11, 1, 9, 14];
 
-  final List<DateTimeRange> emptyDataList = [];
+  // final List<DateTimeRange> emptyDataList = [];
 
-  List<DateTimeRange> getRandomSampleDataList() {
-    final List<DateTimeRange> list = [];
-    final random = Random();
+  // List<DateTimeRange> getRandomSampleDataList() {
+  //   final List<DateTimeRange> list = [];
 
-    for (int i = 0; i < smallDataList.length; ++i) {
-      if (smallDataList[i] < 0) {
-        smallDataList[i] = 0;
-      }
-      final start = DateTime(2021, 2, 1 - i, 0, 0);
-      final end = DateTime(2021, 2, 1 - i, smallDataList[i], 0);
+  //   for (int i = 0; i < smallDataList.length; ++i) {
+  //     if (smallDataList[i] < 0) {
+  //       smallDataList[i] = 0;
+  //     }
+  //     final start = DateTime(2021, 2, 1 - i, 0, 0);
+  //     final end = DateTime(2021, 2, 1 - i, smallDataList[i], 0);
 
-      list.add(DateTimeRange(
-        start: start,
-        end: end,
-      ));
-    }
-    return list;
-  }
+  //     list.add(DateTimeRange(
+  //       start: start,
+  //       end: end,
+  //     ));
+  //   }
+  //   return list;
+  // }
 
-  late final List<DateTimeRange> bigDataList = getRandomSampleDataList();
+  // late final List<DateTimeRange> bigDataList = getRandomSampleDataList();
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +53,8 @@ class MyApp extends StatelessWidget {
                 const Text('Weekly amount chart'),
                 TimeChart(
                   // JP -- Changed
-                  // data: smallDataList,
-                  data: bigDataList,
+                  data: smallDataList,
+                  // data: bigDataList,
                   yAxisLabel: 'test',
                   toolTipLabel: 'txt',
                   useToday: false,

@@ -54,8 +54,8 @@ class Chart extends StatefulWidget {
   final double height;
   final Color? barColor;
   // JP -- Changed
-  // final List<double> data;
-  final List<DateTimeRange> data;
+  final List<double> data;
+  // final List<DateTimeRange> data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;

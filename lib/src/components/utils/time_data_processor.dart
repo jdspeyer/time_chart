@@ -35,12 +35,12 @@ mixin TimeDataProcessor {
   /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
 
   /// // JP -- Changed
-  // List<double> get processedData => _processedData;
-  List<DateTimeRange> get processedData => _processedData;
+  List<double> get processedData => _processedData;
+  // List<DateTimeRange> get processedData => _processedData;
 
   // JP -- Changed
-  // List<double> _processedData = [];
-  List<DateTimeRange> _processedData = [];
+  List<double> _processedData = [];
+  // List<DateTimeRange> _processedData = [];
 
   final List<DateTimeRange> _inRangeDataList = [];
 
@@ -63,7 +63,14 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
+    // _processedData = [
+    //   DateTimeRange(
+    //     start: DateTime(2022, 10, 4, 0, 0),
+    //     end: DateTime(2022, 10, 4, 15, 1),
+    //   ),
+    // ];
     _processedData = [...chart.data];
+    print("_processedData: $_processedData");
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
@@ -72,7 +79,7 @@ mixin TimeDataProcessor {
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
-        _processDataUsingBottomHour();
+        // _processDataUsingBottomHour();
         break;
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
@@ -214,27 +221,28 @@ mixin TimeDataProcessor {
   //   }
   // }
 
-  void _processDataUsingBottomHour() {
-    final len = _processedData.length;
-    for (int i = 0; i < len; ++i) {
-      final DateTime startTime = _processedData[i].start;
-      final DateTime endTime = _processedData[i].end;
-      final double startTimeDouble = startTime.toDouble();
-      final double endTimeDouble = endTime.toDouble();
+  // Used for chart.time
+  // void _processDataUsingBottomHour() {
+  //   final len = _processedData.length;
+  //   for (int i = 0; i < len; ++i) {
+  //     final DateTime startTime = _processedData[i].start;
+  //     final DateTime endTime = _processedData[i].end;
+  //     final double startTimeDouble = startTime.toDouble();
+  //     final double endTimeDouble = endTime.toDouble();
 
-      if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
-        _processedData[i] = DateTimeRange(
-          start: startTime.add(_oneDayDuration),
-          end: endTime.add(_oneDayDuration),
-        );
+  //     if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
+  //       _processedData[i] = DateTimeRange(
+  //         start: startTime.add(_oneDayDuration),
+  //         end: endTime.add(_oneDayDuration),
+  //       );
 
-        if (i == 0) {
-          _dayCount = _dayCount! + 1;
-          _isFirstDataMovedNextDay = true;
-        }
-      }
-    }
-  }
+  //       if (i == 0) {
+  //         _dayCount = _dayCount! + 1;
+  //         _isFirstDataMovedNextDay = true;
+  //       }
+  //     }
+  //   }
+  // }
 
   /// 시간 그래프의 기준이 될 값들을 구한다.
   ///

@@ -30,16 +30,16 @@ abstract class BarPainter<T> extends ChartEngine {
     this.barColor,
   }) :
         // JP -- Changed
-        // super(firstValueDateTime: DateTime.now());
-        super(
-          firstValueDateTime: dataList.isEmpty ? DateTime.now() : dataList.first.end,
-        );
+        super(firstValueDateTime: DateTime.now());
+  // super(
+  //   firstValueDateTime: dataList.isEmpty ? DateTime.now() : dataList[0],
+  // );
 
   // final TooltipCallback tooltipCallback;
   final Color? barColor;
   // JP -- Changed
-  // final List<double> dataList;
-  final List<DateTimeRange> dataList;
+  final List<double> dataList;
+  // final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;
 
@@ -58,14 +58,14 @@ abstract class BarPainter<T> extends ChartEngine {
 
   @protected
   // This is for chart.time only
-  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
-    print(dataList.first.end.add(Duration(
-      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
-    )));
-    return dataList.first.end.add(Duration(
-      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
-    ));
-  }
+  // DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+  //   print(dataList.first.end.add(Duration(
+  //     days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+  //   )));
+  //   return dataList.first.end.add(Duration(
+  //     days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+  //   ));
+  // }
 
   @override
   @nonVirtual

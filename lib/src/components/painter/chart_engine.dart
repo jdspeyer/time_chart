@@ -35,6 +35,8 @@ abstract class ChartEngine extends CustomPainter {
   final ScrollController? scrollController;
   final int dayCount;
   final ViewMode viewMode;
+  // JP -- Changed
+  // final double? firstValueDateTime;
   final DateTime? firstValueDateTime;
   final BuildContext context;
   final Translations translations;

@@ -76,7 +76,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     final dayFromScrollOffset = currentDayFromScrollOffset;
     // JP -- Changed
     // final double startDateTime = dataList[0];
-    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    // final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     // print("startDateTime: $startDateTime");
     // JP -- Changed
     // JP Need to impliment if useToday 1 else 0 for BLE here
@@ -94,15 +94,15 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       if (barPosition - dayFromScrollOffset > viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       // JP -- Changed
-      // amountSum += dataList[index];
-      amountSum += dataList[index].durationInHours;
+      amountSum += dataList[index];
+      // amountSum += dataList[index].durationInHours;
       print("amountSum: $amountSum");
 
       // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
 
       // JP -- Changed
-      // if (index == length - 1 || dataList[index] >= 0) {
-      if (index == length - 1 || dataList[index].durationInHours > 0) {
+      if (index == length - 1 || dataList[index] >= 0) {
+        // if (index == length - 1 || dataList[index].durationInHours > 0) {
         // if (index == length - 1 ||
         //     dataList[index].end.differenceDateInDayBar(dataList[index + 1].end) > 0) {
         final double normalizedTop = max(0, amountSum - bottomHour) / (topHour - bottomHour);
@@ -110,8 +110,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
         final double dx = size.width - intervalOfBars * barPosition;
         print("normalizedTop: $normalizedTop");
         // JP -- Changed
-        // coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index]));
-        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
+        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index]));
+        // coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
 
         amountSum = 0;
       }
@@ -126,8 +126,8 @@ class AmountBarItem {
   final double dy;
   final double amount;
   // JP -- Changed
-  // final double dateTime;
-  final DateTime dateTime;
+  final double dateTime;
+  // final DateTime dateTime;
 
   AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }
