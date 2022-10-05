@@ -8,8 +8,8 @@ typedef TooltipCallback = void Function({
   // DateTimeRange? range,
   double? amount,
   // JP -- Changed
-  double? amountDate,
-  // DateTime? amountDate,
+  // double? amountDate,
+  DateTime? amountDate,
   required ScrollPosition position,
   required Rect rect,
   required double barWidth,

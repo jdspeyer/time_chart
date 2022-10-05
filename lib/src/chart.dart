@@ -200,7 +200,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     // DateTimeRange? range,
     double? amount,
     // JP -- Changed
-    double? amountDate,
+    // double? amountDate,
+    DateTime? amountDate,
     required Rect rect,
     required ScrollPosition position,
     required double barWidth,
@@ -235,8 +236,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         range: null,
         amount: amount,
         // JP -- Changed
-        amountDate: DateTime.now().subtract(Duration(days: 1)),
-        // amountDate: amountDate,
+        // amountDate: DateTime.now().subtract(Duration(days: 1)),
+        amountDate: amountDate,
       ),
     );
 

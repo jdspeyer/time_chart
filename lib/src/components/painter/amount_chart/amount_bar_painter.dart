@@ -45,7 +45,9 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
 
       callback(_) => tooltipCallback!(
             amount: offsetWithAmount.amount,
-            amountDate: offsetWithAmount.dateTime,
+            // JP -- Changed
+            amountDate: DateTime.now().subtract(Duration(days: index)),
+            // amountDate: offsetWithAmount.dateTime,
             position: scrollController!.position,
             rect: rRect.outerRect,
             barWidth: barWidth,
