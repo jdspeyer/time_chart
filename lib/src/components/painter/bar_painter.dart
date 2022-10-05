@@ -22,6 +22,7 @@ abstract class BarPainter<T> extends ChartEngine {
     required super.dayCount,
     required super.viewMode,
     required super.repaint,
+    //JP -- Changed
     // required this.tooltipCallback,
     required this.dataList,
     required this.topHour,
@@ -56,7 +57,11 @@ abstract class BarPainter<T> extends ChartEngine {
   List<T> generateCoordinates(Size size);
 
   @protected
+  // This is for chart.time only
   DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+    print(dataList.first.end.add(Duration(
+      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+    )));
     return dataList.first.end.add(Duration(
       days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
     ));

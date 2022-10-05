@@ -72,7 +72,6 @@ mixin TimeDataProcessor {
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
-        // Maybe remove this line
         _processDataUsingBottomHour();
         break;
       case ChartType.amount:
@@ -132,48 +131,6 @@ mixin TimeDataProcessor {
   ///
 
   // JP -- Changed
-  // void _generateInRangeDataList(
-  //   // May just be able to remove this
-  //   List<double> dataList,
-  //   ViewMode viewMode,
-  //   DateTime renderEndTime,
-  // ) {
-  //   renderEndTime = renderEndTime.add(
-  //     const Duration(days: ChartEngine.toleranceDay),
-  //   );
-  //   final renderStartTime = renderEndTime.add(Duration(
-  //     days: -viewMode.dayCount - 2 * ChartEngine.toleranceDay,
-  //   ));
-
-  //   _inRangeDataList.clear();
-
-  //   DateTime postEndTime =
-  //       // JP Ceck this
-  //       dataList.first.end.add(_oneDayDuration).dateWithoutTime();
-  //   for (int i = 0; i < dataList.length; ++i) {
-  //     if (i > 0) {
-  //       assert(
-  //         // JP Ceck this
-  //         dataList[i - 1].end.isAfter(dataList[i].end),
-  //         _kNotSortedDataErrorMessage,
-  //       );
-  //     }
-  //     // JP Ceck this
-  //     final currentTime = dataList[i].end.dateWithoutTime();
-  //     // 이전 데이터와 날짜가 다른 경우
-  //     if (currentTime != postEndTime) {
-  //       final difference = postEndTime.differenceDateInDay(currentTime);
-  //       // 하루 이상 차이나는 경우
-  //       postEndTime = postEndTime.add(Duration(days: -difference));
-  //     }
-  //     postEndTime = currentTime;
-
-  //     if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
-  //       // JP Ceck this
-  //       _inRangeDataList.add(dataList[i]);
-  //     }
-  //   }
-  // }
   // void _generateInRangeDataList(
   //   List<DateTimeRange> dataList,
   //   ViewMode viewMode,
@@ -393,33 +350,29 @@ mixin TimeDataProcessor {
   }
 
 // JP -- Changed
-  void _calcAmountPivotHeights(List<DateTimeRange> dataList) {
-    // void _calcAmountPivotHeights(List<double> dataList) {
+  void _calcAmountPivotHeights(List dataList) {
     final int len = dataList.length;
 
     double maxResult = 0.0;
     double sum = 0.0;
+    if (dataList is List<double>) {
+      // JP -- Changed
+      maxResult = dataList.reduce(max);
+      _topHour = (maxResult / 4).ceil() * 4;
+    } else if (dataList is List<DateTimeRange>) {
+      for (int i = 0; i < len; ++i) {
+        final amount = dataList[i].durationInHours;
+        sum += amount;
 
-    // JP -- Changed
-    // maxResult = dataList.reduce(max);
-
-    for (int i = 0; i < len; ++i) {
-      final amount = dataList[i].durationInHours;
-      sum += amount;
-
-      // This is what does the height
-      if (i == len - 1 ||
-          dataList[i].end.dateWithoutTime() != dataList[i + 1].end.dateWithoutTime()) {
-        maxResult = max(maxResult, sum);
-        sum = 0.0;
+        // This is what does the height
+        if (i == len - 1 ||
+            dataList[i].end.dateWithoutTime() != dataList[i + 1].end.dateWithoutTime()) {
+          maxResult = max(maxResult, sum);
+          sum = 0.0;
+        }
       }
+      _topHour = ((maxResult.ceil()) / 4).ceil() * 4;
     }
-
-    // `_topHour`는 4의 배수가 되도록 한다.
-    // JP Check this
-    // JP -- Changed
-    // _topHour = (maxResult / 4).ceil() * 4;
-    _topHour = ((maxResult.ceil()) / 4).ceil() * 4;
     _bottomHour = 0;
   }
 

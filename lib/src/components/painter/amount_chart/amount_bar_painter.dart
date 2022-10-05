@@ -75,12 +75,14 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     final int viewLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset;
     // JP -- Changed
-    // final double startDateTime = 0;
-    // final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    // final double startDateTime = dataList[0];
+    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    // print("startDateTime: $startDateTime");
     // JP -- Changed
     // JP Need to impliment if useToday 1 else 0 for BLE here
     const int startIndex = 0;
     // final int startIndex = dataList.getLowerBound(startDateTime);
+    // print("startIndex: $startIndex");
 
     double amountSum = 0;
 
