@@ -158,16 +158,14 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   }
 
   // JP -- Changed
-  DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return DateTime.now();
-  }
+  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+  //   return DateTime.now();
+  // }
 
   // JP -- Changed
-  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-  //   return widget.data.isEmpty
-  //       ? DateTime.now()
-  //       : widget.data.first.end.dateWithoutTime().add(addition);
-  // }
+  DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+    return widget.data.isEmpty ? DateTime.now() : DateTime(2022, 10, 4, widget.data[0].toInt(), 0);
+  }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -200,7 +198,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     // DateTimeRange? range,
     double? amount,
     // JP -- Changed
-    // double? amountDate,
     DateTime? amountDate,
     required Rect rect,
     required ScrollPosition position,
@@ -236,7 +233,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         range: null,
         amount: amount,
         // JP -- Changed
-        // amountDate: DateTime.now().subtract(Duration(days: 1)),
         amountDate: amountDate,
       ),
     );

@@ -38,8 +38,7 @@ abstract class XLabelPainter extends ChartEngine {
     final viewModeLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset - toleranceDay;
 
-    DateTime currentDate =
-        firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
+    DateTime currentDate = firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
 
     void moveToYesterday() {
       currentDate = currentDate.add(const Duration(days: -1));
@@ -54,20 +53,50 @@ abstract class XLabelPainter extends ChartEngine {
       switch (viewMode) {
         case ViewMode.weekly:
           text = weekday[currentDate.weekday % 7];
+          print(text);
           if (currentDate.weekday == DateTime.sunday) isDashed = false;
           moveToYesterday();
+          final dx = size.width - (i + 1) * blockWidth!;
+          _drawXText(canvas, size, text, dx);
+          _drawVerticalDivideLine(canvas, size, dx, isDashed);
           break;
         case ViewMode.monthly:
           text = currentDate.day.toString();
+          print(text);
           moveToYesterday();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
-          if (i % 7 != (isFirstDataMovedNextDay ? 0 : 6)) continue;
+          if (i % 7 == (isFirstDataMovedNextDay ? 0 : 6)) {
+            final dx = size.width - (i + 1) * blockWidth!;
+            _drawXText(canvas, size, text, dx);
+            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          }
+          break;
+        case ViewMode.sixMonth:
+          text = currentDate.day.toString();
+          print(text);
+          moveToYesterday();
+          // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
+          if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
+            final dx = size.width - (i + 1) * blockWidth!;
+            _drawXText(canvas, size, text, dx);
+            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          }
+          break;
+        case ViewMode.year:
+          text = currentDate.day.toString();
+          print(text);
+          moveToYesterday();
+          // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
+          final dx = size.width - (i + 1) * blockWidth!;
+          _drawXText(canvas, size, text, dx);
+          _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          break;
       }
 
-      final dx = size.width - (i + 1) * blockWidth!;
+      // final dx = size.width - (i + 1) * blockWidth!;
 
-      _drawXText(canvas, size, text, dx);
-      _drawVerticalDivideLine(canvas, size, dx, isDashed);
+      // _drawXText(canvas, size, text, dx);
+      // _drawVerticalDivideLine(canvas, size, dx, isDashed);
     }
   }
 
@@ -104,10 +133,7 @@ abstract class XLabelPainter extends ChartEngine {
     path.lineTo(dx, size.height);
 
     canvas.drawPath(
-      isDashed
-          ? dashPath(path,
-              dashArray: CircularIntervalList<double>(<double>[2, 2]))
-          : path,
+      isDashed ? dashPath(path, dashArray: CircularIntervalList<double>(<double>[2, 2])) : path,
       paint,
     );
   }

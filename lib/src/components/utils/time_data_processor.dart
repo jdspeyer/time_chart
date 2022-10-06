@@ -63,12 +63,6 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
-    // _processedData = [
-    //   DateTimeRange(
-    //     start: DateTime(2022, 10, 4, 0, 0),
-    //     end: DateTime(2022, 10, 4, 15, 1),
-    //   ),
-    // ];
     _processedData = [...chart.data];
     print("_processedData: $_processedData");
     _isFirstDataMovedNextDay = false;
@@ -130,7 +124,7 @@ mixin TimeDataProcessor {
   void _countDays(List dataList) {
     assert(dataList.isNotEmpty);
     // This is just the number of days
-    _dayCount = dataList.length + 1;
+    _dayCount = dataList.length;
   }
 
   /// 입력으로 들어온 [dataList]에서 [renderEndTime]부터 [viewMode]의 제한 일수 기간 동안 포함된
@@ -308,7 +302,6 @@ mixin TimeDataProcessor {
     int loIdx = -1;
     int hiIdx = -1;
 
-    // 먼저 [sleepPair]의 안에 포함되는 목록을 제거한다.
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
       if (timePair.inRange(curPair.startTime) && timePair.inRange(curPair.endTime))
@@ -332,12 +325,9 @@ mixin TimeDataProcessor {
     final newSleepPair = _TimePair(loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
         hiIdx == -1 ? timePair.endTime : rangeList[hiIdx].endTime);
 
-    // 겹치는 부분을 제거한다.
-    // 1. 이미 존재하는 것에 완전히 포함되는 경우
     if (loIdx != -1 && loIdx == hiIdx) {
       rangeList.removeAt(loIdx);
-    } // 각 다른 것에 겹치는 경우
-    else {
+    } else {
       if (loIdx != -1) {
         rangeList.removeAt(loIdx);
         if (loIdx < hiIdx) --hiIdx;

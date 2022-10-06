@@ -10,7 +10,26 @@ class MyApp extends StatelessWidget {
 
   // Data must be sorted.
   // JP -- Changed
-  final List<double> dataList = [15, 1.5, 17.0, 12, 10, 15, 8, 13, 11, 1, 25, 20];
+  final List<double> dataList = [
+    15,
+    1.5,
+    17.0,
+    12,
+    10,
+    15,
+    8,
+    13,
+    11,
+    1,
+    25,
+    20,
+    42,
+    16.0,
+    1.5,
+    19,
+    13,
+    7
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +48,13 @@ class MyApp extends StatelessWidget {
                 TimeChart(
                   // JP -- Changed
                   data: dataList,
-                  yAxisLabel: 'test',
-                  toolTipLabel: 'txt',
-                  useToday: false,
+                  yAxisLabel: 'hr',
+                  toolTipLabel: 'test',
+                  useToday: true,
                   height: 300,
                   tooltipBackgroundColor: Colors.white,
                   chartType: ChartType.amount,
-                  viewMode: ViewMode.weekly,
+                  viewMode: ViewMode.year,
                   barColor: Colors.deepPurple,
                 ),
                 sizedBox,
