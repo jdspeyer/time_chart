@@ -68,7 +68,7 @@ mixin TimeDataProcessor {
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
-    // Maybe remove this function
+    // Needed for chart.time I think
     // _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
     switch (chart.chartType) {
       case ChartType.time:

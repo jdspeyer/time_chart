@@ -53,8 +53,8 @@ class Chart extends StatefulWidget {
   final double width;
   final double height;
   final Color? barColor;
-  // JP -- Changed
-  final List<double> data;
+  // JP -- Changed list of [double] or [DateTime]
+  final List data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -158,14 +158,14 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   }
 
   // JP -- Changed
-  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-  //   return DateTime.now();
-  // }
+  DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+    return DateTime.now();
+  }
 
   // JP -- Changed
-  DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return widget.data.isEmpty ? DateTime.now() : DateTime(2022, 10, 4, widget.data[0].toInt(), 0);
-  }
+  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+  //   return widget.data.isEmpty ? DateTime.now() : DateTime(2022, 10, 4, widget.data[0].toInt(), 0);
+  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

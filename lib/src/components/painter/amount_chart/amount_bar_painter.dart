@@ -98,8 +98,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       // amountSum += dataList[index].durationInHours;
       // print("amountSum: $amountSum");
 
-      // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
-
       // JP -- Changed
       if (index == length - 1 || dataList[index] >= 0) {
         // if (index == length - 1 ||
@@ -107,7 +105,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
         final double normalizedTop = max(0, amountSum - bottomHour) / (topHour - bottomHour);
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
-        // print("normalizedTop: $normalizedTop");
         // JP -- Changed
         coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index]));
         // coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));

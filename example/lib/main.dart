@@ -8,27 +8,19 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  // Data must be sorted.
-  // JP -- Changed
   final List<double> dataList = [
-    10,
+    10.2,
     1.5,
-    17.0,
-    12,
-    10,
-    15,
+    11.0,
+    12.1,
+    10.4,
+    12.6,
+    8.7,
+    13.4,
+    11.3,
+    10.7,
     8,
-    13,
-    11,
-    10,
-    25,
-    20,
-    3,
-    16.0,
-    1.5,
-    19,
-    13,
-    7
+    6.5,
   ];
 
   @override
@@ -46,7 +38,6 @@ class MyApp extends StatelessWidget {
                 sizedBox,
                 const Text('Weekly amount chart'),
                 TimeChart(
-                  // JP -- Changed
                   data: dataList,
                   yAxisLabel: 'hr',
                   toolTipLabel: 'test',
