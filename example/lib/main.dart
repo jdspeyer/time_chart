@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   // Data must be sorted.
   // JP -- Changed
   final List<double> dataList = [
-    15,
+    10,
     1.5,
     17.0,
     12,
@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
     8,
     13,
     11,
-    1,
+    10,
     25,
     20,
-    42,
+    3,
     16.0,
     1.5,
     19,
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
                   height: 300,
                   tooltipBackgroundColor: Colors.white,
                   chartType: ChartType.amount,
-                  viewMode: ViewMode.year,
+                  viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
                 ),
                 sizedBox,
