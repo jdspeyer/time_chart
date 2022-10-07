@@ -7,7 +7,7 @@ import 'components/view_mode.dart';
 const double kTimeChartTopPadding = 4.0;
 
 class TimeChart extends StatelessWidget {
-  const TimeChart({
+  TimeChart({
     Key? key,
     this.chartType = ChartType.time,
     this.yAxisLabel = 'hr',
@@ -77,7 +77,7 @@ class TimeChart extends StatelessWidget {
   /// ```dart
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
-  final List<DateTimeRange> data;
+  late final data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -130,6 +130,11 @@ class TimeChart extends StatelessWidget {
   ///
   /// It must be in the range of 0 to 23.
   final int defaultPivotHour;
+
+  @override
+  void initState() {
+    data = (chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
+  }
 
   @override
   Widget build(BuildContext context) {

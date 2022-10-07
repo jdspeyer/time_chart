@@ -25,8 +25,8 @@ import 'components/tooltip/tooltip_size.dart';
 import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
-class Chart extends StatefulWidget {
-  const Chart({
+class Chart<T> extends StatefulWidget {
+  Chart({
     Key? key,
     required this.chartType,
     required this.yAxisLabel,
@@ -54,7 +54,7 @@ class Chart extends StatefulWidget {
   final double height;
   final Color? barColor;
   // JP -- Changed list of [double] or [DateTime]
-  final List<DateTimeRange> data;
+  late final data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -108,6 +108,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   @override
   void initState() {
     super.initState();
+
+    widget.data = (widget.chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
 
     _barController = _scrollControllerGroup.addAndGet();
     _xLabelController = _scrollControllerGroup.addAndGet();
