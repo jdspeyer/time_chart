@@ -22,8 +22,8 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     TouchyCanvas canvas,
     Paint paint,
     // JP -- Changed
-    double data,
-    // DateTimeRange data,
+    // double data,
+    DateTimeRange data,
     Rect rect,
     Radius topRadius, [
     Radius bottomRadius = Radius.zero,
@@ -56,8 +56,8 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     Size size,
     Rect rect,
     // JP -- Changed
-    double data,
-    // DateTimeRange data,
+    // double data,
+    DateTimeRange data,
   ) {
     if (topHour != bottomHour && (bottomHour - topHour).abs() != 24) return;
 
@@ -166,19 +166,19 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     final int dayFromScrollOffset = currentDayFromScrollOffset;
     // JP -- Changed
     // final double startDateTime = 0;
-    // final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     const int startIndex = 0;
 
     for (int index = startIndex; index < length; index++) {
       // JP -- Changed
-      final wakeUpTimeDouble = dataList[index].toDouble();
-      // final wakeUpTimeDouble = dataList[index].end.toDouble();
+      // final wakeUpTimeDouble = dataList[index].toDouble();
+      final wakeUpTimeDouble = dataList[index].end.toDouble();
       // JP -- Changed
-      final sleepAmountDouble = dataList[index];
-      // final sleepAmountDouble = dataList[index].durationInHours;
+      // final sleepAmountDouble = dataList[index];
+      final sleepAmountDouble = dataList[index].durationInHours;
       // JP -- Changed
-      final barPosition = 1 + index;
-      // final barPosition = 1 + dataList.first.end.differenceDateInDay(dataList[index].end);
+      // final barPosition = 1 + index;
+      final barPosition = 1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset > viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
@@ -213,8 +213,8 @@ class TimeBarItem {
   final double topY;
   final double bottomY;
   // JP -- Changed
-  final double data;
-  // final DateTimeRange data;
+  // final double data;
+  final DateTimeRange data;
 
   TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

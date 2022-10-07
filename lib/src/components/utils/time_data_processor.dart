@@ -35,12 +35,11 @@ mixin TimeDataProcessor {
   /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
 
   /// // JP -- Changed
-  List<double> get processedData => _processedData;
-  // List<DateTimeRange> get processedData => _processedData;
+  // List<double> get processedData => _processedData;
+  List<DateTimeRange> get processedDataTime => _processedDataTime;
 
-  // JP -- Changed
-  List<double> _processedData = [];
-  // List<DateTimeRange> _processedData = [];
+  // List<double> _processedData = [];
+  List<DateTimeRange> _processedDataTime = [];
 
   final List<DateTimeRange> _inRangeDataList = [];
 
@@ -63,17 +62,25 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
-    _processedData = [...chart.data];
-    print("_processedData: $_processedData");
+
+    // if (chart.data is List<double>) {
+    //   _processedData = [...chart.data];
+    //   print("_processedData: $_processedData");
+    // } else {
+    // List<DateTimeRange>
+    _processedDataTime = [...chart.data];
+    print("_processedDataTime: $_processedDataTime");
+    // }
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
-    // Needed for chart.time I think
-    // _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
+    if (chart.data is List<DateTimeRange>) {
+      _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
+    }
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
-        // _processDataUsingBottomHour();
+        _processDataUsingBottomHour();
         break;
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
@@ -131,45 +138,45 @@ mixin TimeDataProcessor {
   /// [_inRangeDataList]를 만든다.
   ///
 
-  // JP -- Changed
-  // void _generateInRangeDataList(
-  //   List<DateTimeRange> dataList,
-  //   ViewMode viewMode,
-  //   DateTime renderEndTime,
-  // ) {
-  //   renderEndTime = renderEndTime.add(
-  //     const Duration(days: ChartEngine.toleranceDay),
-  //   );
-  //   final renderStartTime = renderEndTime.add(Duration(
-  //     days: -viewMode.dayCount - 2 * ChartEngine.toleranceDay,
-  //   ));
+  void _generateInRangeDataList(
+    // JP TODO make for for both DateTimeRange and double
+    List<DateTimeRange> dataList,
+    ViewMode viewMode,
+    DateTime renderEndTime,
+  ) {
+    renderEndTime = renderEndTime.add(
+      const Duration(days: ChartEngine.toleranceDay),
+    );
+    final renderStartTime = renderEndTime.add(Duration(
+      days: -viewMode.dayCount - 2 * ChartEngine.toleranceDay,
+    ));
 
-  //   _inRangeDataList.clear();
+    _inRangeDataList.clear();
 
-  //   DateTime postEndTime = dataList.first.end.add(_oneDayDuration).dateWithoutTime();
-  //   for (int i = 0; i < dataList.length; ++i) {
-  //     if (i > 0) {
-  //       assert(
-  //         dataList[i - 1].end.isAfter(dataList[i].end),
-  //         _kNotSortedDataErrorMessage,
-  //       );
-  //     }
-  //     final currentTime = dataList[i].end.dateWithoutTime();
-  //     print("currentTime: $currentTime");
-  //     // 이전 데이터와 날짜가 다른 경우
-  //     if (currentTime != postEndTime) {
-  //       final difference = postEndTime.differenceDateInDay(currentTime);
-  //       // 하루 이상 차이나는 경우
-  //       postEndTime = postEndTime.add(Duration(days: -difference));
-  //     }
-  //     postEndTime = currentTime;
+    DateTime postEndTime = dataList.first.end.add(_oneDayDuration).dateWithoutTime();
+    for (int i = 0; i < dataList.length; ++i) {
+      if (i > 0) {
+        assert(
+          dataList[i - 1].end.isAfter(dataList[i].end),
+          _kNotSortedDataErrorMessage,
+        );
+      }
+      final currentTime = dataList[i].end.dateWithoutTime();
+      print("currentTime: $currentTime");
+      // 이전 데이터와 날짜가 다른 경우
+      if (currentTime != postEndTime) {
+        final difference = postEndTime.differenceDateInDay(currentTime);
+        // 하루 이상 차이나는 경우
+        postEndTime = postEndTime.add(Duration(days: -difference));
+      }
+      postEndTime = currentTime;
 
-  //     if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
-  //       _inRangeDataList.add(dataList[i]);
-  //     }
-  //   }
-  //   print("_inRangeDataList: $_inRangeDataList");
-  // }
+      if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
+        _inRangeDataList.add(dataList[i]);
+      }
+    }
+    print("_inRangeDataList: $_inRangeDataList");
+  }
 
   /// [bottomHour]과 24시(정확히는 0시) 사이에 [timeDouble]이 위치한 경우 `true`를 반환한다.
   ///
@@ -189,54 +196,28 @@ mixin TimeDataProcessor {
   /// 예를 들어 차트가 20시부터 8시까지를 그리도록 데이터가 주어졌다고 가정하자. 이때 데이터 중 하나가
   /// 21시 ~ 23시라면 0시를 기준으로 다음날로 넘어가기 때문에 해당 데이터를 다음 칸에 그려야 한다.
 
-  // JP -- Changed
-  // void _processDataUsingBottomHour() {
-  //   final len = _processedData.length;
-  //   for (int i = 0; i < len; ++i) {
-  //     final double startTime = 0;
-  //     final double endTime = _processedData[i];
-  //     final double startTimeDouble = startTime.toDouble();
-  //     final double endTimeDouble = endTime.toDouble();
-
-  //     // if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
-  //     //   _processedData[i] = double(
-  //     //     // JP Ceck this
-  //     //     // JP -- I think this is the whole problem with looping data
-  //     //     start: startTime.add(_oneDayDuration),
-  //     //     // JP Ceck this
-  //     //     end: endTime.add(_oneDayDuration),
-  //     //   );
-
-  //     if (i == 0) {
-  //       _dayCount = _dayCount! + 1;
-  //       _isFirstDataMovedNextDay = true;
-  //     }
-  //     // }
-  //   }
-  // }
-
   // Used for chart.time
-  // void _processDataUsingBottomHour() {
-  //   final len = _processedData.length;
-  //   for (int i = 0; i < len; ++i) {
-  //     final DateTime startTime = _processedData[i].start;
-  //     final DateTime endTime = _processedData[i].end;
-  //     final double startTimeDouble = startTime.toDouble();
-  //     final double endTimeDouble = endTime.toDouble();
+  void _processDataUsingBottomHour() {
+    final len = _processedDataTime.length;
+    for (int i = 0; i < len; ++i) {
+      final DateTime startTime = _processedDataTime[i].start;
+      final DateTime endTime = _processedDataTime[i].end;
+      final double startTimeDouble = startTime.toDouble();
+      final double endTimeDouble = endTime.toDouble();
 
-  //     if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
-  //       _processedData[i] = DateTimeRange(
-  //         start: startTime.add(_oneDayDuration),
-  //         end: endTime.add(_oneDayDuration),
-  //       );
+      if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
+        _processedDataTime[i] = DateTimeRange(
+          start: startTime.add(_oneDayDuration),
+          end: endTime.add(_oneDayDuration),
+        );
 
-  //       if (i == 0) {
-  //         _dayCount = _dayCount! + 1;
-  //         _isFirstDataMovedNextDay = true;
-  //       }
-  //     }
-  //   }
-  // }
+        if (i == 0) {
+          _dayCount = _dayCount! + 1;
+          _isFirstDataMovedNextDay = true;
+        }
+      }
+    }
+  }
 
   /// 시간 그래프의 기준이 될 값들을 구한다.
   ///

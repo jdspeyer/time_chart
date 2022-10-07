@@ -54,7 +54,7 @@ class Chart extends StatefulWidget {
   final double height;
   final Color? barColor;
   // JP -- Changed list of [double] or [DateTime]
-  final List data;
+  final List<DateTimeRange> data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -132,6 +132,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
 
     _addScrollNotifier();
+    print("widget.data: ${widget.data}");
 
     processData(widget, _getFirstItemDate());
   }
@@ -159,13 +160,10 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
 
   // JP -- Changed
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return DateTime.now();
+    return widget.chartType == ChartType.amount
+        ? DateTime.now()
+        : widget.data.first.end.dateWithoutTime().add(addition);
   }
-
-  // JP -- Changed
-  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-  //   return widget.data.isEmpty ? DateTime.now() : DateTime(2022, 10, 4, widget.data[0].toInt(), 0);
-  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -194,8 +192,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   /// Use a callback to manage overlay entries here.
   void _tooltipCallback({
     // JP -- Changed
-    double? range,
-    // DateTimeRange? range,
+    // double? range,
+    DateTimeRange? range,
     double? amount,
     // JP -- Changed
     DateTime? amountDate,
@@ -230,7 +228,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         position,
         barWidth,
         // JP -- Changed
-        range: null,
+        range: range,
         amount: amount,
         // JP -- Changed
         amountDate: amountDate,
@@ -611,33 +609,35 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   }
 
   CustomPainter _buildBarPainter(BuildContext context) {
-    switch (widget.chartType) {
-      case ChartType.time:
-        return TimeBarPainter(
-          scrollController: _barController,
-          repaint: _scrollOffsetNotifier,
-          context: context,
-          // tooltipCallback: _tooltipCallback,
-          dataList: processedData,
-          barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-          dayCount: dayCount,
-          viewMode: widget.viewMode,
-        );
-      case ChartType.amount:
-        return AmountBarPainter(
-          scrollController: _barController,
-          repaint: _scrollOffsetNotifier,
-          context: context,
-          dataList: processedData,
-          barColor: widget.barColor,
-          topHour: topHour!,
-          bottomHour: bottomHour!,
-          tooltipCallback: _tooltipCallback,
-          dayCount: dayCount,
-          viewMode: widget.viewMode,
-        );
-    }
+    // if (widget.data is List<DateTimeRange>) {
+    return TimeBarPainter(
+      scrollController: _barController,
+      repaint: _scrollOffsetNotifier,
+      context: context,
+      // tooltipCallback: _tooltipCallback,
+      dataList: processedDataTime,
+      barColor: widget.barColor,
+      topHour: topHour!,
+      bottomHour: bottomHour!,
+      dayCount: dayCount,
+      viewMode: widget.viewMode,
+    );
+    // } else {
+
+    // return AmountBarPainter(
+    //   scrollController: _barController,
+    //   repaint: _scrollOffsetNotifier,
+    //   context: context,
+    //   dataList: processedData,
+    //   barColor: widget.barColor,
+    //   topHour: topHour!,
+    //   bottomHour: bottomHour!,
+    //   tooltipCallback: _tooltipCallback,
+    //   dayCount: dayCount,
+    //   viewMode: widget.viewMode,
+    // );
+
+    // }
+    // }
   }
 }

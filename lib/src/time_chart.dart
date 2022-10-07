@@ -77,7 +77,7 @@ class TimeChart extends StatelessWidget {
   /// ```dart
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
-  final List data;
+  final List<DateTimeRange> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -135,7 +135,7 @@ class TimeChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (_, box) {
       final actualWidth = width ?? box.maxWidth;
-
+      print("chartType: $chartType");
       return SizedBox(
         height: height + kTimeChartTopPadding,
         width: actualWidth,

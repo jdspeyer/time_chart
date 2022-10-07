@@ -8,20 +8,55 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final List<double> dataList = [
-    10.2,
-    1.5,
-    11.0,
-    12.1,
-    10.4,
-    12.6,
-    8.7,
-    13.4,
-    11.3,
-    10.7,
+  // final List<double> dataList = [
+  //   10.2,
+  //   1.5,
+  //   11.0,
+  //   12.1,
+  //   10.4,
+  //   12.6,
+  //   8.7,
+  //   13.4,
+  //   11.3,
+  //   10.7,
+  //   8,
+  //   6.5,
+  // ];
+
+  final List<int> smallDataList = [
+    10,
+    6,
+    11,
+    12,
+    10,
+    12,
     8,
-    6.5,
+    13,
+    11,
+    10,
+    8,
+    6,
   ];
+
+  final List<DateTimeRange> emptyDataList = [];
+
+  List<DateTimeRange> getRandomSampleDataList() {
+    final List<DateTimeRange> list = [];
+    final random = Random();
+
+    for (int i = 0; i < smallDataList.length; ++i) {
+      final start = DateTime(2022, 10, 4 - i, smallDataList[i] - 1, 0);
+      final end = DateTime(2022, 10, 4 - i, smallDataList[i], 0);
+
+      list.add(DateTimeRange(
+        start: start,
+        end: end,
+      ));
+    }
+    return list;
+  }
+
+  late final List<DateTimeRange> dataList = getRandomSampleDataList();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +79,7 @@ class MyApp extends StatelessWidget {
                   useToday: true,
                   height: 300,
                   tooltipBackgroundColor: Colors.white,
-                  chartType: ChartType.amount,
+                  chartType: dataList is List<double> ? ChartType.amount : ChartType.time,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
                 ),
