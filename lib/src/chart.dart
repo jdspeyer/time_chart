@@ -54,7 +54,7 @@ class Chart<T> extends StatefulWidget {
   final double height;
   final Color? barColor;
   // JP -- Changed list of [double] or [DateTime]
-  late final data;
+  final data;
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -109,7 +109,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   void initState() {
     super.initState();
 
-    widget.data = (widget.chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
+    // widget.data = (widget.chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
 
     _barController = _scrollControllerGroup.addAndGet();
     _xLabelController = _scrollControllerGroup.addAndGet();
@@ -162,10 +162,13 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
 
   // JP -- Changed
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return widget.chartType == ChartType.amount
-        ? DateTime.now()
-        : widget.data.first.end.dateWithoutTime().add(addition);
+    return widget.chartType == ChartType.amount ? DateTime.now() : DateTime.now();
   }
+  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+  //   return widget.chartType == ChartType.amount
+  //       ? DateTime.now()
+  //       : widget.data.first.end.dateWithoutTime().add(addition);
+  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -612,32 +615,32 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
 
   CustomPainter _buildBarPainter(BuildContext context) {
     // if (widget.data is List<DateTimeRange>) {
-    return TimeBarPainter(
-      scrollController: _barController,
-      repaint: _scrollOffsetNotifier,
-      context: context,
-      // tooltipCallback: _tooltipCallback,
-      dataList: processedDataTime,
-      barColor: widget.barColor,
-      topHour: topHour!,
-      bottomHour: bottomHour!,
-      dayCount: dayCount,
-      viewMode: widget.viewMode,
-    );
-    // } else {
-
-    // return AmountBarPainter(
+    // return TimeBarPainter(
     //   scrollController: _barController,
     //   repaint: _scrollOffsetNotifier,
     //   context: context,
-    //   dataList: processedData,
+    //   // tooltipCallback: _tooltipCallback,
+    //   dataList: processedDataTime,
     //   barColor: widget.barColor,
     //   topHour: topHour!,
     //   bottomHour: bottomHour!,
-    //   tooltipCallback: _tooltipCallback,
     //   dayCount: dayCount,
     //   viewMode: widget.viewMode,
     // );
+    // } else {
+
+    return AmountBarPainter(
+      scrollController: _barController,
+      repaint: _scrollOffsetNotifier,
+      context: context,
+      dataList: processedData,
+      barColor: widget.barColor,
+      topHour: topHour!,
+      bottomHour: bottomHour!,
+      tooltipCallback: _tooltipCallback,
+      dayCount: dayCount,
+      viewMode: widget.viewMode,
+    );
 
     // }
     // }

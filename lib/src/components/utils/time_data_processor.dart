@@ -35,11 +35,11 @@ mixin TimeDataProcessor {
   /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
 
   /// // JP -- Changed
-  // List<double> get processedData => _processedData;
-  List<DateTimeRange> get processedDataTime => _processedDataTime;
+  List get processedData => _processedData;
+  // List<DateTimeRange> get processedDataTime => _processedDataTime;
 
-  // List<double> _processedData = [];
-  List<DateTimeRange> _processedDataTime = [];
+  List _processedData = [];
+  // List<DateTimeRange> _processedDataTime = [];
 
   final List<DateTimeRange> _inRangeDataList = [];
 
@@ -63,14 +63,13 @@ mixin TimeDataProcessor {
       return;
     }
 
-    // if (chart.data is List<double>) {
-    //   _processedData = [...chart.data];
-    //   print("_processedData: $_processedData");
-    // } else {
-    // List<DateTimeRange>
-    _processedDataTime = [...chart.data];
-    print("_processedDataTime: $_processedDataTime");
-    // }
+    if (chart.data is List<double>) {
+      _processedData = [...chart.data];
+      print("_processedData: $_processedData");
+    } else {
+      List<DateTimeRange> _processedDataTime = [...chart.data];
+      print("_processedDataTime: $_processedDataTime");
+    }
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
@@ -80,7 +79,7 @@ mixin TimeDataProcessor {
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
-        _processDataUsingBottomHour();
+        // _processDataUsingBottomHour();
         break;
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
@@ -197,27 +196,28 @@ mixin TimeDataProcessor {
   /// 21시 ~ 23시라면 0시를 기준으로 다음날로 넘어가기 때문에 해당 데이터를 다음 칸에 그려야 한다.
 
   // Used for chart.time
-  void _processDataUsingBottomHour() {
-    final len = _processedDataTime.length;
-    for (int i = 0; i < len; ++i) {
-      final DateTime startTime = _processedDataTime[i].start;
-      final DateTime endTime = _processedDataTime[i].end;
-      final double startTimeDouble = startTime.toDouble();
-      final double endTimeDouble = endTime.toDouble();
+  // JP -- Commented this out
+  // void _processDataUsingBottomHour() {
+  //   final len = _processedDataTime.length;
+  //   for (int i = 0; i < len; ++i) {
+  //     final DateTime startTime = _processedDataTime[i].start;
+  //     final DateTime endTime = _processedDataTime[i].end;
+  //     final double startTimeDouble = startTime.toDouble();
+  //     final double endTimeDouble = endTime.toDouble();
 
-      if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
-        _processedDataTime[i] = DateTimeRange(
-          start: startTime.add(_oneDayDuration),
-          end: endTime.add(_oneDayDuration),
-        );
+  //     if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
+  //       _processedDataTime[i] = DateTimeRange(
+  //         start: startTime.add(_oneDayDuration),
+  //         end: endTime.add(_oneDayDuration),
+  //       );
 
-        if (i == 0) {
-          _dayCount = _dayCount! + 1;
-          _isFirstDataMovedNextDay = true;
-        }
-      }
-    }
-  }
+  //       if (i == 0) {
+  //         _dayCount = _dayCount! + 1;
+  //         _isFirstDataMovedNextDay = true;
+  //       }
+  //     }
+  //   }
+  // }
 
   /// 시간 그래프의 기준이 될 값들을 구한다.
   ///

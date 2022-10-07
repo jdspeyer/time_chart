@@ -37,8 +37,8 @@ abstract class BarPainter<T> extends ChartEngine {
   final Color? barColor;
   // JP -- Changed
   // JP TODO make for for both DateTimeRange and double
-  // final List<double> dataList;
-  final List<DateTimeRange> dataList;
+  final List dataList;
+  // final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;
 
@@ -58,7 +58,7 @@ abstract class BarPainter<T> extends ChartEngine {
 
   @protected
   // This is for chart.time only
-  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+  DateTime getBarRenderStartDateTime(List dataList) {
     print(dataList.first.end.add(Duration(
       days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
     )));
