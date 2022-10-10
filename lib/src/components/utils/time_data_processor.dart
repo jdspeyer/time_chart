@@ -36,10 +36,10 @@ mixin TimeDataProcessor {
 
   /// // JP -- Changed
   List get processedData => _processedData;
-  // List<DateTimeRange> get processedDataTime => _processedDataTime;
+  List<DateTimeRange> get processedDataTime => _processedDataTime;
 
   List _processedData = [];
-  // List<DateTimeRange> _processedDataTime = [];
+  List<DateTimeRange> _processedDataTime = [];
 
   final List<DateTimeRange> _inRangeDataList = [];
 
@@ -62,14 +62,18 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
-
+    // Amount Chart - JS
     if (chart.data is List<double>) {
       _processedData = [...chart.data];
       print("_processedData: $_processedData");
-    } else {
-      List<DateTimeRange> _processedDataTime = [...chart.data];
+    }
+    // Time Chart - JS
+    else {
+      _processedDataTime = [...chart.data];
       print("_processedDataTime: $_processedDataTime");
     }
+
+    // Both Charts - JS
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
@@ -109,6 +113,7 @@ mixin TimeDataProcessor {
     if (startTime.floor() == endTime.floor() && endTime < startTime) {
       _topHour = startTime.floor();
       _bottomHour = startTime.floor();
+
       return;
     }
 
@@ -122,6 +127,7 @@ mixin TimeDataProcessor {
     // use default pivot hour if there are no space or the time range is fully visible
     if (_topHour == _bottomHour) {
       _topHour = defaultPivotHour;
+
       _bottomHour = defaultPivotHour;
     }
   }
@@ -152,7 +158,8 @@ mixin TimeDataProcessor {
 
     _inRangeDataList.clear();
 
-    DateTime postEndTime = dataList.first.end.add(_oneDayDuration).dateWithoutTime();
+    DateTime postEndTime =
+        dataList.first.end.add(_oneDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(
@@ -160,6 +167,7 @@ mixin TimeDataProcessor {
           _kNotSortedDataErrorMessage,
         );
       }
+      //final currentTime = dataList[i].end.dateWithoutTime();
       final currentTime = dataList[i].end.dateWithoutTime();
       print("currentTime: $currentTime");
       // 이전 데이터와 날짜가 다른 경우
@@ -170,7 +178,8 @@ mixin TimeDataProcessor {
       }
       postEndTime = currentTime;
 
-      if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
+      if (renderStartTime.isBefore(currentTime) &&
+          currentTime.isBefore(renderEndTime)) {
         _inRangeDataList.add(dataList[i]);
       }
     }
@@ -197,27 +206,28 @@ mixin TimeDataProcessor {
 
   // Used for chart.time
   // JP -- Commented this out
-  // void _processDataUsingBottomHour() {
-  //   final len = _processedDataTime.length;
-  //   for (int i = 0; i < len; ++i) {
-  //     final DateTime startTime = _processedDataTime[i].start;
-  //     final DateTime endTime = _processedDataTime[i].end;
-  //     final double startTimeDouble = startTime.toDouble();
-  //     final double endTimeDouble = endTime.toDouble();
+  void _processDataUsingBottomHour() {
+    final len = _processedDataTime.length;
+    for (int i = 0; i < len; ++i) {
+      final DateTime startTime = _processedDataTime[i].start;
+      final DateTime endTime = _processedDataTime[i].end;
+      final double startTimeDouble = startTime.toDouble();
+      final double endTimeDouble = endTime.toDouble();
 
-  //     if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
-  //       _processedDataTime[i] = DateTimeRange(
-  //         start: startTime.add(_oneDayDuration),
-  //         end: endTime.add(_oneDayDuration),
-  //       );
+      if (_isNextCellPosition(startTimeDouble) &&
+          _isNextCellPosition(endTimeDouble)) {
+        _processedDataTime[i] = DateTimeRange(
+          start: startTime.add(_oneDayDuration),
+          end: endTime.add(_oneDayDuration),
+        );
 
-  //       if (i == 0) {
-  //         _dayCount = _dayCount! + 1;
-  //         _isFirstDataMovedNextDay = true;
-  //       }
-  //     }
-  //   }
-  // }
+        if (i == 0) {
+          _dayCount = _dayCount! + 1;
+          _isFirstDataMovedNextDay = true;
+        }
+      }
+    }
+  }
 
   /// 시간 그래프의 기준이 될 값들을 구한다.
   ///
@@ -229,7 +239,8 @@ mixin TimeDataProcessor {
 
     // 빈 공간 중 범위가 가장 넓은 부분을 찾는다.
     final len = rangeList.length;
-    _TimePair resultPair = _TimePair(rangeList[0].startTime, rangeList[0].endTime);
+    _TimePair resultPair =
+        _TimePair(rangeList[0].startTime, rangeList[0].endTime);
     double maxInterval = 0.0;
 
     for (int i = 0; i < len; ++i) {
@@ -257,7 +268,8 @@ mixin TimeDataProcessor {
     List<_TimePair> rangeList = [];
 
     for (int i = 0; i < dataList.length; ++i) {
-      final curSleepPair = _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
+      final curSleepPair =
+          _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
 
       // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
       if (curSleepPair.startTime > curSleepPair.endTime) {
@@ -285,12 +297,13 @@ mixin TimeDataProcessor {
 
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
-      if (timePair.inRange(curPair.startTime) && timePair.inRange(curPair.endTime))
-        rangeList.removeAt(i--);
+      if (timePair.inRange(curPair.startTime) &&
+          timePair.inRange(curPair.endTime)) rangeList.removeAt(i--);
     }
 
     for (int i = 0; i < rangeList.length; ++i) {
-      final _TimePair curSleepPair = _TimePair(rangeList[i].startTime, rangeList[i].endTime);
+      final _TimePair curSleepPair =
+          _TimePair(rangeList[i].startTime, rangeList[i].endTime);
 
       if (loIdx == -1 && curSleepPair.inRange(timePair.startTime)) {
         loIdx = i;
@@ -303,7 +316,8 @@ mixin TimeDataProcessor {
       }
     }
 
-    final newSleepPair = _TimePair(loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
+    final newSleepPair = _TimePair(
+        loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
         hiIdx == -1 ? timePair.endTime : rangeList[hiIdx].endTime);
 
     if (loIdx != -1 && loIdx == hiIdx) {
@@ -337,7 +351,11 @@ mixin TimeDataProcessor {
     if (dataList is List<double>) {
       // JP -- Changed
       maxResult = dataList.reduce(max);
-      _topHour = (maxResult / 4).ceil() * 4;
+      if (dataList.reduce(min) < 0) {
+        _topHour = maxResult.ceil();
+      } else {
+        _topHour = (maxResult / 4).ceil() * 4;
+      }
     } else if (dataList is List<DateTimeRange>) {
       for (int i = 0; i < len; ++i) {
         final amount = dataList[i].durationInHours;
@@ -345,14 +363,25 @@ mixin TimeDataProcessor {
 
         // This is what does the height
         if (i == len - 1 ||
-            dataList[i].end.dateWithoutTime() != dataList[i + 1].end.dateWithoutTime()) {
+            dataList[i].end.dateWithoutTime() !=
+                dataList[i + 1].end.dateWithoutTime()) {
           maxResult = max(maxResult, sum);
           sum = 0.0;
         }
       }
       _topHour = ((maxResult.ceil()) / 4).ceil() * 4;
     }
-    _bottomHour = 0;
+
+    ///
+    /// JS -- changed
+    /// This sets the floor of the y-axis labels to be the smallest value
+    /// in the list if the smallest value is less than 0.
+    if (dataList is List<double> && (dataList).reduce(min) < 0.0) {
+      //_bottomHour = ((dataList as List<double>).reduce(min).ceil() as int);
+      _bottomHour = (_topHour as int) * -1;
+    } else {
+      _bottomHour = 0;
+    }
   }
 
   /// [b]에서 [a]로 흐른 시간을 구한다. 예를 들어 5시에서 3시로 흐른 시간은 22시간이고,

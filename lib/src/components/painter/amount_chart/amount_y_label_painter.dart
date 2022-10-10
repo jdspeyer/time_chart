@@ -15,11 +15,15 @@ class AmountYLabelPainter extends YLabelPainter {
 
   @override
   void drawYLabels(Canvas canvas, Size size) {
+    print('Min $bottomHour');
     final double labelInterval =
         (size.height - kXLabelHeight) / (topHour - bottomHour);
     final int hourDuration = topHour - bottomHour;
+    print(hourDuration);
     final int timeStep;
-    if (hourDuration >= 48) {
+    if (hourDuration % 10 == 0 && hourDuration > 48) {
+      timeStep = 20;
+    } else if (hourDuration >= 48) {
       timeStep = 16;
     } else if (hourDuration >= 24) {
       timeStep = 8;
@@ -33,12 +37,14 @@ class AmountYLabelPainter extends YLabelPainter {
 
     double posY = 0;
 
+    // JS -- changed
+    // If dealing with negatives then add a center line for the graph to sit on
+
     for (int time = topHour; time >= bottomHour; time = time - timeStep) {
       drawYText(canvas, size, '$time $yAxisLabel', posY);
       if (topHour > time && time > bottomHour) {
         drawHorizontalLine(canvas, size, posY);
       }
-
       posY += labelInterval * timeStep;
     }
   }

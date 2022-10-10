@@ -68,7 +68,8 @@ class Chart<T> extends StatefulWidget {
   ChartState createState() => ChartState();
 }
 
-class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataProcessor {
+class ChartState extends State<Chart>
+    with TickerProviderStateMixin, TimeDataProcessor {
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 100);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
@@ -156,13 +157,16 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     _sizeController.dispose();
     _tooltipController.dispose();
     _cancelTimer();
-    GestureBinding.instance.pointerRouter.removeGlobalRoute(_handlePointerEvent);
+    GestureBinding.instance.pointerRouter
+        .removeGlobalRoute(_handlePointerEvent);
     super.dispose();
   }
 
   // JP -- Changed
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-    return widget.chartType == ChartType.amount ? DateTime.now() : DateTime.now();
+    return widget.chartType == ChartType.amount
+        ? DateTime.now()
+        : DateTime.now();
   }
   // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
   //   return widget.chartType == ChartType.amount
@@ -175,7 +179,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
       final minDifference = _blockWidth!;
 
       _scrollControllerGroup.addOffsetChangedListener(() {
-        final difference = (_scrollControllerGroup.offset - _previousScrollOffset).abs();
+        final difference =
+            (_scrollControllerGroup.offset - _previousScrollOffset).abs();
 
         if (difference >= minDifference) {
           _scrollOffsetNotifier.value = _scrollControllerGroup.offset;
@@ -207,7 +212,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     required double barWidth,
   }) {
     // JP -- Changed
-    assert(amount != null);
+    // assert(amount != null);
     // assert(range != null || amount != null);
 
     if (!widget.activeTooltip) return;
@@ -220,7 +225,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     }
 
     // 현재 보이는 툴팁이 다시 호출되면 무시한다.
-    if ((_tooltipHideTimer?.isActive ?? false) && _currentVisibleTooltipRect == rect) return;
+    if ((_tooltipHideTimer?.isActive ?? false) &&
+        _currentVisibleTooltipRect == rect) return;
     _currentVisibleTooltipRect = rect;
 
     HapticFeedback.vibrate();
@@ -261,13 +267,37 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     final chartType = amount == null ? ChartType.time : ChartType.amount;
     // 현재 위젯의 위치를 얻는다.
     final widgetOffset = context.getRenderBoxOffset()!;
-    final tooltipSize = chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
+    final tooltipSize =
+        chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
-    final candidateTop = rect.top +
-        widgetOffset.dy -
-        tooltipSize.height / 2 +
-        kTimeChartTopPadding +
-        (chartType == ChartType.time ? (rect.bottom - rect.top) / 2 : kTooltipArrowHeight / 2);
+    ///
+    /// JS -- Changed
+    /// Not the cleanest code... needs a refactor
+    /// But essentially adds control for the tooltip to appear at the bottom of
+    /// negative bars.
+    final candidateTop = (chartType == ChartType.time)
+        ? rect.top +
+            widgetOffset.dy -
+            tooltipSize.height / 2 +
+            kTimeChartTopPadding +
+            (chartType == ChartType.time
+                ? (rect.bottom - rect.top) / 2
+                : kTooltipArrowHeight / 2)
+        : (amount! > 0)
+            ? rect.top +
+                widgetOffset.dy -
+                tooltipSize.height / 2 +
+                kTimeChartTopPadding +
+                (chartType == ChartType.time
+                    ? (rect.bottom - rect.top) / 2
+                    : kTooltipArrowHeight / 2)
+            : rect.bottom +
+                widgetOffset.dy -
+                tooltipSize.height / 2 +
+                kTimeChartTopPadding -
+                (chartType == ChartType.time
+                    ? (rect.bottom - rect.top) / 2
+                    : kTooltipArrowHeight / 2);
 
     final scrollPixels = position.maxScrollExtent - position.pixels;
     final localLeft = rect.left + widgetOffset.dx - scrollPixels;
@@ -295,6 +325,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
           chartType: chartType,
           yAxisLabel: widget.yAxisLabel,
           toolTipLabel: widget.toolTipLabel,
+          useToday: widget.useToday,
           bottomHour: bottomHour,
           timeRange: range,
           amountHour: amount,
@@ -324,7 +355,10 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     final TextPainter tp = TextPainter(
       text: TextSpan(
         text: translations.formatHourOnly(12),
-        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white38),
+        style: Theme.of(context)
+            .textTheme
+            .bodyText2!
+            .copyWith(color: Colors.white38),
       ),
       textDirection: TextDirection.ltr,
     );
@@ -342,7 +376,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     if (notification is ScrollStartNotification) {
       _cancelTimer();
     } else if (notification is ScrollEndNotification) {
-      _pivotHourUpdatingTimer = Timer(const Duration(milliseconds: 800), _timerCallback);
+      _pivotHourUpdatingTimer =
+          Timer(const Duration(milliseconds: 800), _timerCallback);
     }
     return true;
   }
@@ -352,8 +387,10 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     final beforeTopHour = topHour;
     final beforeBottomHour = bottomHour;
 
-    final blockIndex = getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final needsToAdaptScrollPosition = blockIndex > 0 && isFirstDataMovedNextDay;
+    final blockIndex =
+        getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
+    final needsToAdaptScrollPosition =
+        blockIndex > 0 && isFirstDataMovedNextDay;
     final scrollPositionDuration = Duration(
       days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
     );
@@ -376,20 +413,23 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   double get heightWithoutLabel => widget.height - kXLabelHeight;
 
   void _runHeightAnimation(int beforeTopHour, int beforeBottomHour) {
-    final beforeDiff = hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
+    final beforeDiff =
+        hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
     final currentDiff = hourDiffBetween(topHour, bottomHour).toDouble();
 
     final candidateUpward = diffBetween(beforeTopHour, topHour!);
     final candidateDownWard = -diffBetween(topHour!, beforeTopHour);
 
-    final topDiff = isDirUpward(beforeTopHour, beforeBottomHour, topHour!, bottomHour!)
-        ? candidateUpward
-        : candidateDownWard;
+    final topDiff =
+        isDirUpward(beforeTopHour, beforeBottomHour, topHour!, bottomHour!)
+            ? candidateUpward
+            : candidateDownWard;
 
     setState(() {
-      _animationBeginHeight = (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
-      _heightForAlignTop =
-          (_animationBeginHeight - widget.height) / 2 + (topDiff / beforeDiff) * heightWithoutLabel;
+      _animationBeginHeight =
+          (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
+      _heightForAlignTop = (_animationBeginHeight - widget.height) / 2 +
+          (topDiff / beforeDiff) * heightWithoutLabel;
     });
     _sizeController.reverse(from: 1.0);
   }
@@ -530,7 +570,8 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     double bottomPadding = 0.0,
     Function(BuildContext, double)? builder,
   }) {
-    assert((child != null && builder == null) || child == null && builder != null);
+    assert(
+        (child != null && builder == null) || child == null && builder != null);
 
     final heightAnimation = Tween<double>(
       begin: widget.height,
@@ -588,8 +629,9 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   }
 
   CustomPainter _buildXLabelPainter(BuildContext context) {
-    final firstValueDateTime =
-        widget.useToday ? DateTime.now() : DateTime.now().subtract(Duration(days: 1));
+    final firstValueDateTime = widget.useToday
+        ? DateTime.now()
+        : DateTime.now().subtract(Duration(days: 1));
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
@@ -614,35 +656,34 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   }
 
   CustomPainter _buildBarPainter(BuildContext context) {
-    // if (widget.data is List<DateTimeRange>) {
-    // return TimeBarPainter(
-    //   scrollController: _barController,
-    //   repaint: _scrollOffsetNotifier,
-    //   context: context,
-    //   // tooltipCallback: _tooltipCallback,
-    //   dataList: processedDataTime,
-    //   barColor: widget.barColor,
-    //   topHour: topHour!,
-    //   bottomHour: bottomHour!,
-    //   dayCount: dayCount,
-    //   viewMode: widget.viewMode,
-    // );
-    // } else {
-
-    return AmountBarPainter(
-      scrollController: _barController,
-      repaint: _scrollOffsetNotifier,
-      context: context,
-      dataList: processedData,
-      barColor: widget.barColor,
-      topHour: topHour!,
-      bottomHour: bottomHour!,
-      tooltipCallback: _tooltipCallback,
-      dayCount: dayCount,
-      viewMode: widget.viewMode,
-    );
-
-    // }
-    // }
+    if (widget.data is List<DateTimeRange>) {
+      return TimeBarPainter(
+        scrollController: _barController,
+        repaint: _scrollOffsetNotifier,
+        context: context,
+        tooltipCallback: _tooltipCallback,
+        useToday: widget.useToday,
+        dataList: processedDataTime,
+        barColor: widget.barColor,
+        topHour: topHour!,
+        bottomHour: bottomHour!,
+        dayCount: dayCount,
+        viewMode: widget.viewMode,
+      );
+    } else {
+      return AmountBarPainter(
+        scrollController: _barController,
+        repaint: _scrollOffsetNotifier,
+        context: context,
+        dataList: processedData,
+        useToday: widget.useToday,
+        barColor: widget.barColor,
+        topHour: topHour!,
+        bottomHour: bottomHour!,
+        tooltipCallback: _tooltipCallback,
+        dayCount: dayCount,
+        viewMode: widget.viewMode,
+      );
+    }
   }
 }

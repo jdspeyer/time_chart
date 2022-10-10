@@ -23,20 +23,54 @@ class MyApp extends StatelessWidget {
     6.5,
   ];
 
-  // final List<int> smallDataList = [
-  //   10,
-  //   6,
-  //   11,
-  //   12,
-  //   10,
-  //   12,
-  //   8,
-  //   13,
-  //   11,
-  //   10,
-  //   8,
-  //   6,
-  // ];
+  final List<double> dataListNegative = [
+    60.0,
+    -12.0,
+    30.0,
+    -30.4,
+    59.0,
+    -59.0,
+    -49.3
+  ];
+
+  final List<DateTimeRange> dataListTime = [
+    DateTimeRange(
+      start: DateTime(2022, 10, 7, 9, 0),
+      end: DateTime(2022, 10, 7, 15, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 7, 6, 0),
+      end: DateTime(2022, 10, 7, 8, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 6, 6, 0),
+      end: DateTime(2022, 10, 6, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 5, 6, 0),
+      end: DateTime(2022, 10, 5, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 4, 6, 0),
+      end: DateTime(2022, 10, 4, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 3, 6, 0),
+      end: DateTime(2022, 10, 3, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 2, 6, 0),
+      end: DateTime(2022, 10, 2, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 10, 1, 6, 0),
+      end: DateTime(2022, 10, 1, 10, 0),
+    ),
+    DateTimeRange(
+      start: DateTime(2022, 9, 30, 6, 0),
+      end: DateTime(2022, 9, 30, 10, 0),
+    ),
+  ];
 
   // final List<DateTimeRange> emptyDataList = [];
 
@@ -73,13 +107,12 @@ class MyApp extends StatelessWidget {
                 sizedBox,
                 const Text('Weekly amount chart'),
                 TimeChart(
-                  data: dataList,
-                  yAxisLabel: 'hr',
-                  toolTipLabel: 'test',
-                  useToday: true,
+                  data: dataListNegative,
+                  yAxisLabel: '',
+                  toolTipLabel: 'Degrees',
+                  useToday: false,
                   height: 300,
                   tooltipBackgroundColor: Colors.white,
-                  chartType: dataList is List<double> ? ChartType.amount : ChartType.time,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
                 ),

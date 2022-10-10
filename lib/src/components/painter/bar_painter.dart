@@ -25,6 +25,7 @@ abstract class BarPainter<T> extends ChartEngine {
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
+    required this.useToday,
     this.barColor,
   }) :
         // JP -- Changed
@@ -41,6 +42,7 @@ abstract class BarPainter<T> extends ChartEngine {
   // final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;
+  final bool useToday;
 
   Radius get barRadius => const Radius.circular(6.0);
 
@@ -49,7 +51,6 @@ abstract class BarPainter<T> extends ChartEngine {
   void paint(Canvas canvas, Size size) {
     setDefaultValue(size);
     drawBar(canvas, size, generateCoordinates(size));
-    print(viewMode);
   }
 
   void drawBar(Canvas canvas, Size size, List<T> coordinates);

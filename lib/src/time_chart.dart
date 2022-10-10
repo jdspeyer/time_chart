@@ -9,7 +9,6 @@ const double kTimeChartTopPadding = 4.0;
 class TimeChart extends StatelessWidget {
   TimeChart({
     Key? key,
-    this.chartType = ChartType.time,
     this.yAxisLabel = 'hr',
     this.toolTipLabel = 'hr',
     this.useToday = true,
@@ -32,7 +31,16 @@ class TimeChart extends StatelessWidget {
   /// The type of chart.
   ///
   /// Default is the [ChartType.time].
-  final ChartType chartType;
+
+  /// JS -- Changed
+  /// Since we are inferring the chart type based on the data being passed in,
+  /// there is no need for it to be a parameter.
+  /// Its late definition is to allow the data parameter to be taken in. chartType then bases
+  /// its typing off of data.
+  ///
+  /// If data is double --> amount if data is anything else (presumed to be DateTime) --> time.
+  late final ChartType chartType =
+      (data is List<double>) ? ChartType.amount : ChartType.time;
 
   /// Optional label for the y-axis
   ///
@@ -48,6 +56,9 @@ class TimeChart extends StatelessWidget {
   ///
   /// Defaults to true -- using todays date.
   final bool useToday;
+
+  /// the max that the y-axis will extend to.
+  /// defaults to the highest value.
 
   /// Optional label color modifier. Useful for changing themes.
   ///
@@ -77,7 +88,7 @@ class TimeChart extends StatelessWidget {
   /// ```dart
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
-  late final data;
+  final data;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -131,16 +142,22 @@ class TimeChart extends StatelessWidget {
   /// It must be in the range of 0 to 23.
   final int defaultPivotHour;
 
+  /// - JS Changed
+  /// initState overrided to late set chartType to either amount or time based on the list type of data.
+  /// if double -> amount if datetimerange -> time
+  ///
+  /// Currently unused? This function is never invoked by flutter. I dont believe this override works.
+  /// TODO delete?
   @override
   void initState() {
-    data = (chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
+    //data = (chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
   }
 
   @override
   Widget build(BuildContext context) {
+    print('$chartType Is the type of chart we are going to construct <--');
     return LayoutBuilder(builder: (_, box) {
       final actualWidth = width ?? box.maxWidth;
-      print("chartType: $chartType");
       return SizedBox(
         height: height + kTimeChartTopPadding,
         width: actualWidth,

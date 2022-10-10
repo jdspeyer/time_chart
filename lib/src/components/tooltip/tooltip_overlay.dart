@@ -17,6 +17,7 @@ class TooltipOverlay extends StatelessWidget {
     required this.chartType,
     required this.yAxisLabel,
     required this.toolTipLabel,
+    required this.useToday,
     this.timeRange,
     this.bottomHour,
     this.amountHour,
@@ -32,6 +33,7 @@ class TooltipOverlay extends StatelessWidget {
   final ChartType chartType;
   final String yAxisLabel;
   final String toolTipLabel;
+  final bool useToday;
   final int? bottomHour;
   final DateTimeRange? timeRange;
   final double? amountHour;
@@ -52,8 +54,11 @@ class TooltipOverlay extends StatelessWidget {
     const oneBeforeDay = Duration(days: -1);
     final endTime = timeRange.end;
 
-    return (endTime.hour == bottomHour && endTime.minute > 0) || bottomHour! < endTime.hour
-        ? DateTimeRange(start: timeRange.start.add(oneBeforeDay), end: endTime.add(oneBeforeDay))
+    return (endTime.hour == bottomHour && endTime.minute > 0) ||
+            bottomHour! < endTime.hour
+        ? DateTimeRange(
+            start: timeRange.start.add(oneBeforeDay),
+            end: endTime.add(oneBeforeDay))
         : timeRange;
   }
 
@@ -65,6 +70,7 @@ class TooltipOverlay extends StatelessWidget {
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange!),
           toolTipLabel: toolTipLabel,
+          useToday: useToday,
           start: start,
           end: end,
         );
@@ -72,6 +78,7 @@ class TooltipOverlay extends StatelessWidget {
       case ChartType.amount:
         child = _AmountTooltipOverlay(
           toolTipLabel: toolTipLabel,
+          useToday: useToday,
           durationHour: amountHour!,
           durationDate: amountDate!,
         );
@@ -104,6 +111,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
     Key? key,
     required this.toolTipLabel,
+    required this.useToday,
     required this.timeRange,
     required this.start,
     required this.end,
@@ -113,6 +121,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   final String start;
   final String end;
   final String toolTipLabel;
+  final bool useToday;
 
   DateTime get _sleepTime => timeRange.start;
 
@@ -140,7 +149,8 @@ class _TimeTooltipOverlay extends StatelessWidget {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
     final bodyText2 = textTheme.bodyText2!;
-    final bodyTextStyle = bodyText2.copyWith(height: 1.4, color: bodyText2.color!.withOpacity(0.7));
+    final bodyTextStyle = bodyText2.copyWith(
+        height: 1.4, color: bodyText2.color!.withOpacity(0.7));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -167,7 +177,8 @@ class _TimeTooltipOverlay extends StatelessWidget {
           ],
         ),
         Text(
-          translations.compactDateTimeRange(DateTimeRange(start: _sleepTime, end: _wakeUp)),
+          translations.compactDateTimeRange(
+              DateTimeRange(start: _sleepTime, end: _wakeUp)),
           style: bodyTextStyle,
           textScaleFactor: 1.0,
         ),
@@ -196,11 +207,13 @@ class _AmountTooltipOverlay extends StatelessWidget {
     required this.durationHour,
     required this.durationDate,
     required this.toolTipLabel,
+    required this.useToday,
   }) : super(key: key);
 
   final double durationHour;
   final DateTime durationDate;
   final String toolTipLabel;
+  final bool useToday;
 
   int _ceilMinutes() {
     double decimal = durationHour - durationHour.toInt();
@@ -278,11 +291,23 @@ class _AmountTooltipOverlay extends StatelessWidget {
                 ),
             ],
           ),
-          Text(
-            localizations.formatShortMonthDay(durationDate),
-            style: bodyTextStyle,
-            textScaleFactor: 1.0,
-          ),
+
+          /// JS -- Changed
+          /// checks of useToday has been turned on to
+          /// display the currect day within the tooltip
+          if (!useToday)
+            Text(
+              localizations.formatShortMonthDay(
+                  durationDate.subtract(const Duration(days: 1))),
+              style: bodyTextStyle,
+              textScaleFactor: 1.0,
+            ),
+          if (useToday)
+            Text(
+              localizations.formatShortMonthDay(durationDate),
+              style: bodyTextStyle,
+              textScaleFactor: 1.0,
+            ),
         ],
       ),
     );

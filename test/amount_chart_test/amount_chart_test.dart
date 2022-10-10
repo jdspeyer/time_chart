@@ -11,7 +11,6 @@ void main() {
         (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
-          chartType: ChartType.amount,
           data: [
             DateTimeRange(
               start: DateTime(2022, 5, 27, 0, 0),
@@ -32,7 +31,6 @@ void main() {
         (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
-          chartType: ChartType.amount,
           data: [
             DateTimeRange(
               start: DateTime(2022, 5, 27, 0, 0),
@@ -53,7 +51,6 @@ void main() {
         (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
-          chartType: ChartType.amount,
           data: [
             DateTimeRange(
               start: DateTime(2022, 5, 27, 0, 0),
