@@ -17,10 +17,9 @@ class TimeYLabelPainter extends YLabelPainter {
 
   final double chartHeight;
 
-  /// 애니메이션시 위쪽이 얼마나 벗어났는지를 이용하여 추가적인 레이블을 그리거나
-  /// 그리지 않기 위한 값이다.
-  ///
-  /// 음수인 경우 위로 벗어난 것이고 양수인 경우 아래로 이동한 것이다.
+  /// T
+  /// Draw an additional label using how far the top deviates during animation, or this is a value for not drawing.
+  /// If it is negative, it is shifted up, and if it is positive, it is shifted downward.
   final double topPosition;
 
   bool _isVisible(double posY, {bool onTolerance = false}) {
@@ -40,15 +39,19 @@ class TimeYLabelPainter extends YLabelPainter {
   @override
   void drawYLabels(Canvas canvas, Size size) {
     final double bottomY = size.height - kXLabelHeight;
-    // 맨 위부터 2시간 단위로 시간을 그린다.
+
+    /// T
+    /// Draw the time in 2 hour increments from the top.
     final double gabY = bottomY / bottomHour.differenceAt(topHour) * 2;
 
-    // 모든 구간이 꽉 차서 모든 범위가 표시되어야 하는 경우 true 이다.
+    /// T
+    /// true if all ranges are full and all ranges should be displayed.
     bool sameTopBottomHour = topHour == (bottomHour % 24);
     int time = topHour;
     double posY = 0.0;
 
-    // 애니메이션시 상단 부분 레이블과 라인이 비지 않도록 그려준다.
+    /// T
+    /// During animation, the label and line of the upper part are drawn so that they are not empty.
     while (-topPosition <= posY) {
       if ((time -= 2) < 0) time += 24;
       posY -= gabY;
@@ -57,7 +60,8 @@ class TimeYLabelPainter extends YLabelPainter {
     time = topHour;
     posY = 0.0;
 
-    // 2칸 간격으로 좌측 레이블 표시
+    /// T
+    /// Show left label at 2-space intervals.
     while (true) {
       _drawLabelAndLine(canvas, size, posY, time);
 

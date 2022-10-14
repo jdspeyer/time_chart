@@ -1,3 +1,15 @@
+////////////////////////////////////////////////////////////////
+/// Updated 10/10/2022 by Jake Speyer
+///
+/// Time Bar Painter (implementation of BarPainter abstract class) interacts with the canvas and draws the bars to
+/// graphically represent the data being passed in.
+///
+/// There can be multiple bars in one day.
+///
+/// Only opperates on lists of DateTimeRanges. Doubles are processed
+/// by amount_bar_painter.dart.
+////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/bar_painter.dart';
 import 'package:touchable/touchable.dart';
@@ -80,7 +92,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
 
   @override
   void drawBar(Canvas canvas, Size size, List<TimeBarItem> coordinates) {
-    print("Coords: $coordinates");
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
@@ -118,10 +129,10 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     }
   }
 
-  /// 기준 시간을 이용하여 시간을 변환한다.
-  ///
-  /// 기준 시간을 기준으로 다른 시간은 아래로 나열된다.
-  /// 예를 들어 17시가 기준이라고 할 때 3시가 입력으로 들어오면 27이 반환된다.
+  /// JS
+  /// Converts the time using the reference time.
+  /// Other times based on the reference time are listed below.
+  /// For example, if 17 o'clock is the standard and 3 o'clock is input, 27 is returned.
   dynamic _convertUsing(var pivot, var value) {
     return value + (value < pivot ? 24 : 0);
   }
@@ -129,13 +140,15 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   bool _outRangedPivotHour(double sleepTime, double wakeUp) {
     if (sleepTime < 0.0) sleepTime += 24.0;
 
-    // 수면 시간 내에 두 기준 hour 가 속한지 확인한다.
+    /// T
+    /// Check whether two standard hours are included in the sleep time.
     var top = _convertUsing(sleepTime, topHour);
     var bottom = _convertUsing(sleepTime, bottomHour);
     var candidateWakeUp = _convertUsing(sleepTime, wakeUp);
     if (sleepTime <= top && bottom <= candidateWakeUp) return false;
 
-    // 속하지는 않지만 겹치는 경우를 확인한다.
+    /// T
+    /// Check if they do not belong but overlap.
     top = topHour;
     bottom = bottomHour;
     if (top < bottom) {
@@ -157,7 +170,9 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
 
     if (dataList.isEmpty) return [];
     final double intervalOfBars = size.width / dayCount;
-    // 제일 아래에 붙은 바가 정각이 아닌 경우 올려 바를 그린다.
+
+    /// T
+    /// If the bar at the bottom is not at the right angle, draw the bar up.
     final int pivotBottom = _convertUsing(topHour, bottomHour);
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
     final int length = dataList.length;
@@ -168,7 +183,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     final int startIndex =
         (dataList as List<DateTimeRange>).getLowerBound(startDateTime);
-    print("Starting from: $startIndex");
 
     for (int index = startIndex; index < length; index++) {
       final wakeUpTimeDouble =
@@ -184,12 +198,12 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
-      // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
-      // 큰 시간 값과 현재 시간의 차를 구한다.
+      /// T
+      /// To express the passage of time as the left label goes down
+      /// Find the difference between a large time value and the current time.
       double normalizedBottom =
           (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) /
               pivotHeight;
-      // [normalizedBottom] 에서 [gap]칸 만큼 위로 올린다.
       double normalizedTop = normalizedBottom + sleepAmountDouble / pivotHeight;
 
       if (normalizedTop < 0.0 && normalizedBottom < 0.0) {
@@ -201,7 +215,8 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       final double top = height - normalizedTop * height;
       final double right = size.width - intervalOfBars * barPosition;
 
-      // 그릴 필요가 없는 경우 넘어간다
+      /// T
+      /// Skip if there is no need to draw
       if (top == bottom ||
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
