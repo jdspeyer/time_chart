@@ -15,6 +15,7 @@ abstract class XLabelPainter extends ChartEngine {
     required super.firstValueDateTime,
     required super.repaint,
     required super.scrollController,
+    super.widgetMode = false,
   });
 
   final bool isFirstDataMovedNextDay;
@@ -52,8 +53,8 @@ abstract class XLabelPainter extends ChartEngine {
 
       switch (viewMode) {
         case ViewMode.weekly:
-          text = weekday[currentDate.weekday % 7];
-          print(text);
+          text =
+              widgetMode ? weekday[currentDate.weekday % 7][0] : weekday[currentDate.weekday % 7];
           if (currentDate.weekday == DateTime.sunday) isDashed = false;
           moveToYesterday();
           final dx = size.width - (i + 1) * blockWidth!;
@@ -62,7 +63,6 @@ abstract class XLabelPainter extends ChartEngine {
           break;
         case ViewMode.monthly:
           text = currentDate.day.toString();
-          print(text);
           moveToYesterday();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           if (i % 7 == (isFirstDataMovedNextDay ? 0 : 6)) {
@@ -73,7 +73,6 @@ abstract class XLabelPainter extends ChartEngine {
           break;
         case ViewMode.sixMonth:
           text = currentDate.day.toString();
-          print(text);
           moveToYesterday();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
@@ -84,7 +83,6 @@ abstract class XLabelPainter extends ChartEngine {
           break;
         case ViewMode.year:
           text = currentDate.day.toString();
-          print(text);
           moveToYesterday();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           final dx = size.width - (i + 1) * blockWidth!;

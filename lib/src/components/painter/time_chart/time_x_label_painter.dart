@@ -17,5 +17,6 @@ class TimeXLabelPainter extends XLabelPainter {
     required super.repaint,
     required super.scrollController,
     required super.isFirstDataMovedNextDay,
+    // required super.widgetMode,
   });
 }

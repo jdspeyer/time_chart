@@ -14,22 +14,24 @@ import 'package:time_chart/src/components/painter/y_label_painter.dart';
 import '../chart_engine.dart';
 
 class AmountYLabelPainter extends YLabelPainter {
-  AmountYLabelPainter(
-      {required super.context,
-      required super.viewMode,
-      required super.topHour,
-      required super.bottomHour,
-      required this.yAxisLabel});
+  AmountYLabelPainter({
+    required super.context,
+    required super.viewMode,
+    required super.topHour,
+    required super.bottomHour,
+    required this.yAxisLabel,
+    // required this.widgetMode,
+  });
 
   final String yAxisLabel;
+  // final bool widgetMode;
 
   /// JS
   /// Overrides the parents abstract drawYLabels method and systemically adds labels based on the
   /// value of topHour and the total range (hourDuration) of the list of values passed in.
   @override
   void drawYLabels(Canvas canvas, Size size) {
-    final double labelInterval =
-        (size.height - kXLabelHeight) / (topHour - bottomHour);
+    final double labelInterval = (size.height - kXLabelHeight) / (topHour - bottomHour);
     final int hourDuration = topHour - bottomHour;
     final int timeStep;
     if (hourDuration % 10 == 0 && hourDuration > 48) {

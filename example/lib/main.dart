@@ -23,15 +23,7 @@ class MyApp extends StatelessWidget {
     6.5,
   ];
 
-  final List<double> dataListNegative = [
-    60.0,
-    -12.0,
-    30.0,
-    -30.4,
-    59.0,
-    -59.0,
-    -49.3
-  ];
+  final List<double> dataListNegative = [60.0, -12.0, 30.0, -30.4, 59.0, -59.0, -49.3];
 
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
@@ -107,14 +99,15 @@ class MyApp extends StatelessWidget {
                 sizedBox,
                 const Text('Weekly amount chart'),
                 TimeChart(
-                  data: dataListNegative,
-                  yAxisLabel: '',
+                  data: dataList,
+                  yAxisLabel: 'test',
                   toolTipLabel: 'Degrees',
                   useToday: false,
                   height: 300,
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
+                  widgetMode: false,
                 ),
                 sizedBox,
               ],

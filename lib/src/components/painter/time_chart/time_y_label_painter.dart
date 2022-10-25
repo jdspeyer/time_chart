@@ -13,9 +13,11 @@ class TimeYLabelPainter extends YLabelPainter {
     required super.bottomHour,
     required this.chartHeight,
     required this.topPosition,
+    // required this.widgetMode,
   });
 
   final double chartHeight;
+  // final bool widgetMode;
 
   /// T
   /// Draw an additional label using how far the top deviates during animation, or this is a value for not drawing.
@@ -25,8 +27,7 @@ class TimeYLabelPainter extends YLabelPainter {
   bool _isVisible(double posY, {bool onTolerance = false}) {
     final actualPosY = posY + topPosition;
     final tolerance = onTolerance ? _tolerance : 0;
-    return -tolerance <= actualPosY &&
-        actualPosY <= chartHeight - kXLabelHeight + tolerance;
+    return -tolerance <= actualPosY && actualPosY <= chartHeight - kXLabelHeight + tolerance;
   }
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {

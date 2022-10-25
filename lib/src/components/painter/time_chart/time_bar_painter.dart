@@ -28,6 +28,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     required super.bottomHour,
     required super.dayCount,
     required super.viewMode,
+    // required super.widgetMode,
     super.barColor,
   });
 
@@ -93,8 +94,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   @override
   void drawBar(Canvas canvas, Size size, List<TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
-        scrollController: scrollController,
-        scrollDirection: AxisDirection.left);
+        scrollController: scrollController, scrollDirection: AxisDirection.left);
     final paint = Paint()
       ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
@@ -113,19 +113,19 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       Radius bottomRadius = barRadius;
 
       if (top < 0.0) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+        _drawOutRangedBar(
+            touchyCanvas, paint, size, Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         top = 0.0;
         topRadius = Radius.zero;
       } else if (bottom > maxBottom) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
-            Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
+        _drawOutRangedBar(
+            touchyCanvas, paint, size, Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         bottom = maxBottom;
         bottomRadius = Radius.zero;
       }
 
-      _drawRRect(touchyCanvas, paint, offsetRange.data,
-          Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
+      _drawRRect(touchyCanvas, paint, offsetRange.data, Rect.fromLTRB(left, top, right, bottom),
+          topRadius, bottomRadius);
     }
   }
 
@@ -156,10 +156,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       wakeUp = _convertUsing(topHour, wakeUp);
       top += 24;
     }
-    if ((bottom < sleepTime &&
-        sleepTime < top &&
-        bottom < wakeUp &&
-        wakeUp < top)) return true;
+    if ((bottom < sleepTime && sleepTime < top && bottom < wakeUp && wakeUp < top)) return true;
 
     return false;
   }
@@ -181,29 +178,21 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
 
     final int dayFromScrollOffset = currentDayFromScrollOffset;
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
-    final int startIndex =
-        (dataList as List<DateTimeRange>).getLowerBound(startDateTime);
+    final int startIndex = (dataList as List<DateTimeRange>).getLowerBound(startDateTime);
 
     for (int index = startIndex; index < length; index++) {
-      final wakeUpTimeDouble =
-          (dataList as List<DateTimeRange>)[index].end.toDouble();
-      final sleepAmountDouble =
-          (dataList as List<DateTimeRange>)[index].durationInHours;
-      final barPosition = 1 +
-          (dataList as List<DateTimeRange>)
-              .first
-              .end
-              .differenceDateInDay(dataList[index].end);
+      final wakeUpTimeDouble = (dataList as List<DateTimeRange>)[index].end.toDouble();
+      final sleepAmountDouble = (dataList as List<DateTimeRange>)[index].durationInHours;
+      final barPosition =
+          1 + (dataList as List<DateTimeRange>).first.end.differenceDateInDay(dataList[index].end);
 
-      if (barPosition - dayFromScrollOffset >
-          viewLimitDay + ChartEngine.toleranceDay * 2) break;
+      if (barPosition - dayFromScrollOffset > viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       /// T
       /// To express the passage of time as the left label goes down
       /// Find the difference between a large time value and the current time.
       double normalizedBottom =
-          (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) /
-              pivotHeight;
+          (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) / pivotHeight;
       double normalizedTop = normalizedBottom + sleepAmountDouble / pivotHeight;
 
       if (normalizedTop < 0.0 && normalizedBottom < 0.0) {
@@ -218,8 +207,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       /// T
       /// Skip if there is no need to draw
       if (top == bottom ||
-          _outRangedPivotHour(
-              wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
+          _outRangedPivotHour(wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
       coordinates.add(TimeBarItem(right, top, bottom, dataList[index]));
     }

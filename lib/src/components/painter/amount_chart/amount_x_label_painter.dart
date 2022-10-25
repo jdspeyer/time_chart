@@ -16,5 +16,6 @@ class AmountXLabelPainter extends XLabelPainter {
     required super.firstValueDateTime,
     required super.repaint,
     required super.scrollController,
+    required super.widgetMode,
   });
 }

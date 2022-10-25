@@ -24,6 +24,7 @@ class TimeChart extends StatelessWidget {
     this.activeTooltip = true,
     this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
+    this.widgetMode = false,
   }) :
         // assert(0 <= defaultPivotHour && defaultPivotHour < 24),
         super(key: key);
@@ -39,8 +40,7 @@ class TimeChart extends StatelessWidget {
   /// its typing off of data.
   ///
   /// If data is double --> amount if data is anything else (presumed to be DateTime) --> time.
-  late final ChartType chartType =
-      (data is List<double>) ? ChartType.amount : ChartType.time;
+  late final ChartType chartType = (data is List<double>) ? ChartType.amount : ChartType.time;
 
   /// Optional label for the y-axis
   ///
@@ -142,16 +142,10 @@ class TimeChart extends StatelessWidget {
   /// It must be in the range of 0 to 23.
   final int defaultPivotHour;
 
-  /// - JS Changed
-  /// initState overrided to late set chartType to either amount or time based on the list type of data.
-  /// if double -> amount if datetimerange -> time
+  /// If it's `true` the chart becomes a small widget.
   ///
-  /// Currently unused? This function is never invoked by flutter. I dont believe this override works.
-  /// TODO delete?
-  @override
-  void initState() {
-    //data = (chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
-  }
+  /// Default value is `false`
+  final bool widgetMode;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +158,7 @@ class TimeChart extends StatelessWidget {
         child: Chart(
           key: ValueKey(viewMode),
           chartType: chartType,
-          yAxisLabel: yAxisLabel,
+          yAxisLabel: widgetMode ? "" : yAxisLabel,
           toolTipLabel: toolTipLabel,
           useToday: useToday,
           // toolTipLabelColor: toolTipLabelColor,
@@ -177,9 +171,10 @@ class TimeChart extends StatelessWidget {
           tooltipBackgroundColor: tooltipBackgroundColor,
           tooltipStart: tooltipStart,
           tooltipEnd: tooltipEnd,
-          activeTooltip: activeTooltip,
-          viewMode: viewMode,
+          activeTooltip: widgetMode ? false : activeTooltip,
+          viewMode: widgetMode ? ViewMode.weekly : viewMode,
           defaultPivotHour: defaultPivotHour,
+          widgetMode: widgetMode,
         ),
       );
     });
