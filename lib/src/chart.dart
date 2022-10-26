@@ -44,7 +44,7 @@ class Chart<T> extends StatefulWidget {
     required this.activeTooltip,
     required this.viewMode,
     required this.defaultPivotHour,
-    required this.widgetMode,
+    required this.widgetMode, // JP -- added this for simplified widgets
   }) : super(key: key);
 
   final ChartType chartType;
@@ -63,7 +63,7 @@ class Chart<T> extends StatefulWidget {
   final bool activeTooltip;
   final ViewMode viewMode;
   final int defaultPivotHour;
-  final bool widgetMode;
+  final bool widgetMode; // JP -- added this for simplified widgets
 
   @override
   ChartState createState() => ChartState();
@@ -465,8 +465,11 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
                   width: totalWidth - yLabelWidth,
                   height: widget.height,
                 ),
-                const Positioned.fill(
-                  child: CustomPaint(painter: BorderLinePainter()),
+                Positioned.fill(
+                  child: CustomPaint(
+                      painter: BorderLinePainter(
+                          widgetMode:
+                              widget.widgetMode)), // JP -- added this for simplified widgets
                 ),
                 Positioned.fill(
                   child: NotificationListener<ScrollNotification>(
@@ -600,7 +603,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
           bottomHour: bottomHour!,
           chartHeight: widget.height,
           topPosition: topPosition,
-          // widgetMode: widget.widgetMode,
         );
       case ChartType.amount:
         return AmountYLabelPainter(
@@ -609,7 +611,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
           topHour: topHour!,
           bottomHour: bottomHour!,
           yAxisLabel: widget.yAxisLabel,
-          // widgetMode: widget.widgetMode,
+          widgetMode: widget.widgetMode, // JP -- added this for simplified widgets
         );
     }
   }
@@ -627,7 +629,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
           isFirstDataMovedNextDay: isFirstDataMovedNextDay,
-          // widgetMode: widget.widgetMode,
         );
       case ChartType.amount:
         return AmountXLabelPainter(
@@ -637,7 +638,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
-          widgetMode: widget.widgetMode,
+          widgetMode: widget.widgetMode, // JP -- added this for simplified widgets
         );
     }
   }
@@ -656,7 +657,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         bottomHour: bottomHour!,
         dayCount: dayCount,
         viewMode: widget.viewMode,
-        // widgetMode: widget.widgetMode,
       );
     } else {
       return AmountBarPainter(
@@ -671,7 +671,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         tooltipCallback: _tooltipCallback,
         dayCount: dayCount,
         viewMode: widget.viewMode,
-        // widgetMode: widget.widgetMode,
+        widgetMode: widget.widgetMode, // JP -- added this for simplified widgets
       );
     }
   }

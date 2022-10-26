@@ -20,11 +20,11 @@ class AmountYLabelPainter extends YLabelPainter {
     required super.topHour,
     required super.bottomHour,
     required this.yAxisLabel,
-    // required this.widgetMode,
+    this.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
   });
 
   final String yAxisLabel;
-  // final bool widgetMode;
+  final bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
 
   /// JS
   /// Overrides the parents abstract drawYLabels method and systemically adds labels based on the
@@ -49,13 +49,19 @@ class AmountYLabelPainter extends YLabelPainter {
     }
 
     double posY = 0;
-
-    for (int time = topHour; time >= bottomHour; time = time - timeStep) {
-      drawYText(canvas, size, '$time $yAxisLabel', posY);
-      if (topHour > time && time > bottomHour) {
-        drawHorizontalLine(canvas, size, posY);
+    if (widgetMode == true) {
+      // JP -- added this for simplified widgets for simplified widgets
+      double posY = 10;
+      drawYText(canvas, size, '$topHour', posY);
+      drawYText(canvas, size, '$bottomHour', posY + (size.height - kXLabelHeight));
+    } else {
+      for (int time = topHour; time >= bottomHour; time = time - timeStep) {
+        drawYText(canvas, size, '$time $yAxisLabel', posY);
+        if (topHour > time && time > bottomHour) {
+          drawHorizontalLine(canvas, size, posY);
+        }
+        posY += labelInterval * timeStep;
       }
-      posY += labelInterval * timeStep;
     }
   }
 }

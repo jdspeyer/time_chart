@@ -33,6 +33,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     required super.dayCount,
     required super.viewMode,
     required super.useToday,
+    required super.widgetMode, // JP -- added this for simplified widgets for simplified widgets
     super.barColor,
   });
 
@@ -99,9 +100,21 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
               Rect.fromLTRB(left, top, right, bottom),
               topLeft: barRadius,
               topRight: barRadius,
+              bottomLeft: widgetMode
+                  ? barRadius
+                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+              bottomRight: widgetMode
+                  ? barRadius
+                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
             )
           : RRect.fromRectAndCorners(
               Rect.fromLTRB(left, top, right, bottom),
+              topLeft: widgetMode
+                  ? barRadius
+                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+              topRight: widgetMode
+                  ? barRadius
+                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
               bottomLeft: barRadius,
               bottomRight: barRadius,
             );
@@ -153,11 +166,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     /// amountSum is used to hold the value of the current passed in double.
     /// overwritten each time the for loop executes.
     double amountSum = 0;
-
-    /// JP
-    /// amountSum is used to hold the value of the current passed in double.
-    /// overwritten each time the for loop executes.
-    bool widgetMode;
 
     /// JS
     /// fakeBottomHour is used to avoid the complexities brought on by handling negative numbers.
@@ -215,7 +223,6 @@ class AmountBarItem {
   final double dy;
   final double amount;
   final double dateTime;
-  // final bool widgetMode;
 
   AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }

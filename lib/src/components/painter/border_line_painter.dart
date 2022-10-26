@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 
 class BorderLinePainter extends CustomPainter {
-  const BorderLinePainter();
+  BorderLinePainter({required this.widgetMode});
+  bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -23,10 +24,12 @@ class BorderLinePainter extends CustomPainter {
       ..strokeWidth = kLineStrokeWidth;
 
     final maxHeight = size.height - kXLabelHeight;
-    canvas.drawLine(const Offset(0.0, 0.0), Offset(size.width, 0.0), topPaint);
-    canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, maxHeight), leftPaint);
-    canvas.drawLine(
-        Offset(0.0, maxHeight), Offset(size.width, maxHeight), bottomPaint);
+    if (widgetMode == false) {
+      // JP -- added this for simplified widgets for simplified widgets
+      canvas.drawLine(const Offset(0.0, 0.0), Offset(size.width, 0.0), topPaint);
+      canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, maxHeight), leftPaint);
+      canvas.drawLine(Offset(0.0, maxHeight), Offset(size.width, maxHeight), bottomPaint);
+    }
   }
 
   @override

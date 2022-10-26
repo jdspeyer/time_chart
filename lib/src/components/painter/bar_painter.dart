@@ -23,7 +23,7 @@ abstract class BarPainter<T> extends ChartEngine {
     required this.topHour,
     required this.bottomHour,
     required this.useToday,
-    // required this.widgetMode,
+    this.widgetMode = false,
     this.barColor,
   }) : super(firstValueDateTime: DateTime.now());
 
@@ -33,7 +33,7 @@ abstract class BarPainter<T> extends ChartEngine {
   final int topHour;
   final int bottomHour;
   final bool useToday;
-  // final bool widgetMode;
+  final bool widgetMode;
 
   Radius get barRadius => const Radius.circular(6.0);
 

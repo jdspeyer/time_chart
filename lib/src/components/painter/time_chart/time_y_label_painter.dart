@@ -13,11 +13,9 @@ class TimeYLabelPainter extends YLabelPainter {
     required super.bottomHour,
     required this.chartHeight,
     required this.topPosition,
-    // required this.widgetMode,
   });
 
   final double chartHeight;
-  // final bool widgetMode;
 
   /// T
   /// Draw an additional label using how far the top deviates during animation, or this is a value for not drawing.

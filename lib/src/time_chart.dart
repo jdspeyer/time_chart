@@ -24,7 +24,7 @@ class TimeChart extends StatelessWidget {
     this.activeTooltip = true,
     this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
-    this.widgetMode = false,
+    this.widgetMode = false, // JP -- added this for simplified widgets
   }) :
         // assert(0 <= defaultPivotHour && defaultPivotHour < 24),
         super(key: key);
@@ -158,7 +158,9 @@ class TimeChart extends StatelessWidget {
         child: Chart(
           key: ValueKey(viewMode),
           chartType: chartType,
-          yAxisLabel: widgetMode ? "" : yAxisLabel,
+          yAxisLabel: widgetMode
+              ? ""
+              : yAxisLabel, // JP -- added this for simplified widgets for simplified widgets
           toolTipLabel: toolTipLabel,
           useToday: useToday,
           // toolTipLabelColor: toolTipLabelColor,
@@ -171,10 +173,14 @@ class TimeChart extends StatelessWidget {
           tooltipBackgroundColor: tooltipBackgroundColor,
           tooltipStart: tooltipStart,
           tooltipEnd: tooltipEnd,
-          activeTooltip: widgetMode ? false : activeTooltip,
-          viewMode: widgetMode ? ViewMode.weekly : viewMode,
+          activeTooltip: widgetMode
+              ? false
+              : activeTooltip, // JP -- added this for simplified widgets for simplified widgets
+          viewMode: widgetMode
+              ? ViewMode.weekly
+              : viewMode, // JP -- added this for simplified widgets for simplified widgets
           defaultPivotHour: defaultPivotHour,
-          widgetMode: widgetMode,
+          widgetMode: widgetMode, // JP -- added this for simplified widgets for simplified widgets
         ),
       );
     });

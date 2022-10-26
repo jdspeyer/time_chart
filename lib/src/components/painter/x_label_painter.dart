@@ -15,7 +15,7 @@ abstract class XLabelPainter extends ChartEngine {
     required super.firstValueDateTime,
     required super.repaint,
     required super.scrollController,
-    super.widgetMode = false,
+    super.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
   });
 
   final bool isFirstDataMovedNextDay;
@@ -53,13 +53,18 @@ abstract class XLabelPainter extends ChartEngine {
 
       switch (viewMode) {
         case ViewMode.weekly:
-          text =
-              widgetMode ? weekday[currentDate.weekday % 7][0] : weekday[currentDate.weekday % 7];
+          text = widgetMode
+              ? weekday[currentDate.weekday % 7][0]
+              : weekday[currentDate.weekday %
+                  7]; // JP -- added this for simplified widgets for simplified widgets
           if (currentDate.weekday == DateTime.sunday) isDashed = false;
           moveToYesterday();
           final dx = size.width - (i + 1) * blockWidth!;
           _drawXText(canvas, size, text, dx);
-          _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          if (widgetMode == false) {
+            // JP -- added this for simplified widgets for simplified widgets
+            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          }
           break;
         case ViewMode.monthly:
           text = currentDate.day.toString();

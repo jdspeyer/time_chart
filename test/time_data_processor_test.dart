@@ -47,7 +47,7 @@ Chart _getChart(
     viewMode: ViewMode.weekly,
     defaultPivotHour: defaultPivotHour,
     barColor: Colors.red,
-    widgetMode: false,
+    widgetMode: false, // JP -- added this for simplified widgets for simplified widgets
   );
 }
 

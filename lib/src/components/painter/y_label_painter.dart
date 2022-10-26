@@ -8,12 +8,10 @@ abstract class YLabelPainter extends ChartEngine {
     required super.context,
     required this.topHour,
     required this.bottomHour,
-    // required this.widgetMode,
   });
 
   final int topHour;
   final int bottomHour;
-  // final bool widgetMode;
 
   @override
   @nonVirtual

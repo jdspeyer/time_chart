@@ -10,57 +10,52 @@ class MyApp extends StatelessWidget {
 
   final List<double> dataList = [
     10.2,
-    1.5,
+    0,
     11.0,
     12.1,
     10.4,
     12.6,
     8.7,
-    13.4,
-    11.3,
-    10.7,
-    8,
-    6.5,
   ];
 
   final List<double> dataListNegative = [60.0, -12.0, 30.0, -30.4, 59.0, -59.0, -49.3];
 
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
-      start: DateTime(2022, 10, 7, 9, 0),
-      end: DateTime(2022, 10, 7, 15, 0),
+      start: DateTime(2022, 10, 26, 9, 0),
+      end: DateTime(2022, 10, 26, 15, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 7, 6, 0),
-      end: DateTime(2022, 10, 7, 8, 0),
+      start: DateTime(2022, 10, 25, 6, 0),
+      end: DateTime(2022, 10, 25, 8, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 6, 6, 0),
-      end: DateTime(2022, 10, 6, 10, 0),
+      start: DateTime(2022, 10, 24, 6, 0),
+      end: DateTime(2022, 10, 24, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 5, 6, 0),
-      end: DateTime(2022, 10, 5, 10, 0),
+      start: DateTime(2022, 10, 23, 6, 0),
+      end: DateTime(2022, 10, 23, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 4, 6, 0),
-      end: DateTime(2022, 10, 4, 10, 0),
+      start: DateTime(2022, 10, 22, 6, 0),
+      end: DateTime(2022, 10, 22, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 3, 6, 0),
-      end: DateTime(2022, 10, 3, 10, 0),
+      start: DateTime(2022, 10, 21, 6, 0),
+      end: DateTime(2022, 10, 21, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 2, 6, 0),
-      end: DateTime(2022, 10, 2, 10, 0),
+      start: DateTime(2022, 10, 20, 6, 0),
+      end: DateTime(2022, 10, 20, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 10, 1, 6, 0),
-      end: DateTime(2022, 10, 1, 10, 0),
+      start: DateTime(2022, 10, 19, 6, 0),
+      end: DateTime(2022, 10, 19, 10, 0),
     ),
     DateTimeRange(
-      start: DateTime(2022, 9, 30, 6, 0),
-      end: DateTime(2022, 9, 30, 10, 0),
+      start: DateTime(2022, 10, 18, 6, 0),
+      end: DateTime(2022, 10, 18, 10, 0),
     ),
   ];
 
@@ -86,8 +81,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const sizedBox = SizedBox(height: 16);
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Time chart example app')),
@@ -96,20 +89,54 @@ class MyApp extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                sizedBox,
                 const Text('Weekly amount chart'),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 180,
+                      height: 250,
+                      child: TimeChart(
+                        data: dataList,
+                        yAxisLabel: 'test',
+                        toolTipLabel: 'Degrees',
+                        useToday: false,
+                        width: 180,
+                        height: 230,
+                        tooltipBackgroundColor: Colors.white,
+                        viewMode: ViewMode.weekly,
+                        barColor: Colors.deepPurple,
+                        widgetMode: true, // JP -- added this for simplified widgets
+                      ),
+                    ),
+                    SizedBox(
+                      width: 180,
+                      height: 200,
+                      child: TimeChart(
+                        data: dataListNegative,
+                        yAxisLabel: 'test',
+                        toolTipLabel: 'Degrees',
+                        useToday: false,
+                        width: 180,
+                        height: 180,
+                        tooltipBackgroundColor: Colors.white,
+                        viewMode: ViewMode.weekly,
+                        barColor: Colors.deepPurple,
+                        widgetMode: true, // JP -- added this for simplified widgets
+                      ),
+                    ),
+                  ],
+                ),
                 TimeChart(
-                  data: dataList,
+                  data: dataListTime,
                   yAxisLabel: 'test',
                   toolTipLabel: 'Degrees',
                   useToday: false,
-                  height: 300,
+                  width: 300,
+                  height: 250,
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
-                  widgetMode: false,
                 ),
-                sizedBox,
               ],
             ),
           ),
