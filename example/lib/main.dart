@@ -16,6 +16,9 @@ class MyApp extends StatelessWidget {
     10.4,
     12.6,
     8.7,
+    6.2,
+    8.3,
+    9.7,
   ];
 
   final List<double> dataListNegative = [60.0, -12.0, 30.0, -30.4, 59.0, -59.0, -49.3];

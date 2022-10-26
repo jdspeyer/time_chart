@@ -135,8 +135,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
     GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
 
     _addScrollNotifier();
-    print("widget.data: ${widget.data}");
-
     processData(widget, _getFirstItemDate());
   }
 
@@ -165,11 +163,6 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
   DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
     return widget.chartType == ChartType.amount ? DateTime.now() : DateTime.now();
   }
-  // DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
-  //   return widget.chartType == ChartType.amount
-  //       ? DateTime.now()
-  //       : widget.data.first.end.dateWithoutTime().add(addition);
-  // }
 
   void _addScrollNotifier() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -656,7 +649,7 @@ class ChartState extends State<Chart> with TickerProviderStateMixin, TimeDataPro
         topHour: topHour!,
         bottomHour: bottomHour!,
         dayCount: dayCount,
-        viewMode: widget.viewMode,
+        viewMode: widget.viewMode, // JP -- added this for simplified widgets
       );
     } else {
       return AmountBarPainter(

@@ -150,6 +150,7 @@ class TimeChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('$chartType Is the type of chart we are going to construct <--');
+    print(data);
     return LayoutBuilder(builder: (_, box) {
       final actualWidth = width ?? box.maxWidth;
       return SizedBox(
