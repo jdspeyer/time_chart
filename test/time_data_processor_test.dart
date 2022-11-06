@@ -31,24 +31,30 @@ Chart _getChart(
   ChartType chartType = ChartType.time,
 }) {
   return Chart(
-    chartType: chartType,
-    width: 300,
-    height: 400,
-    yAxisLabel: "test",
-    toolTipLabel: "Test",
-    useToday: true,
-    data: data,
-    timeChartSizeAnimationDuration: const Duration(milliseconds: 300),
-    tooltipDuration: const Duration(milliseconds: 500),
-    tooltipBackgroundColor: Colors.black,
-    tooltipStart: "START",
-    tooltipEnd: "END",
-    activeTooltip: true,
-    viewMode: ViewMode.weekly,
-    defaultPivotHour: defaultPivotHour,
-    barColor: Colors.red,
-    widgetMode: false, // JP -- added this for simplified widgets for simplified widgets
-  );
+      chartType: chartType,
+      width: 300,
+      height: 400,
+      yAxisLabel: "test",
+      toolTipLabel: "Test",
+      useToday: true,
+      data: data,
+      dataTime: data,
+      dataDouble: data,
+      timeChartSizeAnimationDuration: const Duration(milliseconds: 300),
+      tooltipDuration: const Duration(milliseconds: 500),
+      tooltipBackgroundColor: Colors.black,
+      tooltipStart: "START",
+      tooltipEnd: "END",
+      activeTooltip: true,
+      viewMode: ViewMode.weekly,
+      defaultPivotHour: defaultPivotHour,
+      barColor: Colors.red,
+      detailColor: Colors.red,
+      toggleButton: false,
+      widgetMode: false,
+      isDateTime:
+          true // JP -- added this for simplified widgets for simplified widgets
+      );
 }
 
 void main() {
@@ -97,7 +103,8 @@ void main() {
       expect(processor.bottomHour, 9);
     });
 
-    testWidgets('compare and merge time for setting pivot hours', (tester) async {
+    testWidgets('compare and merge time for setting pivot hours',
+        (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
         DateTimeRange(
@@ -123,7 +130,8 @@ void main() {
       expect(processor.bottomHour, 9);
     });
 
-    testWidgets('default pivot hours is used if there are no space', (tester) async {
+    testWidgets('default pivot hours is used if there are no space',
+        (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
         DateTimeRange(
@@ -151,7 +159,9 @@ void main() {
       expect(processor.bottomHour, chart.defaultPivotHour);
     });
 
-    testWidgets('set both pivot hours to 12 AM if both pivot hours are the same', (tester) async {
+    testWidgets(
+        'set both pivot hours to 12 AM if both pivot hours are the same',
+        (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
         DateTimeRange(
@@ -167,7 +177,8 @@ void main() {
       expect(processor.bottomHour, chart.defaultPivotHour);
     });
 
-    testWidgets('custom defaultPivotHour parameter is used if time range is fully visible',
+    testWidgets(
+        'custom defaultPivotHour parameter is used if time range is fully visible',
         (tester) async {
       const pivotHour = 2;
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
@@ -183,7 +194,8 @@ void main() {
       expect(processor.bottomHour, pivotHour);
     });
 
-    testWidgets('all data is not changed to next day if the bottom pivot hour is 12 AM',
+    testWidgets(
+        'all data is not changed to next day if the bottom pivot hour is 12 AM',
         (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = DateTimeRange(
@@ -197,7 +209,8 @@ void main() {
       expect(processor.isFirstDataMovedNextDay, isFalse);
     });
 
-    testWidgets('data that is in between the bottom hour and 12 AM will be changed to the next day',
+    testWidgets(
+        'data that is in between the bottom hour and 12 AM will be changed to the next day',
         (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
@@ -220,7 +233,8 @@ void main() {
       expect(processor.isFirstDataMovedNextDay, isTrue);
     });
 
-    testWidgets('show empty graph if there is no data when chart type is time', (tester) async {
+    testWidgets('show empty graph if there is no data when chart type is time',
+        (tester) async {
       const pivotHour = 18;
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final List<DateTimeRange> data = [];
@@ -236,7 +250,9 @@ void main() {
   });
 
   group('AmountChart data processor', () {
-    testWidgets('shows empty graph if there is no data when chart type is amount', (tester) async {
+    testWidgets(
+        'shows empty graph if there is no data when chart type is amount',
+        (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final List<DateTimeRange> data = [];
 
@@ -248,7 +264,8 @@ void main() {
       expect(
         processor.topHour,
         8,
-        reason: '8 Hours is used as `topHour` if there is no data when the type is amount',
+        reason:
+            '8 Hours is used as `topHour` if there is no data when the type is amount',
       );
     });
 
@@ -264,7 +281,8 @@ void main() {
       expect(processor.dayCount!, equals(0));
     });
 
-    testWidgets('sets dayCount correctly if chart has only one data', (tester) async {
+    testWidgets('sets dayCount correctly if chart has only one data',
+        (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
         DateTimeRange(

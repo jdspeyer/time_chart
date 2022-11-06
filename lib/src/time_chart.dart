@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'chart.dart';
 import 'components/chart_type.dart';
+import 'dart:math';
 import 'components/view_mode.dart';
+import './components/utils/time_converter.dart';
 
 /// The padding to prevent cut off the top of the chart.
 const double kTimeChartTopPadding = 4.0;
@@ -12,15 +14,19 @@ class TimeChart extends StatelessWidget {
     this.yAxisLabel = 'hr',
     this.toolTipLabel = 'hr',
     this.useToday = true,
+    this.chartType = ChartType.time,
     this.width,
     this.height = 280.0,
     this.barColor,
+    this.detailColor,
+    this.toggleButton = false,
     required this.data,
     this.timeChartSizeAnimationDuration = const Duration(milliseconds: 300),
     this.tooltipDuration = const Duration(seconds: 7),
     this.tooltipBackgroundColor,
     this.tooltipStart = "START",
     this.tooltipEnd = "END",
+    this.eventDuration = 5.0,
     this.activeTooltip = true,
     this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
@@ -40,7 +46,11 @@ class TimeChart extends StatelessWidget {
   /// its typing off of data.
   ///
   /// If data is double --> amount if data is anything else (presumed to be DateTime) --> time.
-  late final ChartType chartType = (data is List<double>) ? ChartType.amount : ChartType.time;
+  // late final ChartType chartType =
+  //     (data is List<double>) ? ChartType.amount : ChartType.time;
+  ///
+  ///Updated
+  final ChartType chartType;
 
   /// Optional label for the y-axis
   ///
@@ -51,6 +61,7 @@ class TimeChart extends StatelessWidget {
   ///
   /// Default is empty which will leave tooltip display as is.
   final String toolTipLabel;
+  final double eventDuration;
 
   /// Optional boolean field whether to use the current date or the previous days date
   ///
@@ -79,6 +90,8 @@ class TimeChart extends StatelessWidget {
   ///
   /// Default is the `Theme.of(context).colorScheme.secondary`.
   final Color? barColor;
+  final Color? detailColor;
+  late final Color? altColor = detailColor ?? barColor;
 
   /// The list of [double] or [DateTime].
   ///
@@ -89,6 +102,15 @@ class TimeChart extends StatelessWidget {
   /// assert(data[0].isAfter(data[1])); // true
   /// ```
   final data;
+  late final dataList = (chartType == ChartType.time)
+      ? (data is List<DateTimeRange>
+          ? data
+          : (data is List<DateTime>)
+              ? TimeConverter.timeToTimeRange(data, eventDuration)
+              : TimeConverter.doublesToTime(data, useToday))
+      : (data is List<double>
+          ? data
+          : TimeConverter.timeToDoubles(data, false));
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -147,10 +169,17 @@ class TimeChart extends StatelessWidget {
   /// Default value is `false`
   final bool widgetMode;
 
+  /// Enable the chart toggle button
+  final bool toggleButton;
+
   @override
   Widget build(BuildContext context) {
     print('$chartType Is the type of chart we are going to construct <--');
-    print(data);
+    bool isDateTime = false;
+    if (data is List<DateTime>) {
+      isDateTime = true;
+    }
+
     return LayoutBuilder(builder: (_, box) {
       final actualWidth = width ?? box.maxWidth;
       return SizedBox(
@@ -158,7 +187,11 @@ class TimeChart extends StatelessWidget {
         width: actualWidth,
         child: Chart(
           key: ValueKey(viewMode),
-          chartType: chartType,
+          chartType: data is List<double>
+              ? (data as List<double>).reduce(min) >= 0.0
+                  ? chartType
+                  : ChartType.amount
+              : chartType,
           yAxisLabel: widgetMode
               ? ""
               : yAxisLabel, // JP -- added this for simplified widgets for simplified widgets
@@ -168,7 +201,19 @@ class TimeChart extends StatelessWidget {
           width: actualWidth,
           height: height,
           barColor: barColor,
-          data: data,
+          detailColor: altColor,
+          data: dataList,
+          dataTime: data is List<DateTimeRange>
+              ? data
+              : data is List<double>
+                  ? TimeConverter.doublesToTime(data, useToday)
+                  : TimeConverter.timeToTimeRange(data, eventDuration),
+          dataDouble: data is List<double>
+              ? data
+              : data is List<DateTimeRange>
+                  ? TimeConverter.timeToDoubles(data, false)
+                  : TimeConverter.timeToDoubles(
+                      TimeConverter.timeToTimeRange(data, eventDuration), true),
           timeChartSizeAnimationDuration: timeChartSizeAnimationDuration,
           tooltipDuration: tooltipDuration,
           tooltipBackgroundColor: tooltipBackgroundColor,
@@ -180,8 +225,15 @@ class TimeChart extends StatelessWidget {
           viewMode: widgetMode
               ? ViewMode.weekly
               : viewMode, // JP -- added this for simplified widgets for simplified widgets
+          toggleButton: data is List<double>
+              ? (data as List<double>).reduce(min) >= 0.0
+                  ? toggleButton
+                  : false
+              : toggleButton,
           defaultPivotHour: defaultPivotHour,
-          widgetMode: widgetMode, // JP -- added this for simplified widgets for simplified widgets
+          widgetMode:
+              widgetMode, // JP -- added this for simplified widgets for simplified widgets
+          isDateTime: isDateTime,
         ),
       );
     });

@@ -21,7 +21,15 @@ class MyApp extends StatelessWidget {
     9.7,
   ];
 
-  final List<double> dataListNegative = [60.0, -12.0, 30.0, -30.4, 59.0, -59.0, -49.3];
+  final List<double> dataListNegative = [
+    60.0,
+    -12.0,
+    30.0,
+    -30.4,
+    59.0,
+    -59.0,
+    -49.3
+  ];
 
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
@@ -62,6 +70,42 @@ class MyApp extends StatelessWidget {
     ),
   ];
 
+  final List<DateTime> dataListSingleTimes = [
+    DateTime(2022, 10, 26, 15, 0),
+    DateTime(2022, 10, 26, 14, 0),
+    DateTime(2022, 10, 25, 13, 0),
+    DateTime(2022, 10, 25, 12, 0),
+    DateTime(2022, 10, 25, 10, 0),
+    DateTime(2022, 10, 24, 15, 0),
+    DateTime(2022, 10, 24, 14, 0),
+  ];
+
+  final List<DateTime> dataListSingleTimesSmallGap = [
+    DateTime(2022, 10, 26, 15, 0),
+    DateTime(2022, 10, 26, 14, 0),
+    DateTime(2022, 10, 25, 15, 0),
+    DateTime(2022, 10, 25, 14, 0),
+    DateTime(2022, 10, 24, 15, 0),
+    DateTime(2022, 10, 24, 14, 0),
+  ];
+
+  final List<DateTime> dataListSingleTimesLargeGap = [
+    DateTime(2022, 10, 26, 23, 0),
+    DateTime(2022, 10, 26, 1, 0),
+    DateTime(2022, 10, 25, 13, 0),
+    DateTime(2022, 10, 25, 12, 0),
+    DateTime(2022, 10, 24, 15, 0),
+    DateTime(2022, 10, 24, 14, 0),
+    DateTime(2022, 10, 23, 8, 0),
+    DateTime(2022, 10, 23, 5, 0),
+    DateTime(2022, 10, 23, 2, 0),
+    DateTime(2022, 10, 23, 1, 0),
+    DateTime(2022, 10, 22, 12, 0),
+    DateTime(2022, 10, 22, 5, 0),
+    DateTime(2022, 10, 22, 3, 0),
+    DateTime(2022, 10, 20, 2, 0),
+  ];
+
   // final List<DateTimeRange> emptyDataList = [];
 
   // List<DateTimeRange> getRandomSampleDataList() {
@@ -92,53 +136,138 @@ class MyApp extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const Text('Weekly amount chart'),
+                const Text('Time Chart Base'),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 180,
-                      height: 250,
-                      child: TimeChart(
-                        data: dataList,
-                        yAxisLabel: 'test',
-                        toolTipLabel: 'Degrees',
-                        useToday: false,
-                        width: 180,
-                        height: 230,
-                        tooltipBackgroundColor: Colors.white,
-                        viewMode: ViewMode.weekly,
-                        barColor: Colors.deepPurple,
-                        widgetMode: true, // JP -- added this for simplified widgets
-                      ),
-                    ),
-                    SizedBox(
-                      width: 180,
-                      height: 200,
-                      child: TimeChart(
-                        data: dataListNegative,
-                        yAxisLabel: 'test',
-                        toolTipLabel: 'Degrees',
-                        useToday: false,
-                        width: 180,
-                        height: 180,
-                        tooltipBackgroundColor: Colors.white,
-                        viewMode: ViewMode.weekly,
-                        barColor: Colors.deepPurple,
-                        widgetMode: true, // JP -- added this for simplified widgets
-                      ),
-                    ),
+                    // SizedBox(
+                    //   width: 180,
+                    //   height: 250,
+                    //   child: TimeChart(
+                    //     data: dataList,
+                    //     chartType: ChartType.amount,
+                    //     yAxisLabel: 'test',
+                    //     toolTipLabel: 'Degrees',
+                    //     useToday: false,
+                    //     width: 180,
+                    //     height: 230,
+                    //     tooltipBackgroundColor: Colors.white,
+                    //     viewMode: ViewMode.weekly,
+                    //     barColor: Colors.deepPurple,
+                    //     widgetMode:
+                    //         false, // JP -- added this for simplified widgets
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   width: 180,
+                    //   height: 200,
+                    //   child: TimeChart(
+                    //     data: dataListTime,
+                    //     yAxisLabel: 'test',
+                    //     toolTipLabel: 'Degrees',
+                    //     useToday: false,
+                    //     width: 180,
+                    //     height: 180,
+                    //     tooltipBackgroundColor: Colors.white,
+                    //     viewMode: ViewMode.weekly,
+                    //     barColor: Colors.deepPurple,
+                    //     widgetMode:
+                    //         true, // JP -- added this for simplified widgets
+                    //   ),
+                    // ),
                   ],
                 ),
                 TimeChart(
-                  data: dataListTime,
-                  yAxisLabel: 'test',
+                  data: dataListNegative,
+                  chartType: ChartType.amount,
+                  yAxisLabel: '°',
                   toolTipLabel: 'Degrees',
                   useToday: false,
                   width: 300,
-                  height: 250,
+                  height: 200,
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
+                  detailColor: Colors.blue,
+                  widgetMode: false,
+                  toggleButton: true,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                ),
+                const Text('Amount Chart Base'),
+                TimeChart(
+                  data: dataListTime,
+                  chartType: ChartType.time,
+                  yAxisLabel: '',
+                  toolTipLabel: 'Degrees',
+                  useToday: true,
+                  width: 300,
+                  height: 200,
+                  tooltipBackgroundColor: Colors.white,
+                  viewMode: ViewMode.weekly,
+                  barColor: Colors.deepPurple,
+                  detailColor: Colors.blue,
+                  widgetMode: false,
+                  toggleButton: true,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                ),
+                const Text('Set Duration Chart - Normal'),
+                TimeChart(
+                  data: dataListSingleTimes,
+                  chartType: ChartType.time,
+                  yAxisLabel: '',
+                  toolTipLabel: 'Degrees',
+                  useToday: true,
+                  width: 300,
+                  height: 200,
+                  tooltipBackgroundColor: Colors.white,
+                  viewMode: ViewMode.weekly,
+                  barColor: Colors.deepPurple,
+                  detailColor: Colors.blue,
+                  widgetMode: false,
+                  toggleButton: true,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                ),
+                const Text('Set Duration Chart - Large Gap'),
+                TimeChart(
+                  data: dataListSingleTimesLargeGap,
+                  chartType: ChartType.time,
+                  yAxisLabel: '',
+                  toolTipLabel: ' Drops',
+                  useToday: false,
+                  width: 300,
+                  height: 200,
+                  tooltipBackgroundColor: Colors.white,
+                  viewMode: ViewMode.weekly,
+                  barColor: Colors.deepPurple,
+                  detailColor: Colors.blue,
+                  widgetMode: false,
+                  toggleButton: true,
+                  eventDuration: 25,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                ),
+                const Text('Set Duration Chart - Small Gap'),
+                TimeChart(
+                  data: dataListSingleTimesSmallGap,
+                  chartType: ChartType.time,
+                  yAxisLabel: '',
+                  toolTipLabel: ' Drops',
+                  useToday: false,
+                  width: 300,
+                  height: 200,
+                  tooltipBackgroundColor: Colors.white,
+                  viewMode: ViewMode.weekly,
+                  barColor: Colors.deepPurple,
+                  detailColor: Colors.blue,
+                  widgetMode: false,
+                  toggleButton: true,
+                  eventDuration: 25,
                 ),
               ],
             ),

@@ -17,6 +17,7 @@ class TooltipOverlay extends StatelessWidget {
     required this.chartType,
     required this.yAxisLabel,
     required this.toolTipLabel,
+    required this.isDateTime,
     required this.useToday,
     this.timeRange,
     this.bottomHour,
@@ -33,6 +34,7 @@ class TooltipOverlay extends StatelessWidget {
   final ChartType chartType;
   final String yAxisLabel;
   final String toolTipLabel;
+  final bool isDateTime;
   final bool useToday;
   final int? bottomHour;
   final DateTimeRange? timeRange;
@@ -70,6 +72,7 @@ class TooltipOverlay extends StatelessWidget {
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange!),
           toolTipLabel: toolTipLabel,
+          isDateTime: isDateTime,
           useToday: useToday,
           start: start,
           end: end,
@@ -91,7 +94,11 @@ class TooltipOverlay extends StatelessWidget {
       child: Container(
         decoration: ShapeDecoration(
           color: backgroundColor ?? themeData.dialogBackgroundColor,
-          shape: TooltipShapeBorder(direction: direction),
+          shape: TooltipShapeBorder(
+            direction: direction,
+            isDateTime: isDateTime,
+            chartType: chartType,
+          ),
           shadows: const [
             BoxShadow(
               color: Colors.black45,
@@ -111,6 +118,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
     Key? key,
     required this.toolTipLabel,
+    required this.isDateTime,
     required this.useToday,
     required this.timeRange,
     required this.start,
@@ -121,6 +129,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   final String start;
   final String end;
   final String toolTipLabel;
+  final bool isDateTime;
   final bool useToday;
 
   DateTime get _sleepTime => timeRange.start;
@@ -166,16 +175,17 @@ class _TimeTooltipOverlay extends StatelessWidget {
             _timeTile(context, _sleepTime),
           ],
         ),
-        const Expanded(child: Divider()),
-        Text(end, style: bodyTextStyle, textScaleFactor: 1.0),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            _timeTile(context, _wakeUp),
-          ],
-        ),
+        if (!isDateTime) const Expanded(child: Divider()),
+        if (!isDateTime) Text(end, style: bodyTextStyle, textScaleFactor: 1.0),
+        if (!isDateTime)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              _timeTile(context, _wakeUp),
+            ],
+          ),
         Text(
           translations.compactDateTimeRange(
               DateTimeRange(start: _sleepTime, end: _wakeUp)),
@@ -189,9 +199,10 @@ class _TimeTooltipOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const size = kTimeTooltipSize;
+    const dateTimeSize = kTimeTooltipSizeSmall;
     return SizedBox(
       width: size.width,
-      height: size.height,
+      height: !isDateTime ? size.height : dateTimeSize.height,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: _buildContent(context),
