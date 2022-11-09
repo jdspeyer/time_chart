@@ -31,7 +31,7 @@ class _ChartToggle extends State<ChartToggle> {
       padding: const EdgeInsets.all(10.0),
       child: InkWell(
           radius: 50,
-          borderRadius: BorderRadius.circular(100.0),
+          // borderRadius: BorderRadius.circular(1.0),
           onTap: () {
             if (widget.type) {
               widget.chart.widget.data = widget.doubleData;
@@ -46,18 +46,41 @@ class _ChartToggle extends State<ChartToggle> {
             });
           },
           child: Container(
-            padding: const EdgeInsets.all(6.0),
-            child: (widget.type)
-                ? Icon(CupertinoIcons.clock,
-                    color: widget.chart.widget.tooltipBackgroundColor)
-                : Icon(CupertinoIcons.chart_bar_circle,
-                    color: widget.chart.widget.tooltipBackgroundColor),
+            padding: EdgeInsets.only(right: 3.0, left: 3.0, bottom: 3.0, top: 1.0),
             decoration: BoxDecoration(
               color: widget.chart.widget.detailColor,
               shape: BoxShape.circle,
             ),
+            child: (widget.type)
+                ? Icon(CupertinoIcons.clock, color: widget.chart.widget.tooltipBackgroundColor)
+                : Icon(CupertinoIcons.chart_bar_circle,
+                    color: widget.chart.widget.tooltipBackgroundColor),
           )),
     );
+
+    // return TextButton(
+    //   style: TextButton.styleFrom(
+    //     backgroundColor: Colors.purple,
+    //     shape: CircleBorder(),
+    //   ),
+    //   child: (widget.type)
+    //       ? Icon(CupertinoIcons.clock, color: widget.chart.widget.tooltipBackgroundColor)
+    //       : Icon(CupertinoIcons.chart_bar_circle,
+    //           color: widget.chart.widget.tooltipBackgroundColor),
+    //   onPressed: () {
+    //         if (widget.type) {
+    //           widget.chart.widget.data = widget.doubleData;
+    //           widget.chart.widget.chartType = ChartType.amount;
+    //         } else {
+    //           widget.chart.widget.data = widget.timeData;
+    //           widget.chart.widget.chartType = ChartType.time;
+    //         }
+
+    //         widget.chart.setState(() {
+    //           widget.chart.timerCallback();
+    //         });
+    //       },,
+    // );
 
     // return IconButton(
     //   onPressed: () {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/time_chart.dart';
 
@@ -21,15 +22,7 @@ class MyApp extends StatelessWidget {
     9.7,
   ];
 
-  final List<double> dataListNegative = [
-    60.0,
-    -12.0,
-    30.0,
-    -30.4,
-    59.0,
-    -59.0,
-    -49.3
-  ];
+  final List<double> dataListNegative = [0.0, -12.0, 1.0, -30.4, 0.0, -59.0, -49.3];
 
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
@@ -128,6 +121,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenHeight = MediaQuery.of(context).size.height;
+
+    // double rectangleWidgetWidth = screenWidth * .95;
+    // double squareWidgetWidth = rectangleWidgetWidth * .48;
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Time chart example app')),
@@ -138,42 +137,71 @@ class MyApp extends StatelessWidget {
               children: [
                 const Text('Time Chart Base'),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // SizedBox(
-                    //   width: 180,
-                    //   height: 250,
-                    //   child: TimeChart(
-                    //     data: dataList,
-                    //     chartType: ChartType.amount,
-                    //     yAxisLabel: 'test',
-                    //     toolTipLabel: 'Degrees',
-                    //     useToday: false,
-                    //     width: 180,
-                    //     height: 230,
-                    //     tooltipBackgroundColor: Colors.white,
-                    //     viewMode: ViewMode.weekly,
-                    //     barColor: Colors.deepPurple,
-                    //     widgetMode:
-                    //         false, // JP -- added this for simplified widgets
-                    //   ),
-                    // ),
-                    // SizedBox(
-                    //   width: 180,
-                    //   height: 200,
-                    //   child: TimeChart(
-                    //     data: dataListTime,
-                    //     yAxisLabel: 'test',
-                    //     toolTipLabel: 'Degrees',
-                    //     useToday: false,
-                    //     width: 180,
-                    //     height: 180,
-                    //     tooltipBackgroundColor: Colors.white,
-                    //     viewMode: ViewMode.weekly,
-                    //     barColor: Colors.deepPurple,
-                    //     widgetMode:
-                    //         true, // JP -- added this for simplified widgets
-                    //   ),
-                    // ),
+                    InkWell(
+                      child: Container(
+                        height: 180,
+                        width: 180,
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10.0),
+                                      child: Text(
+                                        "Test Widget",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: IconButton(
+                                          icon: const Icon(CupertinoIcons.forward),
+                                          onPressed: () => () {},
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 15.0),
+                                      child: TimeChart(
+                                        data: dataListNegative,
+                                        useToday: false,
+                                        chartType: ChartType.amount,
+                                        height: 110,
+                                        // width: 120,
+                                        viewMode: ViewMode.weekly,
+                                        barColor: Colors.deepOrangeAccent,
+                                        widgetMode: true,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 TimeChart(
@@ -206,7 +234,7 @@ class MyApp extends StatelessWidget {
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
-                  detailColor: Colors.blue,
+                  detailColor: Colors.purple,
                   widgetMode: false,
                   toggleButton: true,
                 ),

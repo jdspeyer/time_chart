@@ -51,9 +51,9 @@ abstract class BarPainter<T> extends ChartEngine {
   @protected
   // This is for chart.time only
   DateTime getBarRenderStartDateTime(List dataList) {
-    print(dataList.first.end.add(Duration(
-      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
-    )));
+    // print(dataList.first.end.add(Duration(
+    //   days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+    // )));
     return dataList.first.end.add(Duration(
       days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
     ));

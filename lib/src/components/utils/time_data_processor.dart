@@ -65,12 +65,12 @@ mixin TimeDataProcessor {
     // Amount Chart - JS
     if (chart.data is List<double>) {
       _processedData = [...chart.data];
-      print("_processedData: $_processedData");
+      // print("_processedData: $_processedData");
     }
     // Time Chart - JS
     else {
       _processedDataTime = [...chart.data];
-      print("_processedDataTime: $_processedDataTime");
+      // print("_processedDataTime: $_processedDataTime");
     }
 
     // Both Charts - JS
@@ -158,8 +158,7 @@ mixin TimeDataProcessor {
 
     _inRangeDataList.clear();
 
-    DateTime postEndTime =
-        dataList.first.end.add(_oneDayDuration).dateWithoutTime();
+    DateTime postEndTime = dataList.first.end.add(_oneDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(
@@ -169,7 +168,7 @@ mixin TimeDataProcessor {
       }
       //final currentTime = dataList[i].end.dateWithoutTime();
       final currentTime = dataList[i].end.dateWithoutTime();
-      print("currentTime: $currentTime");
+      // print("currentTime: $currentTime");
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
         final difference = postEndTime.differenceDateInDay(currentTime);
@@ -178,14 +177,13 @@ mixin TimeDataProcessor {
       }
       postEndTime = currentTime;
 
-      if (renderStartTime.isBefore(currentTime) &&
-          currentTime.isBefore(renderEndTime)) {
+      if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
         _inRangeDataList.add(dataList[i]);
       } else {
         _inRangeDataList.add(dataList[i]);
       }
     }
-    print("_inRangeDataList: $_inRangeDataList");
+    // print("_inRangeDataList: $_inRangeDataList");
   }
 
   /// [bottomHour]과 24시(정확히는 0시) 사이에 [timeDouble]이 위치한 경우 `true`를 반환한다.
@@ -216,8 +214,7 @@ mixin TimeDataProcessor {
       final double startTimeDouble = startTime.toDouble();
       final double endTimeDouble = endTime.toDouble();
 
-      if (_isNextCellPosition(startTimeDouble) &&
-          _isNextCellPosition(endTimeDouble)) {
+      if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
         _processedDataTime[i] = DateTimeRange(
           start: startTime.add(_oneDayDuration),
           end: endTime.add(_oneDayDuration),
@@ -241,8 +238,7 @@ mixin TimeDataProcessor {
 
     // 빈 공간 중 범위가 가장 넓은 부분을 찾는다.
     final len = rangeList.length;
-    _TimePair resultPair =
-        _TimePair(rangeList[0].startTime, rangeList[0].endTime);
+    _TimePair resultPair = _TimePair(rangeList[0].startTime, rangeList[0].endTime);
     double maxInterval = 0.0;
 
     for (int i = 0; i < len; ++i) {
@@ -270,8 +266,7 @@ mixin TimeDataProcessor {
     List<_TimePair> rangeList = [];
 
     for (int i = 0; i < dataList.length; ++i) {
-      final curSleepPair =
-          _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
+      final curSleepPair = _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
 
       // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
       if (curSleepPair.startTime > curSleepPair.endTime) {
@@ -299,13 +294,12 @@ mixin TimeDataProcessor {
 
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
-      if (timePair.inRange(curPair.startTime) &&
-          timePair.inRange(curPair.endTime)) rangeList.removeAt(i--);
+      if (timePair.inRange(curPair.startTime) && timePair.inRange(curPair.endTime))
+        rangeList.removeAt(i--);
     }
 
     for (int i = 0; i < rangeList.length; ++i) {
-      final _TimePair curSleepPair =
-          _TimePair(rangeList[i].startTime, rangeList[i].endTime);
+      final _TimePair curSleepPair = _TimePair(rangeList[i].startTime, rangeList[i].endTime);
 
       if (loIdx == -1 && curSleepPair.inRange(timePair.startTime)) {
         loIdx = i;
@@ -318,8 +312,7 @@ mixin TimeDataProcessor {
       }
     }
 
-    final newSleepPair = _TimePair(
-        loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
+    final newSleepPair = _TimePair(loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
         hiIdx == -1 ? timePair.endTime : rangeList[hiIdx].endTime);
 
     if (loIdx != -1 && loIdx == hiIdx) {
@@ -365,8 +358,7 @@ mixin TimeDataProcessor {
 
         // This is what does the height
         if (i == len - 1 ||
-            dataList[i].end.dateWithoutTime() !=
-                dataList[i + 1].end.dateWithoutTime()) {
+            dataList[i].end.dateWithoutTime() != dataList[i + 1].end.dateWithoutTime()) {
           maxResult = max(maxResult, sum);
           sum = 0.0;
         }
