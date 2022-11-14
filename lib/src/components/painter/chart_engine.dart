@@ -76,7 +76,7 @@ abstract class ChartEngine extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     tp.layout();
-    _rightMargin = tp.width + kYLabelMargin;
+    _rightMargin = widgetMode ? tp.width - 2 : tp.width + kYLabelMargin;
   }
 
   void setDefaultValue(Size size) {

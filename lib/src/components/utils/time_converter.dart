@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class TimeConverter {
   // Converter
-  static List<double> timeToDoubles(
-      List<DateTimeRange> timeRanges, isDateTime) {
+  static List<double> timeToDoubles(List<DateTimeRange> timeRanges, isDateTime) {
     Map<String, double> dataDoublesMap = {};
     List<double> dataDoublesList = [];
     List<int> durations = [];
@@ -26,9 +25,8 @@ class TimeConverter {
       String timeKey = '${time.year}.${time.month}.${time.day}';
 
       if (dataDoublesMap.containsKey(timeKey)) {
-        dataDoublesMap[timeKey] = !isDateTime
-            ? (dataDoublesMap[timeKey]! + duration)
-            : dataDoublesMap[timeKey]! + 1;
+        dataDoublesMap[timeKey] =
+            !isDateTime ? (dataDoublesMap[timeKey]! + duration) : dataDoublesMap[timeKey]! + 1;
       } else {
         dataDoublesMap[timeKey] = !isDateTime ? duration : 1;
       }
@@ -38,11 +36,9 @@ class TimeConverter {
   }
 
   /// DOUBLES TO TIME METHOD
-  static List<DateTimeRange> doublesToTime(
-      List<double> doubles, bool useToday) {
+  static List<DateTimeRange> doublesToTime(List<double> doubles, bool useToday) {
     List<DateTimeRange> dataTimeRangesList = [];
-    DateTime today =
-        useToday ? DateTime.now() : DateTime.now().subtract(Duration(days: 1));
+    DateTime today = useToday ? DateTime.now() : DateTime.now().subtract(Duration(days: 1));
 
     for (int i = 0; i < doubles.length; i++) {
       final duration = (doubles[i] >= 0)
@@ -55,8 +51,7 @@ class TimeConverter {
       int totalHours = duration.floor();
       int totalMinutes = ((duration - totalHours) * 60).floor();
 
-      DateTime end = DateTime(
-          start.year, start.month, start.day, totalHours, totalMinutes);
+      DateTime end = DateTime(start.year, start.month, start.day, totalHours, totalMinutes);
 
       dataTimeRangesList.add(DateTimeRange(end: end, start: start));
 
@@ -66,8 +61,7 @@ class TimeConverter {
   }
 
   // DATETIME -> DATETIMERANGE
-  static List<DateTimeRange> timeToTimeRange(
-      List<DateTime> dates, double duration) {
+  static List<DateTimeRange> timeToTimeRange(List<DateTime> dates, double duration) {
     List<DateTimeRange> dataTimeRangesList = [];
     int highestHour = 0;
     int lowestHour = 9999999;
@@ -79,10 +73,10 @@ class TimeConverter {
     }
 
     if ((highestHour - lowestHour) > 18) {
-      print('-> ${highestHour - lowestHour}');
+      // print('highestHour - lowestHour-> ${highestHour - lowestHour}');
       duration = 18.0;
     } else {
-      print('-> ${highestHour - lowestHour}');
+      // print('highestHour - lowestHour-> ${highestHour - lowestHour}');
       duration = 10.0;
     }
 

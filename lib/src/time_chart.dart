@@ -108,9 +108,7 @@ class TimeChart extends StatelessWidget {
           : (data is List<DateTime>)
               ? TimeConverter.timeToTimeRange(data, eventDuration)
               : TimeConverter.doublesToTime(data, useToday))
-      : (data is List<double>
-          ? data
-          : TimeConverter.timeToDoubles(data, false));
+      : (data is List<double> ? data : TimeConverter.timeToDoubles(data, false));
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -174,7 +172,7 @@ class TimeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('$chartType Is the type of chart we are going to construct <--');
+    // print('$chartType Is the type of chart we are going to construct <--');
     bool isDateTime = false;
     if (data is List<DateTime>) {
       isDateTime = true;
@@ -192,9 +190,7 @@ class TimeChart extends StatelessWidget {
                   ? chartType
                   : ChartType.amount
               : chartType,
-          yAxisLabel: widgetMode
-              ? ""
-              : yAxisLabel, // JP -- added this for simplified widgets for simplified widgets
+          yAxisLabel: yAxisLabel,
           toolTipLabel: toolTipLabel,
           useToday: useToday,
           // toolTipLabelColor: toolTipLabelColor,
@@ -231,8 +227,7 @@ class TimeChart extends StatelessWidget {
                   : false
               : toggleButton,
           defaultPivotHour: defaultPivotHour,
-          widgetMode:
-              widgetMode, // JP -- added this for simplified widgets for simplified widgets
+          widgetMode: widgetMode, // JP -- added this for simplified widgets for simplified widgets
           isDateTime: isDateTime,
         ),
       );

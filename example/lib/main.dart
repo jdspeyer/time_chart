@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/time_chart.dart';
 
@@ -22,20 +23,12 @@ class MyApp extends StatelessWidget {
   ];
 
   final List<double> dataListNegative = [
-    60.0,
+    0.0,
     -12.0,
-    30.0,
+    1.0,
     -30.4,
-    -30.0,
-    -49.3
-  ];
-
-  final List<double> dataListNegativeHighNegative = [
-    -60.0,
-    -12.0,
-    30.0,
-    -30.4,
-    10.0,
+    0.0,
+    -59.0,
     -49.3
   ];
 
@@ -138,6 +131,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenHeight = MediaQuery.of(context).size.height;
+
+    // double rectangleWidgetWidth = screenWidth * .95;
+    // double squareWidgetWidth = rectangleWidgetWidth * .48;
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Time chart example app')),
@@ -187,7 +186,7 @@ class MyApp extends StatelessWidget {
                 //   ],
                 // ),
                 TimeChart(
-                  data: dataListNegativeHighNegative,
+                  data: dataListNegative,
                   chartType: ChartType.amount,
                   yAxisLabel: '°',
                   toolTipLabel: 'Degrees',
@@ -216,7 +215,7 @@ class MyApp extends StatelessWidget {
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
-                  detailColor: Colors.blue,
+                  detailColor: Colors.purple,
                   widgetMode: false,
                   toggleButton: true,
                 ),
