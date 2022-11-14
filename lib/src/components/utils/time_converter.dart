@@ -70,7 +70,7 @@ class TimeConverter {
       List<DateTime> dates, double duration) {
     List<DateTimeRange> dataTimeRangesList = [];
     int highestHour = 0;
-    int lowestHour = 999;
+    int lowestHour = 9999999;
 
     for (int i = 0; i < dates.length; i++) {
       DateTime current = dates[i];

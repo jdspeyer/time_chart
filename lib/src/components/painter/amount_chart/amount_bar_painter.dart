@@ -40,7 +40,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
   @override
   void drawBar(Canvas canvas, Size size, List<AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
-        scrollController: scrollController, scrollDirection: AxisDirection.left);
+        scrollController: scrollController,
+        scrollDirection: AxisDirection.left);
 
     /// JS
     /// Paint styling for normal bars (used by all bars if useToday is false)
@@ -68,7 +69,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       final negativeBarHeight = offsetWithAmount.dy - size.height;
 
       final double left = paddingForAlignedBar + offsetWithAmount.dx;
-      final double right = paddingForAlignedBar + offsetWithAmount.dx + barWidth;
+      final double right =
+          paddingForAlignedBar + offsetWithAmount.dx + barWidth;
 
       /// JS
       /// top is the coordinate of the top face of the bar. It's value depends on:
@@ -77,7 +79,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       /// If yes, then the bar will be translated to the center of the graph (size.height/2 for possitive values & size.height/2 + negativeBarHeight for negative values).
       final double top = (bottomHour < 0)
           ? (offsetWithAmount.amount < 0)
-              ? offsetWithAmount.dy - (size.height / 2 + negativeBarHeight) //negative
+              ? offsetWithAmount.dy -
+                  (size.height / 2 + negativeBarHeight) //negative
               : offsetWithAmount.dy - (size.height / 2)
           : offsetWithAmount.dy;
 
@@ -102,19 +105,23 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
               topRight: barRadius,
               bottomLeft: widgetMode
                   ? barRadius
-                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+                  : Radius
+                      .zero, // JP -- added this for simplified widgets for simplified widgets
               bottomRight: widgetMode
                   ? barRadius
-                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+                  : Radius
+                      .zero, // JP -- added this for simplified widgets for simplified widgets
             )
           : RRect.fromRectAndCorners(
               Rect.fromLTRB(left, top, right, bottom),
               topLeft: widgetMode
                   ? barRadius
-                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+                  : Radius
+                      .zero, // JP -- added this for simplified widgets for simplified widgets
               topRight: widgetMode
                   ? barRadius
-                  : Radius.zero, // JP -- added this for simplified widgets for simplified widgets
+                  : Radius
+                      .zero, // JP -- added this for simplified widgets for simplified widgets
               bottomLeft: barRadius,
               bottomRight: barRadius,
             );
@@ -132,7 +139,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       /// JS
       /// Checks to see if the painter is on the first day.
       /// If it is on the first day then it will use the first day paint color instead of the regular paint color.
-      if (index == 0 && useToday) {
+      if (offsetWithAmount.isEmpty) {
+      } else if (index == 0 && useToday) {
         touchyCanvas.drawRRect(
           rRect,
           currentDayPaint,
@@ -176,7 +184,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     for (int index = startIndex; index < length; index++) {
       final int barPosition = 1 + index;
 
-      if (barPosition - dayFromScrollOffset > viewLimitDay + ChartEngine.toleranceDay * 2) break;
+      if (barPosition - dayFromScrollOffset >
+          viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       /// JS
       /// Changed to override amountSum instead of add to it.
@@ -194,7 +203,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
         /// normalizedTop is the percentage of the chart.height that one particular bar should take up (1.0 indicates 100% height).
         /// in the case of negative values we divide the sum in half to get a bar that is half the height since the bars will be placed in the center.
         final double normalizedTop = (bottomHour < 0)
-            ? max(0, (possitiveSum / 2 - fakeBottomHour)) / (topHour - fakeBottomHour)
+            ? max(0, (possitiveSum / 2 - fakeBottomHour)) /
+                (topHour - fakeBottomHour)
             : max(0, possitiveSum - bottomHour) / (topHour - bottomHour);
 
         /// JS
@@ -202,7 +212,8 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
         final double dy = (size.height - normalizedTop * size.height);
         final double dx = size.width - intervalOfBars * barPosition;
 
-        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index]));
+        coordinates.add(AmountBarItem(
+            dx, dy, amountSum, dataList[index], (amountSum == 0)));
 
         amountSum = 0;
       }
@@ -223,6 +234,6 @@ class AmountBarItem {
   final double dy;
   final double amount;
   final double dateTime;
-
-  AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
+  final bool isEmpty;
+  AmountBarItem(this.dx, this.dy, this.amount, this.dateTime, this.isEmpty);
 }

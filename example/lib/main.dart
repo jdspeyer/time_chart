@@ -26,8 +26,16 @@ class MyApp extends StatelessWidget {
     -12.0,
     30.0,
     -30.4,
-    59.0,
-    -59.0,
+    -30.0,
+    -49.3
+  ];
+
+  final List<double> dataListNegativeHighNegative = [
+    -60.0,
+    -12.0,
+    30.0,
+    -30.4,
+    10.0,
     -49.3
   ];
 
@@ -106,6 +114,8 @@ class MyApp extends StatelessWidget {
     DateTime(2022, 10, 20, 2, 0),
   ];
 
+  final List<double> dataListEmpty = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
   // final List<DateTimeRange> emptyDataList = [];
 
   // List<DateTimeRange> getRandomSampleDataList() {
@@ -137,47 +147,47 @@ class MyApp extends StatelessWidget {
             child: Column(
               children: [
                 const Text('Time Chart Base'),
-                Row(
-                  children: [
-                    // SizedBox(
-                    //   width: 180,
-                    //   height: 250,
-                    //   child: TimeChart(
-                    //     data: dataList,
-                    //     chartType: ChartType.amount,
-                    //     yAxisLabel: 'test',
-                    //     toolTipLabel: 'Degrees',
-                    //     useToday: false,
-                    //     width: 180,
-                    //     height: 230,
-                    //     tooltipBackgroundColor: Colors.white,
-                    //     viewMode: ViewMode.weekly,
-                    //     barColor: Colors.deepPurple,
-                    //     widgetMode:
-                    //         false, // JP -- added this for simplified widgets
-                    //   ),
-                    // ),
-                    // SizedBox(
-                    //   width: 180,
-                    //   height: 200,
-                    //   child: TimeChart(
-                    //     data: dataListTime,
-                    //     yAxisLabel: 'test',
-                    //     toolTipLabel: 'Degrees',
-                    //     useToday: false,
-                    //     width: 180,
-                    //     height: 180,
-                    //     tooltipBackgroundColor: Colors.white,
-                    //     viewMode: ViewMode.weekly,
-                    //     barColor: Colors.deepPurple,
-                    //     widgetMode:
-                    //         true, // JP -- added this for simplified widgets
-                    //   ),
-                    // ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     SizedBox(
+                //       width: 180,
+                //       height: 250,
+                //       child: TimeChart(
+                //         data: dataList,
+                //         chartType: ChartType.amount,
+                //         yAxisLabel: 'test',
+                //         toolTipLabel: 'Degrees',
+                //         useToday: false,
+                //         width: 180,
+                //         height: 230,
+                //         tooltipBackgroundColor: Colors.white,
+                //         viewMode: ViewMode.weekly,
+                //         barColor: Colors.deepPurple,
+                //         widgetMode:
+                //             false, // JP -- added this for simplified widgets
+                //       ),
+                //     ),
+                //     SizedBox(
+                //       width: 180,
+                //       height: 200,
+                //       child: TimeChart(
+                //         data: dataListTime,
+                //         yAxisLabel: 'test',
+                //         toolTipLabel: 'Degrees',
+                //         useToday: false,
+                //         width: 180,
+                //         height: 180,
+                //         tooltipBackgroundColor: Colors.white,
+                //         viewMode: ViewMode.weekly,
+                //         barColor: Colors.deepPurple,
+                //         widgetMode:
+                //             true, // JP -- added this for simplified widgets
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 TimeChart(
-                  data: dataListNegative,
+                  data: dataListNegativeHighNegative,
                   chartType: ChartType.amount,
                   yAxisLabel: '°',
                   toolTipLabel: 'Degrees',

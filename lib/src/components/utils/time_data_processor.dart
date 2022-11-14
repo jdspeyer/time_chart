@@ -349,10 +349,16 @@ mixin TimeDataProcessor {
     final int len = dataList.length;
 
     double maxResult = 0.0;
+    double minResult = 0.0;
     double sum = 0.0;
     if (dataList is List<double>) {
       // JP -- Changed
+      minResult = dataList.reduce(min);
       maxResult = dataList.reduce(max);
+
+      if (minResult.abs() > maxResult) {
+        maxResult = minResult.abs();
+      }
       if (dataList.reduce(min) < 0) {
         _topHour = maxResult.ceil();
       } else {
