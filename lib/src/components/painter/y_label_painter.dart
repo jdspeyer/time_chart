@@ -4,6 +4,7 @@ import 'package:time_chart/src/components/painter/chart_engine.dart';
 
 abstract class YLabelPainter extends ChartEngine {
   YLabelPainter({
+    required super.widgetMode,
     required super.viewMode,
     required super.context,
     required this.topHour,
@@ -53,6 +54,7 @@ abstract class YLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant YLabelPainter oldDelegate) {
-    return oldDelegate.topHour != topHour || oldDelegate.bottomHour != bottomHour;
+    return oldDelegate.topHour != topHour ||
+        oldDelegate.bottomHour != bottomHour;
   }
 }

@@ -46,15 +46,17 @@ class _ChartToggle extends State<ChartToggle> {
             });
           },
           child: Container(
-            padding: EdgeInsets.only(right: 3.0, left: 3.0, bottom: 3.0, top: 1.0),
+            padding:
+                EdgeInsets.only(right: 3.0, left: 3.0, bottom: 3.0, top: 1.0),
             decoration: BoxDecoration(
-              color: widget.chart.widget.detailColor,
+              color: widget.chart.widget.tooltipBackgroundColor,
               shape: BoxShape.circle,
             ),
             child: (widget.type)
-                ? Icon(CupertinoIcons.clock, color: widget.chart.widget.tooltipBackgroundColor)
+                ? Icon(CupertinoIcons.clock,
+                    color: widget.chart.widget.detailColor)
                 : Icon(CupertinoIcons.chart_bar_circle,
-                    color: widget.chart.widget.tooltipBackgroundColor),
+                    color: widget.chart.widget.detailColor),
           )),
     );
 

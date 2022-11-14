@@ -108,7 +108,9 @@ class TimeChart extends StatelessWidget {
           : (data is List<DateTime>)
               ? TimeConverter.timeToTimeRange(data, eventDuration)
               : TimeConverter.doublesToTime(data, useToday))
-      : (data is List<double> ? data : TimeConverter.timeToDoubles(data, false));
+      : (data is List<double>
+          ? data
+          : TimeConverter.timeToDoubles(data, false));
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -227,7 +229,8 @@ class TimeChart extends StatelessWidget {
                   : false
               : toggleButton,
           defaultPivotHour: defaultPivotHour,
-          widgetMode: widgetMode, // JP -- added this for simplified widgets for simplified widgets
+          widgetMode:
+              widgetMode, // JP -- added this for simplified widgets for simplified widgets
           isDateTime: isDateTime,
         ),
       );

@@ -7,6 +7,7 @@ class TimeYLabelPainter extends YLabelPainter {
   static const double _tolerance = 6.0;
 
   TimeYLabelPainter({
+    required super.widgetMode,
     required super.context,
     required super.viewMode,
     required super.topHour,
@@ -25,7 +26,8 @@ class TimeYLabelPainter extends YLabelPainter {
   bool _isVisible(double posY, {bool onTolerance = false}) {
     final actualPosY = posY + topPosition;
     final tolerance = onTolerance ? _tolerance : 0;
-    return -tolerance <= actualPosY && actualPosY <= chartHeight - kXLabelHeight + tolerance;
+    return -tolerance <= actualPosY &&
+        actualPosY <= chartHeight - kXLabelHeight + tolerance;
   }
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
@@ -39,9 +41,12 @@ class TimeYLabelPainter extends YLabelPainter {
   void drawYLabels(Canvas canvas, Size size) {
     final double bottomY = size.height - kXLabelHeight;
 
+    final int hourIncrement = (widgetMode) ? 4 : 2;
+
     /// T
     /// Draw the time in 2 hour increments from the top.
-    final double gabY = bottomY / bottomHour.differenceAt(topHour) * 2;
+    final double gabY =
+        bottomY / bottomHour.differenceAt(topHour) * hourIncrement;
 
     /// T
     /// true if all ranges are full and all ranges should be displayed.

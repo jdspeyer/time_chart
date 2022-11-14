@@ -15,23 +15,25 @@ import '../chart_engine.dart';
 
 class AmountYLabelPainter extends YLabelPainter {
   AmountYLabelPainter({
+    required super.widgetMode,
     required super.context,
     required super.viewMode,
     required super.topHour,
     required super.bottomHour,
     required this.yAxisLabel,
-    this.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
+//    this.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
   });
 
   final String yAxisLabel;
-  final bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
+  // final bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
 
   /// JS
   /// Overrides the parents abstract drawYLabels method and systemically adds labels based on the
   /// value of topHour and the total range (hourDuration) of the list of values passed in.
   @override
   void drawYLabels(Canvas canvas, Size size) {
-    final double labelInterval = (size.height - kXLabelHeight) / (topHour - bottomHour);
+    final double labelInterval =
+        (size.height - kXLabelHeight) / (topHour - bottomHour);
     final int hourDuration = topHour - bottomHour;
     final int timeStep;
     if (hourDuration % 10 == 0 && hourDuration > 48) {
@@ -53,7 +55,8 @@ class AmountYLabelPainter extends YLabelPainter {
       // JP -- added this for simplified widgets for simplified widgets
       double posY = 10;
       drawYText(canvas, size, '$topHour', posY);
-      drawYText(canvas, size, '$bottomHour', posY + (size.height - kXLabelHeight));
+      drawYText(
+          canvas, size, '$bottomHour', posY + (size.height - kXLabelHeight));
     } else {
       for (int time = topHour; time >= bottomHour; time = time - timeStep) {
         drawYText(canvas, size, '$time $yAxisLabel', posY);

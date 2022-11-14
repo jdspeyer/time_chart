@@ -140,6 +140,7 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       /// Checks to see if the painter is on the first day.
       /// If it is on the first day then it will use the first day paint color instead of the regular paint color.
       if (offsetWithAmount.isEmpty) {
+        
       } else if (index == 0 && useToday) {
         touchyCanvas.drawRRect(
           rRect,
