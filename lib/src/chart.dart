@@ -653,6 +653,7 @@ class ChartState extends State<Chart>
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
+          widgetMode: widget.widgetMode,
           scrollController: _xLabelController,
           repaint: _scrollOffsetNotifier,
           context: context,
@@ -676,6 +677,7 @@ class ChartState extends State<Chart>
   }
 
   CustomPainter buildBarPainter(BuildContext context) {
+    print('2. ${widget.widgetMode}');
     // print(widget.chartType);
     // print(widget.data);
     if (widget.data is List<DateTimeRange>) {
@@ -690,6 +692,7 @@ class ChartState extends State<Chart>
         topHour: topHour!,
         bottomHour: bottomHour!,
         dayCount: dayCount,
+        widgetMode: widget.widgetMode,
         viewMode: widget.viewMode, // JP -- added this for simplified widgets
       );
     } else {

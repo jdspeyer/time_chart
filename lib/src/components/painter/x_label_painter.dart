@@ -7,16 +7,15 @@ import 'package:time_chart/src/components/view_mode.dart';
 abstract class XLabelPainter extends ChartEngine {
   static const int toleranceDay = 1;
 
-  XLabelPainter({
-    required super.viewMode,
-    required super.context,
-    this.isFirstDataMovedNextDay = false,
-    required super.dayCount,
-    required super.firstValueDateTime,
-    required super.repaint,
-    required super.scrollController,
-    super.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
-  });
+  XLabelPainter(
+      {required super.viewMode,
+      required super.context,
+      this.isFirstDataMovedNextDay = false,
+      required super.dayCount,
+      required super.firstValueDateTime,
+      required super.repaint,
+      required super.scrollController,
+      required super.widgetMode});
 
   final bool isFirstDataMovedNextDay;
 
@@ -35,11 +34,14 @@ abstract class XLabelPainter extends ChartEngine {
     Size size, {
     bool isFirstDataMovedNextDay = false,
   }) {
-    final weekday = getShortWeekdayList(context);
+    final weekday = (widgetMode)
+        ? getShortWeekdayList(context)
+        : getSingleWeekdayList(context);
     final viewModeLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset - toleranceDay;
 
-    DateTime currentDate = firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
+    DateTime currentDate =
+        firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
 
     void moveToYesterday() {
       currentDate = currentDate.add(const Duration(days: -1));
@@ -61,7 +63,7 @@ abstract class XLabelPainter extends ChartEngine {
           moveToYesterday();
           final dx = size.width - (i + 1) * blockWidth!;
           _drawXText(canvas, size, text, dx);
-          if (widgetMode == false) {
+          if (!widgetMode) {
             // JP -- added this for simplified widgets for simplified widgets
             _drawVerticalDivideLine(canvas, size, dx, isDashed);
           }
@@ -73,7 +75,10 @@ abstract class XLabelPainter extends ChartEngine {
           if (i % 7 == (isFirstDataMovedNextDay ? 0 : 6)) {
             final dx = size.width - (i + 1) * blockWidth!;
             _drawXText(canvas, size, text, dx);
-            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+            if (!widgetMode) {
+              // JP -- added this for simplified widgets for simplified widgets
+              _drawVerticalDivideLine(canvas, size, dx, isDashed);
+            }
           }
           break;
         case ViewMode.sixMonth:
@@ -83,7 +88,10 @@ abstract class XLabelPainter extends ChartEngine {
           if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
             final dx = size.width - (i + 1) * blockWidth!;
             _drawXText(canvas, size, text, dx);
-            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+            if (!widgetMode) {
+              // JP -- added this for simplified widgets for simplified widgets
+              _drawVerticalDivideLine(canvas, size, dx, isDashed);
+            }
           }
           break;
         case ViewMode.year:
@@ -92,7 +100,10 @@ abstract class XLabelPainter extends ChartEngine {
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           final dx = size.width - (i + 1) * blockWidth!;
           _drawXText(canvas, size, text, dx);
-          _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          if (!widgetMode) {
+            // JP -- added this for simplified widgets for simplified widgets
+            _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          }
           break;
       }
 
@@ -129,14 +140,17 @@ abstract class XLabelPainter extends ChartEngine {
       ..color = kLineColor3
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = kLineStrokeWidth;
+      ..strokeWidth = 0;
 
     Path path = Path();
     path.moveTo(dx, 0);
     path.lineTo(dx, size.height);
 
     canvas.drawPath(
-      isDashed ? dashPath(path, dashArray: CircularIntervalList<double>(<double>[2, 2])) : path,
+      isDashed
+          ? dashPath(path,
+              dashArray: CircularIntervalList<double>(<double>[2, 2]))
+          : path,
       paint,
     );
   }

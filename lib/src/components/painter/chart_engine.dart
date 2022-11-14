@@ -28,14 +28,15 @@ abstract class ChartEngine extends CustomPainter {
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
-    this.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
+    required this.widgetMode, // JP -- added this for simplified widgets for simplified widgets
     super.repaint,
   })  : dayCount = math.max(dayCount ?? -1, viewMode.dayCount),
         translations = Translations(context);
 
   final ScrollController? scrollController;
   final int dayCount;
-  final bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
+  final bool
+      widgetMode; // JP -- added this for simplified widgets for simplified widgets
   final ViewMode viewMode;
   // JP -- Changed
   // final double? firstValueDateTime;
@@ -68,6 +69,7 @@ abstract class ChartEngine extends CustomPainter {
   double? _blockWidth;
 
   void setRightMargin() {
+    print('3. ${widgetMode}');
     final TextPainter tp = TextPainter(
       text: TextSpan(
         text: translations.formatHourOnly(_kPivotYLabelHour),
@@ -80,6 +82,7 @@ abstract class ChartEngine extends CustomPainter {
   }
 
   void setDefaultValue(Size size) {
+    print('3.5. ${widgetMode}');
     setRightMargin();
     _blockWidth = size.width / dayCount;
     _barWidth = blockWidth! * kBarWidthRatio;

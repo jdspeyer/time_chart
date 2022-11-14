@@ -28,6 +28,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     required super.bottomHour,
     required super.dayCount,
     required super.viewMode,
+    required super.widgetMode,
     super.barColor,
   });
 

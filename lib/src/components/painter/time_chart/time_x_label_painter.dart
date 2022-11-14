@@ -11,6 +11,7 @@ import 'package:time_chart/src/components/painter/x_label_painter.dart';
 class TimeXLabelPainter extends XLabelPainter {
   TimeXLabelPainter({
     required super.viewMode,
+    required super.widgetMode,
     required super.context,
     required super.dayCount,
     required super.firstValueDateTime,
