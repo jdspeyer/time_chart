@@ -34,14 +34,11 @@ abstract class XLabelPainter extends ChartEngine {
     Size size, {
     bool isFirstDataMovedNextDay = false,
   }) {
-    final weekday = (widgetMode)
-        ? getShortWeekdayList(context)
-        : getSingleWeekdayList(context);
+    final weekday = (widgetMode) ? getShortWeekdayList(context) : getSingleWeekdayList(context);
     final viewModeLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset - toleranceDay;
 
-    DateTime currentDate =
-        firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
+    DateTime currentDate = firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
 
     void moveToYesterday() {
       currentDate = currentDate.add(const Duration(days: -1));
@@ -54,6 +51,28 @@ abstract class XLabelPainter extends ChartEngine {
       bool isDashed = true;
 
       switch (viewMode) {
+        case ViewMode.hourly:
+          text = currentDate.hour.toString();
+          moveToYesterday();
+          if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
+            final dx = size.width - (i + 1) * blockWidth!;
+            _drawXText(
+                canvas,
+                size,
+                (i % 24) < 11
+                    ? "${(11 - (i % 24))} PM"
+                    : (i % 24) == 11
+                        ? "Noon"
+                        : (i % 24) == 23
+                            ? "Midnight"
+                            : "${(23 - (i % 24))} AM",
+                dx);
+            if (!widgetMode) {
+              // JP -- added this for simplified widgets for simplified widgets
+              _drawVerticalDivideLine(canvas, size, dx, isDashed);
+            }
+          }
+          break;
         case ViewMode.weekly:
           text = widgetMode
               ? weekday[currentDate.weekday % 7][0]
@@ -63,10 +82,10 @@ abstract class XLabelPainter extends ChartEngine {
           moveToYesterday();
           final dx = size.width - (i + 1) * blockWidth!;
           _drawXText(canvas, size, text, dx);
-          if (!widgetMode) {
-            // JP -- added this for simplified widgets for simplified widgets
-            _drawVerticalDivideLine(canvas, size, dx, isDashed);
-          }
+          // if (!widgetMode) {
+          //   // JP -- added this for simplified widgets for simplified widgets
+          //   _drawVerticalDivideLine(canvas, size, dx, isDashed);
+          // }
           break;
         case ViewMode.monthly:
           text = currentDate.day.toString();
@@ -147,10 +166,7 @@ abstract class XLabelPainter extends ChartEngine {
     path.lineTo(dx, size.height);
 
     canvas.drawPath(
-      isDashed
-          ? dashPath(path,
-              dashArray: CircularIntervalList<double>(<double>[2, 2]))
-          : path,
+      isDashed ? dashPath(path, dashArray: CircularIntervalList<double>(<double>[2, 2])) : path,
       paint,
     );
   }

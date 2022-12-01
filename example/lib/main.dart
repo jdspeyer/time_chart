@@ -3,8 +3,18 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/time_chart.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // Step 2
+  WidgetsFlutterBinding.ensureInitialized();
+  // Step 3
+  SystemChrome.setPreferredOrientations([
+    // DeviceOrientation.landscapeLeft,
+    // DeviceOrientation.landscapeRight,
+  ]).then((value) => runApp(MyApp()));
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -20,17 +30,43 @@ class MyApp extends StatelessWidget {
     6.2,
     8.3,
     9.7,
+    10.2,
+    0,
+    11.0,
+    12.1,
+    10.4,
+    12.6,
+    8.7,
+    6.2,
+    8.3,
+    9.7,
+    11.0,
+    12.1,
+    10.4,
+    12.6,
+    8.7,
+    6.2,
+    8.3,
+    9.7,
+    11.0,
+    12.1,
+    10.4,
+    12.6,
+    8.7,
+    6.2,
+    8.3,
+    9.7,
+    11.0,
+    12.1,
+    10.4,
+    12.6,
+    8.7,
+    6.2,
+    8.3,
+    9.7,
   ];
 
-  final List<double> dataListNegative = [
-    0.0,
-    -12.0,
-    1.0,
-    -30.4,
-    0.0,
-    -90.0,
-    -49.3
-  ];
+  final List<double> dataListNegative = [0.0, -12.0, 1.0, -30.4, 0.0, -90.0, -49.3];
 
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
@@ -205,19 +241,19 @@ class MyApp extends StatelessWidget {
                 // ),
                 const Text('Amount Chart Base'),
                 TimeChart(
-                  data: dataListTime,
-                  chartType: ChartType.time,
-                  yAxisLabel: '',
+                  data: dataList,
+                  chartType: ChartType.amount,
+                  yAxisLabel: 'test',
                   toolTipLabel: 'Degrees',
                   useToday: true,
-                  width: 300,
+                  width: 750,
                   height: 200,
                   tooltipBackgroundColor: Colors.white,
-                  viewMode: ViewMode.weekly,
+                  viewMode: ViewMode.hourly,
                   barColor: Colors.deepPurple,
                   detailColor: Colors.purple,
-                  widgetMode: true,
-                  toggleButton: true,
+                  widgetMode: false,
+                  toggleButton: false,
                 ),
                 // Padding(
                 //   padding: EdgeInsets.only(top: 10, bottom: 10),

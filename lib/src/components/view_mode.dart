@@ -1,4 +1,5 @@
 enum ViewMode {
+  hourly(24),
   weekly(7),
   monthly(31),
   sixMonth(26),
