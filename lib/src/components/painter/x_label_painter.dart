@@ -1,8 +1,18 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// XLabelPainter is responsible for painting the X Axis labels on each chart.
+///
+/// While Amount Chart and Time Chart have their own implementations of this abstract class,
+/// they do not add any additional functionality. All code for X-Axis Labels is found here.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:time_chart/src/components/painter/chart_engine.dart';
 import 'package:time_chart/src/components/translations/translations.dart';
 import 'package:time_chart/src/components/view_mode.dart';
+import '../utils/x_label_helper.dart';
 
 abstract class XLabelPainter extends ChartEngine {
   static const int toleranceDay = 1;
@@ -15,7 +25,9 @@ abstract class XLabelPainter extends ChartEngine {
       required super.firstValueDateTime,
       required super.repaint,
       required super.scrollController,
-      required super.widgetMode});
+      required super.widgetMode,
+      required super.xAxisWidth //xAxisWidth contains the originally defined width by the user (passed by width parameter)
+      });
 
   final bool isFirstDataMovedNextDay;
 
@@ -25,20 +37,23 @@ abstract class XLabelPainter extends ChartEngine {
     drawXLabels(canvas, size, isFirstDataMovedNextDay: isFirstDataMovedNextDay);
   }
 
-  /// 가로 방향의 레이블을 그린다.
+  /// Draw horizontal labels.
   ///
-  /// [isFirstDataMovedNextDay]는 월간 차트 모드일 때 정확히 7일 씩 세로 구분선과 x 레이블을
-  /// 그리기 위한 값이다.
+  /// [isFirstDataMovedNextDay] sets vertical dividers and x labels every exactly 7 days when in monthly chart mode
+  /// Value for drawing.
   void drawXLabels(
     Canvas canvas,
     Size size, {
     bool isFirstDataMovedNextDay = false,
   }) {
-    final weekday = (widgetMode) ? getShortWeekdayList(context) : getSingleWeekdayList(context);
+    final weekday = (widgetMode)
+        ? getShortWeekdayList(context)
+        : getSingleWeekdayList(context);
     final viewModeLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset - toleranceDay;
 
-    DateTime currentDate = firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
+    DateTime currentDate =
+        firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
 
     void moveToYesterday() {
       currentDate = currentDate.add(const Duration(days: -1));
@@ -56,17 +71,34 @@ abstract class XLabelPainter extends ChartEngine {
           moveToYesterday();
           if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
             final dx = size.width - (i + 1) * blockWidth!;
-            _drawXText(
-                canvas,
-                size,
-                (i % 24) < 11
-                    ? "${(11 - (i % 24))} PM"
-                    : (i % 24) == 11
-                        ? "Noon"
-                        : (i % 24) == 23
-                            ? "Midnight"
-                            : "${(23 - (i % 24))} AM",
-                dx);
+            // Quick & Dirty implementation for the hourly labels. Will be refactored.
+            // TODO Refactor
+            if (xAxisWidth >= 500) {
+              _drawXText(
+                  canvas,
+                  size,
+                  (i % 24) < 11
+                      ? "${(11 - (i % 24))}PM"
+                      : (i % 24) == 11
+                          ? "Noon"
+                          : (i % 24) == 23
+                              ? "Midnight"
+                              : "${(23 - (i % 24))} AM",
+                  dx);
+            } else {
+              _drawXText(
+                  canvas,
+                  size,
+                  (i % 24) < 11
+                      ? "${(11 - (i % 24))}"
+                      : (i % 24) == 11
+                          ? "12PM"
+                          : (i % 24) == 23
+                              ? "12AM"
+                              : "${(23 - (i % 24))}",
+                  dx);
+            }
+
             if (!widgetMode) {
               // JP -- added this for simplified widgets for simplified widgets
               _drawVerticalDivideLine(canvas, size, dx, isDashed);
@@ -90,7 +122,7 @@ abstract class XLabelPainter extends ChartEngine {
         case ViewMode.monthly:
           text = currentDate.day.toString();
           moveToYesterday();
-          // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
+          // Monthly view mode displays the label once every 7 days.
           if (i % 7 == (isFirstDataMovedNextDay ? 0 : 6)) {
             final dx = size.width - (i + 1) * blockWidth!;
             _drawXText(canvas, size, text, dx);
@@ -103,7 +135,7 @@ abstract class XLabelPainter extends ChartEngine {
         case ViewMode.sixMonth:
           text = currentDate.day.toString();
           moveToYesterday();
-          // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
+          // Monthly view mode displays the label once every 7 days.
           if (i % 4 == (isFirstDataMovedNextDay ? 0 : 3)) {
             final dx = size.width - (i + 1) * blockWidth!;
             _drawXText(canvas, size, text, dx);
@@ -116,7 +148,7 @@ abstract class XLabelPainter extends ChartEngine {
         case ViewMode.year:
           text = currentDate.day.toString();
           moveToYesterday();
-          // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
+          // Monthly view mode displays the label once every 7 days.
           final dx = size.width - (i + 1) * blockWidth!;
           _drawXText(canvas, size, text, dx);
           if (!widgetMode) {
@@ -148,7 +180,7 @@ abstract class XLabelPainter extends ChartEngine {
     textPainter.paint(canvas, Offset(dx + paddingForAlignedBar, dy));
   }
 
-  /// 분할하는 세로선을 그려준다.
+  /// Draws a dividing line.
   void _drawVerticalDivideLine(
     Canvas canvas,
     Size size,
@@ -166,7 +198,10 @@ abstract class XLabelPainter extends ChartEngine {
     path.lineTo(dx, size.height);
 
     canvas.drawPath(
-      isDashed ? dashPath(path, dashArray: CircularIntervalList<double>(<double>[2, 2])) : path,
+      isDashed
+          ? dashPath(path,
+              dashArray: CircularIntervalList<double>(<double>[2, 2]))
+          : path,
       paint,
     );
   }

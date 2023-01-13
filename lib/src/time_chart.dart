@@ -1,3 +1,7 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 import 'chart.dart';
 import 'components/chart_type.dart';
@@ -174,8 +178,6 @@ class TimeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('1. ${widgetMode}');
-    // print('$chartType Is the type of chart we are going to construct <--');
     bool isDateTime = false;
     if (data is List<DateTime>) {
       isDateTime = true;

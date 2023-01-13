@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////
-/// Updated 10/10/2022 by Jake Speyer
+/// Blink Chart Package
 ///
 /// Time Bar Painter (implementation of BarPainter abstract class) interacts with the canvas and draws the bars to
 /// graphically represent the data being passed in.
@@ -29,6 +29,7 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     required super.dayCount,
     required super.viewMode,
     required super.widgetMode,
+    required super.xAxisWidth,
     super.barColor,
   });
 
@@ -141,14 +142,12 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
   bool _outRangedPivotHour(double sleepTime, double wakeUp) {
     if (sleepTime < 0.0) sleepTime += 24.0;
 
-    /// T
     /// Check whether two standard hours are included in the sleep time.
     var top = _convertUsing(sleepTime, topHour);
     var bottom = _convertUsing(sleepTime, bottomHour);
     var candidateWakeUp = _convertUsing(sleepTime, wakeUp);
     if (sleepTime <= top && bottom <= candidateWakeUp) return false;
 
-    /// T
     /// Check if they do not belong but overlap.
     top = topHour;
     bottom = bottomHour;
@@ -172,7 +171,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     if (dataList.isEmpty) return [];
     final double intervalOfBars = size.width / dayCount;
 
-    /// T
     /// If the bar at the bottom is not at the right angle, draw the bar up.
     final int pivotBottom = _convertUsing(topHour, bottomHour);
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
@@ -199,7 +197,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
-      /// T
       /// To express the passage of time as the left label goes down
       /// Find the difference between a large time value and the current time.
       double normalizedBottom =
@@ -216,7 +213,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       final double top = height - normalizedTop * height;
       final double right = size.width - intervalOfBars * barPosition;
 
-      /// T
       /// Skip if there is no need to draw
       if (top == bottom ||
           _outRangedPivotHour(

@@ -1,3 +1,10 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// Contains basic information about the sizing of tooltips.
+/// Modified slightly to better fit all graph types.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 
 const Size kAmountTooltipSize = Size(146.0, 80.0);

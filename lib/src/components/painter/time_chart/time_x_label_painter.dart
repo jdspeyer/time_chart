@@ -1,5 +1,6 @@
 ////////////////////////////////////////////////////////////////
-/// Updated 10/10/2022 by Jake Speyer
+/// Blink Chart Package
+///
 ///
 /// TimeXLabelPainter is an extended class from XLabelPainter.
 ///
@@ -10,6 +11,7 @@ import 'package:time_chart/src/components/painter/x_label_painter.dart';
 
 class TimeXLabelPainter extends XLabelPainter {
   TimeXLabelPainter({
+    required super.xAxisWidth,
     required super.viewMode,
     required super.widgetMode,
     required super.context,

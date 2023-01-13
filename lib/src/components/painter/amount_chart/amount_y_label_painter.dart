@@ -1,31 +1,33 @@
 ////////////////////////////////////////////////////////////////
-/// Updated 10/10/2022 by Jake Speyer
+/// Blink Chart Package
 ///
 /// AmountYLabelPainter is an extended class from YLabelPainter.
 ///
 /// Draws the incremented labels on the y-axis with the provided labels.
 ///
-/// NEEDS TO BE REWRITTEN  FOR MORE ACCURATE PLACEMENT WHEN GIVEN NEGATIVE NUMBERS.
+/// TODO This class will work fine mostly; however, there are some alignment issues with
+/// the X-axis (centered at Y level 0) does not get a YAxis label do to the label increments.
+/// (TLDR 0 Might be skipped as a label when negative numbers are present, which visually can be confusing).
+///
 ////////////////////////////////////////////////////////////////
 
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/y_label_painter.dart';
-
 import '../chart_engine.dart';
+import '../../utils/y_label_helper.dart';
 
 class AmountYLabelPainter extends YLabelPainter {
   AmountYLabelPainter({
+    required super.xAxisWidth,
     required super.widgetMode,
     required super.context,
     required super.viewMode,
     required super.topHour,
     required super.bottomHour,
     required this.yAxisLabel,
-//    this.widgetMode = false, // JP -- added this for simplified widgets for simplified widgets
   });
 
   final String yAxisLabel;
-  // final bool widgetMode; // JP -- added this for simplified widgets for simplified widgets
 
   /// JS
   /// Overrides the parents abstract drawYLabels method and systemically adds labels based on the
@@ -34,21 +36,9 @@ class AmountYLabelPainter extends YLabelPainter {
   void drawYLabels(Canvas canvas, Size size) {
     final double labelInterval =
         (size.height - kXLabelHeight) / (topHour - bottomHour);
-    final int hourDuration = topHour - bottomHour;
-    final int timeStep;
-    if (hourDuration % 10 == 0 && hourDuration > 48) {
-      timeStep = 20;
-    } else if (hourDuration >= 48) {
-      timeStep = 16;
-    } else if (hourDuration >= 24) {
-      timeStep = 8;
-    } else if (hourDuration >= 12) {
-      timeStep = 4;
-    } else if (hourDuration >= 8) {
-      timeStep = 2;
-    } else {
-      timeStep = 1;
-    }
+
+    //JS - for timestepping equation
+    int timeStep = YLabelCalculator.timeStep(topHour);
 
     double posY = 0;
     if (widgetMode == true) {

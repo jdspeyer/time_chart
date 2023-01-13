@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// Chart Engine is one of the core abstract classes that is implemented by various
+/// painters and tooltips to provide touch and painting functionality.
+///
+/// This has been the least modified file within the core package.
+///////////////////////////////////////////////////////////////////
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -28,6 +37,7 @@ abstract class ChartEngine extends CustomPainter {
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
+    required this.xAxisWidth,
     required this.widgetMode, // JP -- added this for simplified widgets for simplified widgets
     super.repaint,
   })  : dayCount = math.max(dayCount ?? -1, viewMode.dayCount),
@@ -43,22 +53,23 @@ abstract class ChartEngine extends CustomPainter {
   final DateTime? firstValueDateTime;
   final BuildContext context;
   final Translations translations;
+  final double xAxisWidth;
 
   int get currentDayFromScrollOffset {
     if (!scrollController!.hasClients) return 0;
     return (scrollController!.offset / blockWidth!).floor();
   }
 
-  /// 전체 그래프의 오른쪽 레이블이 들어갈 간격의 크기이다.
+  /// This is the size of the gap where the label on the right side of the entire graph will fit.
   double get rightMargin => _rightMargin;
 
-  /// 바 너비의 크기이다.
+  /// This is the size of the bar width.
   double get barWidth => _barWidth;
 
-  /// 바를 적절하게 정렬하기 위한 값이다.
+  /// This is a value to properly align the bar.
   double get paddingForAlignedBar => _paddingForAlignedBar;
 
-  /// (바와 바 사이의 여백의 너비 + 바의 너비) => 블럭 너비의 크기이다.
+  /// (The width of the space between the bars + the width of the bar) => The size of the block width.
   double? get blockWidth => _blockWidth;
 
   TextTheme get textTheme => Theme.of(context).textTheme;
@@ -69,7 +80,6 @@ abstract class ChartEngine extends CustomPainter {
   double? _blockWidth;
 
   void setRightMargin() {
-    print('3. ${widgetMode}');
     final TextPainter tp = TextPainter(
       text: TextSpan(
         text: translations.formatHourOnly(_kPivotYLabelHour),
@@ -82,11 +92,10 @@ abstract class ChartEngine extends CustomPainter {
   }
 
   void setDefaultValue(Size size) {
-    print('3.5. ${widgetMode}');
     setRightMargin();
     _blockWidth = size.width / dayCount;
     _barWidth = blockWidth! * kBarWidthRatio;
-    // 바의 위치를 가운데로 정렬하기 위한 [padding]
+    // [padding] to align the bar to the center
     _paddingForAlignedBar = blockWidth! * kBarPaddingWidthRatio;
   }
 }

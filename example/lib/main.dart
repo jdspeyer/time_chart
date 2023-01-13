@@ -1,3 +1,10 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// This is the testing application for the Blink Chart package.
+/// There is a lot of commented code for various tests that can be uncommented to run.
+///////////////////////////////////////////////////////////////////
+
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -19,6 +26,7 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
+  // Standard double data set with smaller values
   final List<double> dataList = [
     10.2,
     0,
@@ -63,11 +71,71 @@ class MyApp extends StatelessWidget {
     8.7,
     6.2,
     8.3,
-    9.7,
+    5.7
   ];
 
-  final List<double> dataListNegative = [0.0, -12.0, 1.0, -30.4, 0.0, -90.0, -49.3];
+  // A doubles data list with negative values.
+  final List<double> dataListNegative = [
+    15.0,
+    -12.0,
+    10.0,
+    -30.4,
+    20.0,
+    -89.0,
+    -49.3,
+    -49.3,
+    -49.3
+  ];
 
+  // A doubles data list with large values.
+  final List<double> dataListLarge = [
+    1000.2,
+    0,
+    1001.0,
+    1200.1,
+    1000.4,
+    1501.0,
+    800.7,
+    600.2,
+    800.3,
+    900.7,
+    1000.2,
+    0,
+    1100.0,
+    1200.1,
+    1000.4,
+    1200.6,
+    800.7,
+    600.2,
+    800.3,
+    900.7,
+    1100.0,
+    1200.1,
+    1000.4,
+    1200.6,
+    800.7,
+    600.2,
+    800.3,
+    900.7,
+    1100.0,
+    1200.1,
+    1000.4,
+    1200.6,
+    800.7,
+    600.2,
+    800.3,
+    900.7,
+    1100.0,
+    1200.1,
+    1000.4,
+    1200.6,
+    800.7,
+    600.2,
+    800.3,
+    900.7,
+  ];
+
+  // A Data List with dateTimeRanges instead of doubles
   final List<DateTimeRange> dataListTime = [
     DateTimeRange(
       start: DateTime(2022, 10, 26, 9, 0),
@@ -107,6 +175,7 @@ class MyApp extends StatelessWidget {
     ),
   ];
 
+  // A DateTime list (Not datetimerange)
   final List<DateTime> dataListSingleTimes = [
     DateTime(2022, 10, 26, 15, 0),
     DateTime(2022, 10, 26, 14, 0),
@@ -117,6 +186,7 @@ class MyApp extends StatelessWidget {
     DateTime(2022, 10, 24, 14, 0),
   ];
 
+  // A DateTime list with small gaps between times to test bar heights.
   final List<DateTime> dataListSingleTimesSmallGap = [
     DateTime(2022, 10, 26, 15, 0),
     DateTime(2022, 10, 26, 14, 0),
@@ -126,6 +196,7 @@ class MyApp extends StatelessWidget {
     DateTime(2022, 10, 24, 14, 0),
   ];
 
+  // A DateTime list with large gaps between times to test bar heights.
   final List<DateTime> dataListSingleTimesLargeGap = [
     DateTime(2022, 10, 26, 23, 0),
     DateTime(2022, 10, 26, 1, 0),
@@ -143,36 +214,13 @@ class MyApp extends StatelessWidget {
     DateTime(2022, 10, 20, 2, 0),
   ];
 
+  // List of pure 0 values.
   final List<double> dataListEmpty = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
-  // final List<DateTimeRange> emptyDataList = [];
-
-  // List<DateTimeRange> getRandomSampleDataList() {
-  //   final List<DateTimeRange> list = [];
-  //   final random = Random();
-
-  //   for (int i = 0; i < smallDataList.length; ++i) {
-  //     final start = DateTime(2022, 10, 4 - i, smallDataList[i] - 1, 0);
-  //     final end = DateTime(2022, 10, 4 - i, smallDataList[i], 0);
-
-  //     list.add(DateTimeRange(
-  //       start: start,
-  //       end: end,
-  //     ));
-  //   }
-  //   return list;
-  // }
-
-  // late final List<DateTimeRange> dataList = getRandomSampleDataList();
+  final List<DateTimeRange> emptyDataList = [];
 
   @override
   Widget build(BuildContext context) {
-    // double screenWidth = MediaQuery.of(context).size.width;
-    // double screenHeight = MediaQuery.of(context).size.height;
-
-    // double rectangleWidgetWidth = screenWidth * .95;
-    // double squareWidgetWidth = rectangleWidgetWidth * .48;
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Time chart example app')),
@@ -181,7 +229,6 @@ class MyApp extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const Text('Time Chart Base'),
                 // Row(
                 //   children: [
                 //     SizedBox(
@@ -239,14 +286,14 @@ class MyApp extends StatelessWidget {
                 // Padding(
                 //   padding: EdgeInsets.only(top: 10, bottom: 10),
                 // ),
-                const Text('Amount Chart Base'),
+                const Text('Amount Chart Example'),
                 TimeChart(
                   data: dataList,
                   chartType: ChartType.amount,
-                  yAxisLabel: 'test',
-                  toolTipLabel: 'Degrees',
-                  useToday: true,
-                  width: 750,
+                  yAxisLabel: '',
+                  toolTipLabel: '',
+                  useToday: false,
+                  width: 350,
                   height: 200,
                   tooltipBackgroundColor: Colors.white,
                   viewMode: ViewMode.hourly,
@@ -254,6 +301,7 @@ class MyApp extends StatelessWidget {
                   detailColor: Colors.purple,
                   widgetMode: false,
                   toggleButton: false,
+                  eventDuration: 5,
                 ),
                 // Padding(
                 //   padding: EdgeInsets.only(top: 10, bottom: 10),

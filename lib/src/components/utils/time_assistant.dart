@@ -1,14 +1,22 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// TimeAssistant is used to easily navigate along a TimeChart or AmountChart.
+///
+/// Included multiple helper functions to make drawing the graphs less repetitive.
+///////////////////////////////////////////////////////////////////
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-/// 지난달이 몇달인지 구한다.
+/// Get the number of months in the last month.
 int getPreviousMonthFrom(int month) {
   if (month == 1) return 12;
   return month - 1;
 }
 
-/// [a]시에서 [b]시로 흐른 시간을 구한다.
+/// Calculates the time that has passed from [a] to [b].
 int diffBetween(int a, int b) {
   final result = b - a;
 
@@ -16,10 +24,11 @@ int diffBetween(int a, int b) {
   return result;
 }
 
-/// 이전 기준 시간들(top: [beforeTop], bottom: [beforeBottom])에 현재 기준
-/// 시간들(top: [top], bottom: [bottom])을 이용하여 Animation 방향을 얻는다.
+/// JS (Translated)
+/// Current reference to previous reference times (top: [beforeTop], bottom: [beforeBottom])
+/// Obtain animation direction using times (top: [top], bottom: [bottom]).
 ///
-/// 위쪽이면 true, 아래쪽이면 false 를 반환한다.
+/// Returns true if up, false if down.
 bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
   if (beforeBottom <= beforeTop) beforeBottom += 24;
   if (bottom <= top) bottom += 24;
@@ -34,7 +43,7 @@ bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
     bottom -= 24;
   }
 
-  // 뒤에서부터 앞으로 이동하며 많이 겹치는 구간을 찾기 위해 가장 뒤로 이동한다.
+  // Move from the back to the front and move to the backmost to find the section that overlaps the most.
   while (bottom > beforeTop) {
     goBack();
   }
@@ -47,19 +56,16 @@ bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
     } else {
       downward = max(downward, min(bottom - top, bottom - beforeTop));
     }
-    //print('before: $beforeTop, $beforeBottom, will: $top, $bottom');
-    //print('up: $upward, down: $downward');
     goFront();
   }
-  //print('------------------------------');
   return upward > downward;
 }
 
-/// [range]안에 [hour]가 포함되면 `true`를 반환한다.
+/// Returns `true` if [hour] is included in [range].
 bool isInRangeHour(DateTimeRange range, int hour) {
   DateTime time =
       DateTime(range.start.year, range.start.month, range.start.day, hour);
-  // 두 시간 사이에 위치 할 수 있도록 한다.
+  // Allows to be positioned between two times.
   if (time.isBefore(range.start)) time = time.add(const Duration(days: 1));
 
   if (range.start.isBefore(time) && time.isBefore(range.end)) return true;
@@ -101,9 +107,9 @@ extension DateTimeRangeUtils on DateTimeRange {
 }
 
 extension DateTimeRangeListUtils on List<DateTimeRange> {
-  /// 이진 탐색을 하며 [targetDate] 날짜를 초과하며 가장 최근의 날짜를 가진 데이터의 인덱스를 반환한다.
+  /// Performs a binary search and returns the index of the data with the most recent date that exceeds the [targetDate] date.
   ///
-  /// 이것을 호출 할때 리스트의 값들은 첫 번째 인덱스가 늦은 날짜인 순으로 정렬되어 있어야 한다.
+  /// When calling this, the values ​​in the list must be sorted by the date at which the first index is later.
   int getLowerBound(DateTime targetDate) {
     int min = 0;
     int max = length;
@@ -122,7 +128,7 @@ extension DateTimeRangeListUtils on List<DateTimeRange> {
         max = result;
       }
     }
-    // 같은 날 중에 가장 최근 날짜 데이터로 고른다.
+    // Select the most recent date data within the same day.
     while (
         result - 1 >= 0 && this[result - 1].end.day == this[result].end.day) {
       result--;

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////
-/// Updated 10/10/2022 by Jake Speyer
+/// Blink Chart Package
 ///
 /// AmountXLabelPainter is an extended class from XLabelPainter.
 ///
@@ -10,6 +10,7 @@ import 'package:time_chart/src/components/painter/x_label_painter.dart';
 
 class AmountXLabelPainter extends XLabelPainter {
   AmountXLabelPainter({
+    required super.xAxisWidth,
     required super.viewMode,
     required super.context,
     required super.dayCount,

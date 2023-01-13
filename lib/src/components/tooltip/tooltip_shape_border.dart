@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// ToolTipShape Is responsible for the shape of the tooltip.
+///
+/// The shape of the tooltip is changed for negative amount chart graphs
+/// because the arrow was not lining up correctly.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 
 import '../chart_type.dart';

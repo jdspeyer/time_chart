@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// Chart is responsible for assembling the core TimeChart and AmountCharts.
+///////////////////////////////////////////////////////////////////
+
 import 'dart:async';
 import 'dart:math';
 
@@ -121,8 +127,6 @@ class ChartState extends State<Chart>
   void initState() {
     super.initState();
 
-    // widget.data = (widget.chartType == ChartType.time) ? List<DateTimeRange> : List<double>;
-
     _barController = _scrollControllerGroup.addAndGet();
     _xLabelController = _scrollControllerGroup.addAndGet();
 
@@ -215,25 +219,21 @@ class ChartState extends State<Chart>
     required ScrollPosition position,
     required double barWidth,
   }) {
-    // JP -- Changed
-    // assert(amount != null);
-    // assert(range != null || amount != null);
-
     if (!widget.activeTooltip) return;
 
-    // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
+    // Ignore the tooltip of a bar that is out of the range of the currently visible graph.
     final viewRange = _blockWidth! * widget.viewMode.dayCount;
     final actualPosition = position.maxScrollExtent - position.pixels;
     if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
       return;
     }
 
-    // 현재 보이는 툴팁이 다시 호출되면 무시한다.
+    // Ignore if the currently visible tooltip is called again.
     if ((_tooltipHideTimer?.isActive ?? false) &&
         _currentVisibleTooltipRect == rect) return;
     _currentVisibleTooltipRect = rect;
 
-    // JP -- Changed I think this gets rid of the vibrations?
+    // Removes vibrations from the chart. Uncomment to enable.
     // HapticFeedback.vibrate();
     _removeEntry();
 
@@ -243,11 +243,9 @@ class ChartState extends State<Chart>
         rect,
         position,
         barWidth,
-        // JP -- Changed
-        range: range,
+        range: range, // JP -- Changed
         amount: amount,
-        // JP -- Changed
-        amountDate: amountDate,
+        amountDate: amountDate, // JP -- Changed
       ),
     );
 
@@ -310,7 +308,6 @@ class ChartState extends State<Chart>
 
     Direction direction = Direction.left;
     double tooltipLeft = localLeft - tooltipSize.width - _tooltipPadding;
-    // 툴팁을 바의 오른쪽에 배치해야 하는 경우
     if (tooltipLeft < widgetOffset.dx) {
       direction = Direction.right;
       tooltipLeft = localLeft + barWidth + _tooltipPadding;
@@ -511,9 +508,6 @@ class ChartState extends State<Chart>
                   ],
                 ),
               ),
-              //-----
-              // # .
-              // . .
               Positioned(
                 top: kTimeChartTopPadding,
                 child: Stack(
@@ -625,6 +619,7 @@ class ChartState extends State<Chart>
     switch (widget.chartType) {
       case ChartType.time:
         return TimeYLabelPainter(
+          xAxisWidth: widget.width,
           context: context,
           viewMode: widget.viewMode,
           topHour: topHour!,
@@ -635,6 +630,7 @@ class ChartState extends State<Chart>
         );
       case ChartType.amount:
         return AmountYLabelPainter(
+          xAxisWidth: widget.width,
           context: context,
           viewMode: widget.viewMode,
           topHour: topHour!,
@@ -653,6 +649,7 @@ class ChartState extends State<Chart>
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
+          xAxisWidth: widget.width,
           widgetMode: widget.widgetMode,
           scrollController: _xLabelController,
           repaint: _scrollOffsetNotifier,
@@ -664,6 +661,7 @@ class ChartState extends State<Chart>
         );
       case ChartType.amount:
         return AmountXLabelPainter(
+          xAxisWidth: widget.width,
           scrollController: _xLabelController,
           repaint: _scrollOffsetNotifier,
           context: context,
@@ -677,11 +675,11 @@ class ChartState extends State<Chart>
   }
 
   CustomPainter buildBarPainter(BuildContext context) {
-    print('2. ${widget.widgetMode}');
     // print(widget.chartType);
     // print(widget.data);
     if (widget.data is List<DateTimeRange>) {
       return TimeBarPainter(
+        xAxisWidth: widget.width,
         scrollController: _barController,
         repaint: _scrollOffsetNotifier,
         context: context,
@@ -697,6 +695,7 @@ class ChartState extends State<Chart>
       );
     } else {
       return AmountBarPainter(
+        xAxisWidth: widget.width,
         scrollController: _barController,
         repaint: _scrollOffsetNotifier,
         context: context,

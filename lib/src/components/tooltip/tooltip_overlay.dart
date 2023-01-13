@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// ToolTipOverlay is the core class for the tooltip which is displayed
+/// when the user clicks on a bar on the graph (functionality is disabled in widget mode).
+///////////////////////////////////////////////////////////////////
 import 'package:flutter/material.dart';
 
 import '../../../time_chart.dart';

@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// TimeYLabelPainter extends the abstract YLabelPainter class. It is used
+/// to plot the Y-Axis labels for TIME CHARTS only.
+///
+/// Does not currently share the same issues as amount charts when it comes to handling
+/// negative values.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/y_label_painter.dart';
 
@@ -7,6 +17,7 @@ class TimeYLabelPainter extends YLabelPainter {
   static const double _tolerance = 6.0;
 
   TimeYLabelPainter({
+    required super.xAxisWidth,
     required super.widgetMode,
     required super.context,
     required super.viewMode,
@@ -18,7 +29,6 @@ class TimeYLabelPainter extends YLabelPainter {
 
   final double chartHeight;
 
-  /// T
   /// Draw an additional label using how far the top deviates during animation, or this is a value for not drawing.
   /// If it is negative, it is shifted up, and if it is positive, it is shifted downward.
   final double topPosition;
@@ -43,18 +53,15 @@ class TimeYLabelPainter extends YLabelPainter {
 
     final int hourIncrement = (widgetMode) ? 4 : 2;
 
-    /// T
     /// Draw the time in 2 hour increments from the top.
     final double gabY =
         bottomY / bottomHour.differenceAt(topHour) * hourIncrement;
 
-    /// T
     /// true if all ranges are full and all ranges should be displayed.
     bool sameTopBottomHour = topHour == (bottomHour % 24);
     int time = topHour;
     double posY = 0.0;
 
-    /// T
     /// During animation, the label and line of the upper part are drawn so that they are not empty.
     while (-topPosition <= posY) {
       if ((time -= 2) < 0) time += 24;
@@ -64,12 +71,11 @@ class TimeYLabelPainter extends YLabelPainter {
     time = topHour;
     posY = 0.0;
 
-    /// T
     /// Show left label at 2-space intervals.
     while (true) {
       _drawLabelAndLine(canvas, size, posY, time);
 
-      // 맨 아래에 도달한 경우
+      // if the bottom is reached
       if (time == bottomHour % 24) {
         if (sameTopBottomHour) {
           sameTopBottomHour = false;
@@ -82,7 +88,7 @@ class TimeYLabelPainter extends YLabelPainter {
       posY += gabY;
     }
 
-    // 애니메이션시 하단 부분 레이블과 라인이 비지 않도록 그려준다.
+    // Draw so that the bottom label and line are not empty during animation.
     while (posY <= -topPosition + chartHeight) {
       time = (time + 2) % 24;
       posY += gabY;
@@ -92,7 +98,6 @@ class TimeYLabelPainter extends YLabelPainter {
 }
 
 extension on int {
-  /// [before]까지의 차이 시간을 반환한다.
   int differenceAt(int before) {
     var ret = this - before;
     return ret + (ret <= 0 ? 24 : 0);

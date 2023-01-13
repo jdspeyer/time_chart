@@ -1,3 +1,10 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// BorderLinePainter paints the axis borders and interrior borders.
+/// It is disabled for Widget Modes to provide a cleaner feel.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 

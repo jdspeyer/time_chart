@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////
-/// Updated 10/10/2022 by Jake Speyer
+/// Blink Chart Package
 ///
 /// Amount Bar Painter (implementation of BarPainter abstract class) interacts with the canvas and draws the bars to
 /// graphically represent the data being passed in.
@@ -23,6 +23,7 @@ import '../y_label_painter.dart';
 
 class AmountBarPainter extends BarPainter<AmountBarItem> {
   AmountBarPainter({
+    required super.xAxisWidth,
     required super.scrollController,
     required super.repaint,
     super.tooltipCallback,
@@ -140,7 +141,6 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
       /// Checks to see if the painter is on the first day.
       /// If it is on the first day then it will use the first day paint color instead of the regular paint color.
       if (offsetWithAmount.isEmpty) {
-        
       } else if (index == 0 && useToday) {
         touchyCanvas.drawRRect(
           rRect,

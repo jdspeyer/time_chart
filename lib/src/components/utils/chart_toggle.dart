@@ -1,3 +1,16 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// ChartToggle is a widget that gets overlayed ontop of the chart and
+/// allows for the toggle between TimeChart and AmountChart.
+///
+/// Warning: Not all charts are converted effectively. The following are cases where
+/// it should be avoided:
+///
+/// 1. Amount charts with large data sets (1000+) they wont be converted into Time effectively.
+/// 2. Charts with negative numberrs (as far as I know we have not invented time travel yet so you cant have negative time).
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/utils/time_converter.dart';
@@ -59,6 +72,10 @@ class _ChartToggle extends State<ChartToggle> {
                     color: widget.chart.widget.detailColor),
           )),
     );
+
+    // JS
+    // Alternative Styling for the toggle switch
+    // Disabled currently but code was left in case it needs to be reverted.
 
     // return TextButton(
     //   style: TextButton.styleFrom(

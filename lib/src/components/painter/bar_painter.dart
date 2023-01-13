@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// An Abstract class that is implemented by both Amount Charts and Time Charts.
+///
+/// It is responsible for drawing the visible bars on the Touchy Canvas which can
+/// be taped to summun a tooltip with more information.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'chart_engine.dart';
@@ -24,6 +33,7 @@ abstract class BarPainter<T> extends ChartEngine {
     required this.bottomHour,
     required this.useToday,
     required super.widgetMode,
+    required super.xAxisWidth,
     this.barColor,
   }) : super(firstValueDateTime: DateTime.now());
 
@@ -50,9 +60,6 @@ abstract class BarPainter<T> extends ChartEngine {
   @protected
   // This is for chart.time only
   DateTime getBarRenderStartDateTime(List dataList) {
-    // print(dataList.first.end.add(Duration(
-    //   days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
-    // )));
     return dataList.first.end.add(Duration(
       days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
     ));

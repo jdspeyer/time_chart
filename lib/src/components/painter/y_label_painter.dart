@@ -1,9 +1,20 @@
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// YLabelPainter is responsible for painting the Y Axis labels on each chart.
+///
+/// Unlike XLabelPainter both TimeChart and AmountCharts have their own custom implementations
+/// for most of the core functionality of the YAxis. This just has some core functionality that
+/// is shared between the two graph types.
+///////////////////////////////////////////////////////////////////
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/chart_engine.dart';
 
 abstract class YLabelPainter extends ChartEngine {
   YLabelPainter({
+    required super.xAxisWidth,
     required super.widgetMode,
     required super.viewMode,
     required super.context,
@@ -23,7 +34,7 @@ abstract class YLabelPainter extends ChartEngine {
 
   void drawYLabels(Canvas canvas, Size size);
 
-  /// Y 축의 텍스트 레이블을 그린다.
+  /// Draw text labels for the Y-axis.
   void drawYText(Canvas canvas, Size size, String text, double y) {
     TextSpan span = TextSpan(
       text: text,
@@ -42,7 +53,7 @@ abstract class YLabelPainter extends ChartEngine {
     );
   }
 
-  /// 그래프의 수평선을 그린다
+  /// Draw a horizontal line on the graph
   void drawHorizontalLine(Canvas canvas, Size size, double dy) {
     Paint paint = Paint()
       ..color = kLineColor1

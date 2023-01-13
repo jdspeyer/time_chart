@@ -1,5 +1,12 @@
-import 'dart:math';
+////////////////////////////////////////////////////////////////
+/// Blink Chart Package
+///
+/// TimeDataProcessor is responsible for cleaning and assembling the data to be
+/// displayed by the graphs.
+///////////////////////////////////////////////////////////////////
 
+import 'dart:math';
+import '../utils/y_label_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/chart_engine.dart';
 import '../../../time_chart.dart';
@@ -15,26 +22,28 @@ const double _kMaxHour = 24.0;
 const String _kNotSortedDataErrorMessage =
     'The data list is reversed or not sorted. Check the data parameter. The first data must be newest data.';
 
-/// 데이터를 적절히 가공하는 믹스인이다.
+/// JS (Translated)
+/// This is a mixin that processes the data appropriately.
 ///
-/// 이 믹스인은 [topHour]와 [bottomHour] 등을 계산하기 위해 사용한다.
+/// This mixin is used to calculate [topHour] and [bottomHour] etc.
 ///
-/// 위의 두 기준 시간을 구하는 알고리즘은 다음과 같다.
-/// 1. 주어진 데이터들에서 현재 차트에 표시되어야 하는 데이터만 고른다. 즉, 차트의 오른쪽 시간과 왼쪽 시간에
-///    포함되는 데이터만 고른다. 이때 좌, 우로 하루씩 허용오차를 두어 차트가 잘못 그려지는 것을 방지한다.
-/// 2. 선택된 데이터를 이용하여 기준 값들을 먼저 구해본다. 기준 값은 데이터에서 가장 공백이 큰 시간 범위를
-///    찾아 반환한다.
-/// 3. 구해진 기준 값 중 [bottomHour]과 24시 사이에 있는 데이터들에 각각 하루 씩 더한다.
+/// The algorithm for obtaining the above two standard times is as follows.
+/// 1. Select only the data to be displayed on the current chart from the given data. That is, at the time to the right and to the left of the chart
+/// Select only included data. At this time, a tolerance of one day is left and right to prevent the chart from being drawn incorrectly.
+/// 2. Using the selected data, the reference values ​​are first obtained. The base value is the time range with the largest gaps in the data.
+/// find and return
+/// 3. Add one day to each of the data between [bottomHour] and 24 hours among the obtained standard values.
 ///
-/// 위와 같은 과정을 지나면 [_processedData]에는 기준 시간에 맞게 수정된 데이터들이 들어있다.
+/// After the above process, [_processedData] contains the data modified according to the standard time.
 mixin TimeDataProcessor {
   static const Duration _oneDayDuration = Duration(days: 1);
 
-  /// 현재 [Chart]의 상태에 맞게 가공된 데이터를 반환한다.
+  /// JS (Translated)
+  /// Returns the processed data according to the current [Chart] status.
   ///
-  /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
+  /// The data between [bottomHour] and 24 hours is carried over to the next day.
 
-  /// // JP -- Changed
+  /// JP -- Changed
   List get processedData => _processedData;
   List<DateTimeRange> get processedDataTime => _processedDataTime;
 
@@ -52,8 +61,9 @@ mixin TimeDataProcessor {
   int? get dayCount => _dayCount;
   int? _dayCount;
 
-  /// 첫 데이터가 [bottomHour]와 24시(정확히는 0시) 사이에 존재하여 다음 칸에 그려져야 하는
-  /// 경우 `true`이다.
+  /// JS (Translated)
+  /// The first data exists between [bottomHour] and 24 o'clock (exactly 0 o'clock) and should be drawn in the next cell.
+  /// In this case, it is `true`.
   bool get isFirstDataMovedNextDay => _isFirstDataMovedNextDay;
   bool _isFirstDataMovedNextDay = false;
 
@@ -62,18 +72,16 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
-    // Amount Chart - JS
+    // Used for the Amount Chart - JS
     if (chart.data is List<double>) {
       _processedData = [...chart.data];
-      // print("_processedData: $_processedData");
     }
-    // Time Chart - JS
+    // Used for the Time Chart - JS
     else {
       _processedDataTime = [...chart.data];
-      // print("_processedDataTime: $_processedDataTime");
     }
 
-    // Both Charts - JS
+    // Used regardless of chart type - JS
     _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
@@ -83,6 +91,7 @@ mixin TimeDataProcessor {
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
+        // Removed to override the 24 hour limit.
         // _processDataUsingBottomHour();
         break;
       case ChartType.amount:
@@ -124,7 +133,7 @@ mixin TimeDataProcessor {
     }
     _topHour = _topHour! % 24;
     _bottomHour = _bottomHour! % 24;
-    // use default pivot hour if there are no space or the time range is fully visible
+    // use default pivot hour if there is no space or the time range is fully visible
     if (_topHour == _bottomHour) {
       _topHour = defaultPivotHour;
 
@@ -132,19 +141,17 @@ mixin TimeDataProcessor {
     }
   }
 
-  // // JP -- Changed
+  // JP -- Changed
   void _countDays(List dataList) {
     assert(dataList.isNotEmpty);
     // This is just the number of days
     _dayCount = dataList.length;
   }
 
-  /// 입력으로 들어온 [dataList]에서 [renderEndTime]부터 [viewMode]의 제한 일수 기간 동안 포함된
-  /// [_inRangeDataList]를 만든다.
-  ///
-
+  /// JS (Translated)
+  /// Included from [renderEndTime] in the input [dataList] to the limited number of days of [viewMode]
+  /// Create [_inRangeDataList].
   void _generateInRangeDataList(
-    // JP TODO make for for both DateTimeRange and double
     List<DateTimeRange> dataList,
     ViewMode viewMode,
     DateTime renderEndTime,
@@ -158,7 +165,8 @@ mixin TimeDataProcessor {
 
     _inRangeDataList.clear();
 
-    DateTime postEndTime = dataList.first.end.add(_oneDayDuration).dateWithoutTime();
+    DateTime postEndTime =
+        dataList.first.end.add(_oneDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(
@@ -168,44 +176,43 @@ mixin TimeDataProcessor {
       }
       //final currentTime = dataList[i].end.dateWithoutTime();
       final currentTime = dataList[i].end.dateWithoutTime();
-      // print("currentTime: $currentTime");
-      // 이전 데이터와 날짜가 다른 경우
+      // If the date is different from the previous data
       if (currentTime != postEndTime) {
         final difference = postEndTime.differenceDateInDay(currentTime);
-        // 하루 이상 차이나는 경우
+        // if more than one day difference
         postEndTime = postEndTime.add(Duration(days: -difference));
       }
       postEndTime = currentTime;
 
-      if (renderStartTime.isBefore(currentTime) && currentTime.isBefore(renderEndTime)) {
+      if (renderStartTime.isBefore(currentTime) &&
+          currentTime.isBefore(renderEndTime)) {
         _inRangeDataList.add(dataList[i]);
       } else {
         _inRangeDataList.add(dataList[i]);
       }
     }
-    // print("_inRangeDataList: $_inRangeDataList");
   }
 
-  /// [bottomHour]과 24시(정확히는 0시) 사이에 [timeDouble]이 위치한 경우 `true`를 반환한다.
+  /// JS (Translated)
+  /// Returns `true` if [timeDouble] is located between [bottomHour] and 24 o'clock (exactly 0 o'clock).
   ///
-  /// 구체적으로 [timeDouble] 시간이 차트에서 다음 칸에 위치해야 하는 경우를 말한다.
+  /// Specifically, it refers to the case where the [timeDouble] time should be located in the next column on the chart.
   bool _isNextCellPosition(double timeDouble) {
-    // 제일 아래의 시간이 0시인 경우 해당 블럭은 무조건 해당 시간으로 표시하여야 한다.
+    // If the time at the bottom is 0:00, the corresponding block must be displayed with the corresponding time unconditionally.
     if (bottomHour == 0) return false;
     return bottomHour! < timeDouble;
   }
 
-  /// 데이터의 시작 시간과 종료 시간 모두 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를
-  /// 다음날로 가공한다.
+  /// JS (Translated)
+  /// If both the start time and end time of the data exist between [bottomHour] and 24:00, the data
+  /// Process the next day.
   ///
-  /// 만약 다음날로 가공하지 않는다면 다음 칸에 그려져야 할 데이터가 동일한 칸에 그려질 수 있다. 다음 칸에
-  /// 그려져야 할 데이터란 날짜는 같지만 차트에서 위치상으로만 다음 칸인 데이터의 경우를 말하는 것이다.
+  /// If it is not processed to the next day, the data to be drawn in the next cell can be drawn in the same cell. in the next column
+  /// The data to be plotted refers to data that has the same date but is positioned next to the chart.
   ///
-  /// 예를 들어 차트가 20시부터 8시까지를 그리도록 데이터가 주어졌다고 가정하자. 이때 데이터 중 하나가
-  /// 21시 ~ 23시라면 0시를 기준으로 다음날로 넘어가기 때문에 해당 데이터를 다음 칸에 그려야 한다.
-
-  // Used for chart.time
-  // JP -- Commented this out
+  /// Assume, for example, that the data is given so that the chart plots from 20:00 to 8:00. At this time, one of the data
+  /// If it is between 21:00 and 23:00, it moves to the next day based on 0:00, so the corresponding data must be drawn in the next column.
+  /// Used for chart.time
   void _processDataUsingBottomHour() {
     final len = _processedDataTime.length;
     for (int i = 0; i < len; ++i) {
@@ -214,7 +221,8 @@ mixin TimeDataProcessor {
       final double startTimeDouble = startTime.toDouble();
       final double endTimeDouble = endTime.toDouble();
 
-      if (_isNextCellPosition(startTimeDouble) && _isNextCellPosition(endTimeDouble)) {
+      if (_isNextCellPosition(startTimeDouble) &&
+          _isNextCellPosition(endTimeDouble)) {
         _processedDataTime[i] = DateTimeRange(
           start: startTime.add(_oneDayDuration),
           end: endTime.add(_oneDayDuration),
@@ -228,17 +236,19 @@ mixin TimeDataProcessor {
     }
   }
 
-  /// 시간 그래프의 기준이 될 값들을 구한다.
+  /// JS (Translated)
+  /// Obtains the values ​​that will be the standard for the time graph.
   ///
-  /// 시간 데이터가 비어 있는 구간 중 가장 넓은 부분이 선택되며, 선택된 값의 시작 시간이
-  /// [topHour], 종료 시간이 [bottomHour]가 된다.
+  /// The widest part of the interval with empty time data is selected, and the start time of the selected value is
+  /// [topHour], end time becomes [bottomHour].
   _TimePair? _getPivotHoursFrom(List<DateTimeRange> dataList) {
     final List<_TimePair> rangeList = _getSortedRangeListFrom(dataList);
     if (rangeList.isEmpty) return null;
 
-    // 빈 공간 중 범위가 가장 넓은 부분을 찾는다.
+    // Find the widest part of the empty space.
     final len = rangeList.length;
-    _TimePair resultPair = _TimePair(rangeList[0].startTime, rangeList[0].endTime);
+    _TimePair resultPair =
+        _TimePair(rangeList[0].startTime, rangeList[0].endTime);
     double maxInterval = 0.0;
 
     for (int i = 0; i < len; ++i) {
@@ -259,16 +269,18 @@ mixin TimeDataProcessor {
     return resultPair;
   }
 
-  /// [double] 형식으로 24시간에 시간 데이터 리스트가 어떻게 분포되어있는지 구간 리스트를 반환한다.
+  /// JS (Translated)
+  /// Returns a range list of how the time data list is distributed in 24 hours in [double] format.
   ///
-  /// 이 값들은 오름차순으로 정렬되어 있다.
+  /// These values ​​are sorted in ascending order.
   List<_TimePair> _getSortedRangeListFrom(List<DateTimeRange> dataList) {
     List<_TimePair> rangeList = [];
 
     for (int i = 0; i < dataList.length; ++i) {
-      final curSleepPair = _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
+      final curSleepPair =
+          _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
 
-      // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
+      // If 0 o'clock is in between, such as 23 o'clock to 6 o'clock, it is divided into two ranges based on 0 o'clock.
       if (curSleepPair.startTime > curSleepPair.endTime) {
         final frontPair = _TimePair(_kMinHour, curSleepPair.endTime);
         final backPair = _TimePair(curSleepPair.startTime, _kMaxHour);
@@ -279,27 +291,30 @@ mixin TimeDataProcessor {
         rangeList = _mergeRange(curSleepPair, rangeList);
       }
     }
-    // 오름차순으로 정렬한다.
+
+    // sort in ascending order
     rangeList.sort((a, b) => a.compareTo(b));
     return rangeList;
   }
 
-  /// [hour]이 [rangeList]에 포함되는 리스트가 있는 경우 해당 리스트와 병합하여
-  /// [rangeList]를 반환한다.
+  /// JS (Translated)
+  /// If there is a list in which [hour] is included in [rangeList], merge with the list
+  /// Returns [rangeList].
   ///
-  /// 항상 [rangeList]의 값들 중 서로 겹쳐지는 값은 존재하지 않는다.
+  /// There are no overlapping values ​​among the values ​​of [rangeList].
   List<_TimePair> _mergeRange(_TimePair timePair, List<_TimePair> rangeList) {
     int loIdx = -1;
     int hiIdx = -1;
 
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
-      if (timePair.inRange(curPair.startTime) && timePair.inRange(curPair.endTime))
-        rangeList.removeAt(i--);
+      if (timePair.inRange(curPair.startTime) &&
+          timePair.inRange(curPair.endTime)) rangeList.removeAt(i--);
     }
 
     for (int i = 0; i < rangeList.length; ++i) {
-      final _TimePair curSleepPair = _TimePair(rangeList[i].startTime, rangeList[i].endTime);
+      final _TimePair curSleepPair =
+          _TimePair(rangeList[i].startTime, rangeList[i].endTime);
 
       if (loIdx == -1 && curSleepPair.inRange(timePair.startTime)) {
         loIdx = i;
@@ -312,7 +327,8 @@ mixin TimeDataProcessor {
       }
     }
 
-    final newSleepPair = _TimePair(loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
+    final newSleepPair = _TimePair(
+        loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
         hiIdx == -1 ? timePair.endTime : rangeList[hiIdx].endTime);
 
     if (loIdx != -1 && loIdx == hiIdx) {
@@ -343,28 +359,55 @@ mixin TimeDataProcessor {
 
     double maxResult = 0.0;
     double minResult = 0.0;
+
     double sum = 0.0;
     if (dataList is List<double>) {
-      // JP -- Changed
+      // FIXES issue with the datalist not processing negative numbers when finding max.
+      // If there is a negative number that is larger than the largest possitive number it will
+      // use that instead.
       minResult = dataList.reduce(min);
       maxResult = dataList.reduce(max);
-
       if (minResult.abs() > maxResult) {
         maxResult = minResult.abs();
       }
-      if (dataList.reduce(min) < 0) {
-        _topHour = maxResult.ceil();
-      } else {
-        _topHour = (maxResult / 2).ceil() * 2;
-      }
+
+      // FIXES issue with infinite Y-Labels
+      // THIS IS FOR THE Y-LABEL MAX HOUR or TOPHOUR
+      // These are handset breakpoints for a better looking graph overall.
+      // It finds the upper dividend (scaled based on the highest maxResult in the dataset)
+      // Example: 1000+ maxResult will jump to the nearest 100 while 10+ results will just jump to the nearest 5.
+      // if (maxResult >= 1000) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 100) + 0.0;
+      // } else if (maxResult >= 500) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 50) + 0.0;
+      // } else if (maxResult >= 100) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 25) + 0.0;
+      // } else if (maxResult >= 50) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 10) + 0.0;
+      // } else if (maxResult >= 10) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 4) + 0.0;
+      // } else if (maxResult >= 5) {
+      //   maxResult =
+      //       YLabelCalculator.nearestUpperDividend(maxResult.ceil(), 2) + 0.0;
+      // }
+      maxResult =
+          YLabelCalculator.customNearestUpperDividend(maxResult.ceil()) + 0.0;
+
+      _topHour = maxResult.ceil();
     } else if (dataList is List<DateTimeRange>) {
       for (int i = 0; i < len; ++i) {
         final amount = dataList[i].durationInHours;
         sum += amount;
 
-        // This is what does the height
+        // Calculates the height of each bar.
         if (i == len - 1 ||
-            dataList[i].end.dateWithoutTime() != dataList[i + 1].end.dateWithoutTime()) {
+            dataList[i].end.dateWithoutTime() !=
+                dataList[i + 1].end.dateWithoutTime()) {
           maxResult = max(maxResult, sum);
           sum = 0.0;
         }
@@ -372,7 +415,6 @@ mixin TimeDataProcessor {
       _topHour = ((maxResult.ceil()) / 2).ceil() * 2;
     }
 
-    ///
     /// JS -- changed
     /// This sets the floor of the y-axis labels to be the smallest value
     /// in the list if the smallest value is less than 0.
@@ -384,11 +426,12 @@ mixin TimeDataProcessor {
     }
   }
 
-  /// [b]에서 [a]로 흐른 시간을 구한다. 예를 들어 5시에서 3시로 흐른 시간은 22시간이고,
-  /// 16시에서 19시로 흐른 시간은 3시간이다.
+  /// JS (Translated)
+  /// Find the time that has passed from [b] to [a]. For example, the time from 5 o'clock to 3 o'clock is 22 hours,
+  /// The time that has passed from 16:00 to 19:00 is 3 hours.
   ///
-  /// 이를 역으로 이용하여 끝 시간으로부터 시작 시간을 구할 수 있다.
-  /// [b]에 총 시간 크기를 넣고 [a]에 끝 시간을 넣으면 시작 시간이 반환된다.
+  /// By using this inversely, we can get the start time from the end time.
+  /// Put the total amount of time in [b] and the end time in [a] to return the start time.
   dynamic hourDiffBetween(dynamic a, dynamic b) {
     final c = b - a;
     if (c <= 0) return 24.0 + c;
@@ -397,7 +440,8 @@ mixin TimeDataProcessor {
 }
 
 class _TimePair implements Comparable {
-  /// [double] 타입으로 이루어진 시작 시간과 끝 시간을 가진 클래스를 생성한다.
+  /// JS (Translated)
+  /// Creates a class with start and end times of [double] type.
   const _TimePair(this._startTime, this._endTime);
 
   final double _startTime;
